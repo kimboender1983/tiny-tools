@@ -1,0 +1,22 @@
+{
+  "name": "tiny-tools",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "yarn workspaces foreach -Ap --include 'web' --include 'api' run dev",
+    "dev:web": "yarn workspace web dev",
+    "dev:api": "yarn workspace api dev",
+    "build": "yarn workspace @tiny-tools/shared build && yarn workspaces foreach -Ap --include 'web' --include 'api' run build",
+    "build:web": "yarn workspace @tiny-tools/shared build && yarn workspace web build",
+    "build:api": "yarn workspace @tiny-tools/shared build && yarn workspace api build",
+    "lint": "yarn workspaces foreach -Ap --include 'web' --include 'api' run lint",
+    "clean": "yarn workspaces foreach -A exec rm -rf node_modules dist .output .nuxt"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "yarn@4.7.0"
+}

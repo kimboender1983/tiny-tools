@@ -1,0 +1,65 @@
+import { defineStore } from 'pinia';
+
+const MAX_RECENT_TOOLS = 5;
+const RECENT_TOOLS_KEY = 'tiny-tools:recent-tools';
+
+export const useAppStore = defineStore('app', () => {
+  // ── Theme ────────────────────────────────────────────────────────
+  const colorMode = useColorMode();
+  const theme = computed({
+    get: () => colorMode.preference as 'light' | 'dark' | 'system',
+    set: (value: 'light' | 'dark' | 'system') => {
+      colorMode.preference = value;
+    },
+  });
+
+  // ── Recent Tools ─────────────────────────────────────────────────
+  const recentTools = ref<string[]>(loadRecentTools());
+
+  function loadRecentTools(): string[] {
+    if (import.meta.server) return [];
+    try {
+      const stored = localStorage.getItem(RECENT_TOOLS_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function persistRecentTools() {
+    if (import.meta.server) return;
+    try {
+      localStorage.setItem(RECENT_TOOLS_KEY, JSON.stringify(recentTools.value));
+    } catch {
+      // localStorage unavailable — ignore
+    }
+  }
+
+  function addRecentTool(slug: string) {
+    const filtered = recentTools.value.filter((s) => s !== slug);
+    filtered.unshift(slug);
+    recentTools.value = filtered.slice(0, MAX_RECENT_TOOLS);
+    persistRecentTools();
+  }
+
+  function clearRecentTools() {
+    recentTools.value = [];
+    persistRecentTools();
+  }
+
+  // ── Command Palette ──────────────────────────────────────────────
+  const commandPaletteOpen = ref(false);
+
+  function toggleCommandPalette() {
+    commandPaletteOpen.value = !commandPaletteOpen.value;
+  }
+
+  return {
+    theme,
+    recentTools,
+    addRecentTool,
+    clearRecentTools,
+    commandPaletteOpen,
+    toggleCommandPalette,
+  };
+});

@@ -1,0 +1,92 @@
+import type { IPage, IBlogPost, ICategory, IMedia, IAuthor } from '@tiny-tools/shared';
+
+interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+interface ListParams {
+  page?: number;
+  pageSize?: number;
+  status?: string;
+  category?: string;
+  search?: string;
+}
+
+const AUTH = { authenticated: true } as const;
+
+export function useCms() {
+  const api = useApi();
+
+  const pages = {
+    list: (params?: ListParams) =>
+      api.get<PaginatedResponse<IPage>>('/cms/pages', { ...AUTH, params }),
+    get: (idOrSlug: string) =>
+      api.get<IPage>(`/cms/pages/${idOrSlug}`, AUTH),
+    create: (data: Partial<IPage>) =>
+      api.post<IPage>('/cms/pages', data, AUTH),
+    update: (id: string, data: Partial<IPage>) =>
+      api.put<IPage>(`/cms/pages/${id}`, data, AUTH),
+    delete: (id: string) =>
+      api.delete<void>(`/cms/pages/${id}`, AUTH),
+  };
+
+  const blogPosts = {
+    list: (params?: ListParams) =>
+      api.get<PaginatedResponse<IBlogPost>>('/cms/blog-posts', { ...AUTH, params }),
+    get: (idOrSlug: string) =>
+      api.get<IBlogPost>(`/cms/blog-posts/${idOrSlug}`, AUTH),
+    create: (data: Partial<IBlogPost>) =>
+      api.post<IBlogPost>('/cms/blog-posts', data, AUTH),
+    update: (id: string, data: Partial<IBlogPost>) =>
+      api.put<IBlogPost>(`/cms/blog-posts/${id}`, data, AUTH),
+    delete: (id: string) =>
+      api.delete<void>(`/cms/blog-posts/${id}`, AUTH),
+    toggleFeatured: (id: string) =>
+      api.patch<IBlogPost>(`/cms/blog-posts/${id}/featured`, {}, AUTH),
+  };
+
+  const categories = {
+    list: (params?: ListParams) =>
+      api.get<PaginatedResponse<ICategory>>('/cms/categories', { ...AUTH, params }),
+    get: (idOrSlug: string) =>
+      api.get<ICategory>(`/cms/categories/${idOrSlug}`, AUTH),
+    create: (data: Partial<ICategory>) =>
+      api.post<ICategory>('/cms/categories', data, AUTH),
+    update: (id: string, data: Partial<ICategory>) =>
+      api.put<ICategory>(`/cms/categories/${id}`, data, AUTH),
+    delete: (id: string) =>
+      api.delete<void>(`/cms/categories/${id}`, AUTH),
+  };
+
+  const media = {
+    list: (params?: ListParams) =>
+      api.get<PaginatedResponse<IMedia>>('/cms/media', { ...AUTH, params }),
+    upload: (file: File, meta?: { alt?: string; caption?: string }) => {
+      const formData = new FormData();
+      formData.append('file', file);
+      if (meta?.alt) formData.append('alt', meta.alt);
+      if (meta?.caption) formData.append('caption', meta.caption);
+      return api.post<IMedia>('/cms/media/upload', formData, AUTH);
+    },
+    delete: (id: string) =>
+      api.delete<void>(`/cms/media/${id}`, AUTH),
+  };
+
+  const authors = {
+    list: () =>
+      api.get<IAuthor[]>('/cms/authors', AUTH),
+    get: (id: string) =>
+      api.get<IAuthor>(`/cms/authors/${id}`, AUTH),
+    create: (data: Partial<IAuthor>) =>
+      api.post<IAuthor>('/cms/authors', data, AUTH),
+    update: (id: string, data: Partial<IAuthor>) =>
+      api.put<IAuthor>(`/cms/authors/${id}`, data, AUTH),
+    delete: (id: string) =>
+      api.delete<void>(`/cms/authors/${id}`, AUTH),
+  };
+
+  return { pages, blogPosts, categories, media, authors };
+}
