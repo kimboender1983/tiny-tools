@@ -1,18 +1,6 @@
 <script setup lang="ts">
 import type { IPage } from '@tiny-tools/shared';
-import { marked } from 'marked';
-import hljs from 'highlight.js';
-
-const renderer = new marked.Renderer();
-renderer.code = function ({ text, lang }: { text: string; lang?: string }) {
-  const language = lang && hljs.getLanguage(lang) ? lang : undefined;
-  const highlighted = language
-    ? hljs.highlight(text, { language }).value
-    : hljs.highlightAuto(text).value;
-  const langClass = language ? `hljs language-${language}` : 'hljs';
-  return `<pre><code class="${langClass}">${highlighted}</code></pre>`;
-};
-marked.use({ renderer });
+import { renderMarkdown, processAffiliateLinks } from '~/utils/markdown';
 
 const route = useRoute();
 const config = useRuntimeConfig();
@@ -76,9 +64,23 @@ useHead({
   ],
 });
 
+// Fetch active affiliates for shortcode resolution
+const { data: affiliatesData } = await useAsyncData('affiliates-map', () =>
+  api.get<{ slug: string; name: string }[]>('/content/affiliates'),
+);
+
+const affiliatesMap = computed(() => {
+  const map = new Map<string, string>();
+  for (const a of affiliatesData.value ?? []) {
+    map.set(a.slug, a.name);
+  }
+  return map;
+});
+
 const renderedContent = computed(() => {
   if (!page.value?.content) return '';
-  return marked.parse(page.value.content, { async: false }) as string;
+  const html = renderMarkdown(page.value.content);
+  return processAffiliateLinks(html, affiliatesMap.value);
 });
 </script>
 

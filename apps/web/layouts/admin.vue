@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LayoutDashboard, FileText, BookOpen, FolderOpen, Users, Image, LogOut } from 'lucide-vue-next';
+import { LayoutDashboard, FileText, BookOpen, FolderOpen, Users, Image, Link, LogOut } from 'lucide-vue-next';
 
 const navItems = [
   { label: 'Dashboard', to: '/admin', icon: LayoutDashboard },
@@ -7,6 +7,7 @@ const navItems = [
   { label: 'Blog Posts', to: '/admin/blog', icon: BookOpen },
   { label: 'Categories', to: '/admin/categories', icon: FolderOpen },
   { label: 'Authors', to: '/admin/authors', icon: Users },
+  { label: 'Affiliates', to: '/admin/affiliates', icon: Link },
   { label: 'Media', to: '/admin/media', icon: Image },
 ];
 </script>

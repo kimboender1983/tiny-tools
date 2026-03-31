@@ -67,20 +67,21 @@ const relatedPosts = computed(() =>
   (relatedData.value?.items ?? []).filter((p) => p.slug !== slug).slice(0, 3),
 );
 
-// --- Markdown rendering with syntax highlighting ---
-import { marked } from 'marked';
-import hljs from 'highlight.js';
+// --- Markdown rendering with syntax highlighting + affiliate links ---
+import { renderMarkdown, processAffiliateLinks } from '~/utils/markdown';
 
-const renderer = new marked.Renderer();
-renderer.code = function ({ text, lang }: { text: string; lang?: string }) {
-  const language = lang && hljs.getLanguage(lang) ? lang : undefined;
-  const highlighted = language
-    ? hljs.highlight(text, { language }).value
-    : hljs.highlightAuto(text).value;
-  const langClass = language ? `hljs language-${language}` : 'hljs';
-  return `<pre><code class="${langClass}">${highlighted}</code></pre>`;
-};
-marked.use({ renderer });
+// Fetch active affiliates for shortcode resolution
+const { data: affiliatesData } = await useAsyncData('affiliates-map', () =>
+  api.get<{ slug: string; name: string }[]>('/content/affiliates'),
+);
+
+const affiliatesMap = computed(() => {
+  const map = new Map<string, string>();
+  for (const a of affiliatesData.value ?? []) {
+    map.set(a.slug, a.name);
+  }
+  return map;
+});
 
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -89,7 +90,8 @@ function slugify(text: string): string {
 // Render markdown to HTML
 const renderedHtml = computed(() => {
   if (!post.value?.content) return '';
-  return marked.parse(post.value.content, { async: false }) as string;
+  const html = renderMarkdown(post.value.content);
+  return processAffiliateLinks(html, affiliatesMap.value);
 });
 
 // Extract headings from rendered HTML for table of contents

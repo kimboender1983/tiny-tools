@@ -6,3 +6,4 @@ export * from './category';
 export * from './media';
 export * from './user';
 export * from './tool';
+export * from './affiliate';

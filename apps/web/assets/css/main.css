@@ -48,6 +48,22 @@
   }
 }
 
+/* Affiliate link styling */
+.prose .affiliate-link {
+  @apply text-brand-500 font-medium no-underline;
+  border-bottom: 1px dashed currentColor;
+}
+
+.prose .affiliate-link:hover {
+  @apply text-brand-600;
+  border-bottom-style: solid;
+}
+
+.prose .affiliate-link::after {
+  content: '\2197';
+  @apply text-[0.7em] ml-0.5 opacity-50;
+}
+
 /* Inline code styling */
 .prose :not(pre) > code {
   @apply px-1.5 py-0.5 rounded-md text-[0.875em] font-medium;

@@ -3,10 +3,13 @@ import {
   Get,
   Param,
   Query,
+  Req,
+  Res,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder } from 'mongoose';
+import type { Request, Response } from 'express';
 import { Page, PageDocument } from '../cms/schemas/page.schema';
 import { BlogPost, BlogPostDocument } from '../cms/schemas/blog-post.schema';
 import {
@@ -14,6 +17,9 @@ import {
   CategoryDocument,
 } from '../cms/schemas/category.schema';
 import { Author, AuthorDocument } from '../cms/schemas/author.schema';
+import { Affiliate, AffiliateDocument } from '../cms/schemas/affiliate.schema';
+import { AffiliateClick, AffiliateClickDocument } from '../cms/schemas/affiliate-click.schema';
+import * as crypto from 'crypto';
 
 @Controller('content')
 export class PublicContentController {
@@ -25,6 +31,10 @@ export class PublicContentController {
     private readonly categoryModel: Model<CategoryDocument>,
     @InjectModel(Author.name)
     private readonly authorModel: Model<AuthorDocument>,
+    @InjectModel(Affiliate.name)
+    private readonly affiliateModel: Model<AffiliateDocument>,
+    @InjectModel(AffiliateClick.name)
+    private readonly affiliateClickModel: Model<AffiliateClickDocument>,
   ) {}
 
   private async resolvePostRefs(post: BlogPostDocument) {
@@ -154,5 +164,54 @@ export class PublicContentController {
         updatedAt: c.updatedAt,
       })),
     };
+  }
+
+  @Get('affiliates')
+  async getActiveAffiliates() {
+    return this.affiliateModel
+      .find({ status: 'active' })
+      .select('slug name')
+      .lean()
+      .exec();
+  }
+}
+
+@Controller('go')
+export class AffiliateRedirectController {
+  constructor(
+    @InjectModel(Affiliate.name)
+    private readonly affiliateModel: Model<AffiliateDocument>,
+    @InjectModel(AffiliateClick.name)
+    private readonly clickModel: Model<AffiliateClickDocument>,
+  ) {}
+
+  @Get(':slug')
+  async redirect(
+    @Param('slug') slug: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
+    const affiliate = await this.affiliateModel
+      .findOne({ slug, status: 'active' })
+      .exec();
+
+    if (!affiliate) {
+      throw new NotFoundException(`Affiliate "${slug}" not found`);
+    }
+
+    // Track click asynchronously
+    const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.ip;
+    const hashedIp = ip
+      ? crypto.createHash('sha256').update(ip).digest('hex').substring(0, 16)
+      : undefined;
+
+    this.clickModel.create({
+      affiliate: affiliate._id,
+      page: req.headers.referer || undefined,
+      ip: hashedIp,
+      userAgent: req.headers['user-agent'] || undefined,
+    }).catch(() => { /* don't block redirect on tracking failure */ });
+
+    res.redirect(302, affiliate.url);
   }
 }

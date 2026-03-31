@@ -1,4 +1,4 @@
-import type { IPage, IBlogPost, ICategory, IMedia, IAuthor } from '@tiny-tools/shared';
+import type { IPage, IBlogPost, ICategory, IMedia, IAuthor, IAffiliate } from '@tiny-tools/shared';
 
 interface PaginatedResponse<T> {
   items: T[];
@@ -88,5 +88,22 @@ export function useCms() {
       api.delete<void>(`/cms/authors/${id}`, AUTH),
   };
 
-  return { pages, blogPosts, categories, media, authors };
+  const affiliates = {
+    list: (params?: ListParams) =>
+      api.get<PaginatedResponse<IAffiliate>>('/cms/affiliates', { ...AUTH, params }),
+    get: (id: string) =>
+      api.get<IAffiliate>(`/cms/affiliates/${id}`, AUTH),
+    create: (data: Partial<IAffiliate>) =>
+      api.post<IAffiliate>('/cms/affiliates', data, AUTH),
+    update: (id: string, data: Partial<IAffiliate>) =>
+      api.put<IAffiliate>(`/cms/affiliates/${id}`, data, AUTH),
+    delete: (id: string) =>
+      api.delete<void>(`/cms/affiliates/${id}`, AUTH),
+    getAnalytics: (id: string, days = 30) =>
+      api.get<Record<string, unknown>>(`/cms/affiliates/${id}/analytics`, { ...AUTH, params: { days } }),
+    getOverviewAnalytics: (days = 30) =>
+      api.get<Record<string, unknown>>('/cms/affiliates/analytics/overview', { ...AUTH, params: { days } }),
+  };
+
+  return { pages, blogPosts, categories, media, authors, affiliates };
 }
