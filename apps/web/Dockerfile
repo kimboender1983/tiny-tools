@@ -6,6 +6,7 @@ WORKDIR /app
 COPY package.json yarn.lock .yarnrc.yml ./
 COPY packages/shared/package.json packages/shared/
 COPY apps/web/package.json apps/web/
+COPY apps/api/package.json apps/api/
 
 # Install dependencies
 RUN yarn install --immutable
@@ -14,8 +15,8 @@ RUN yarn install --immutable
 COPY packages/shared/ packages/shared/
 COPY apps/web/ apps/web/
 
-# Build
-RUN yarn workspace web build
+# Build shared first, then web
+RUN yarn workspace @tiny-tools/shared build && yarn workspace web build
 
 # Production
 FROM node:20-alpine
