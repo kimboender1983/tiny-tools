@@ -9,7 +9,7 @@ COPY apps/web/package.json apps/web/
 COPY apps/api/package.json apps/api/
 
 # Install dependencies
-RUN yarn install --immutable
+RUN yarn install
 
 # Copy source
 COPY packages/shared/ packages/shared/
