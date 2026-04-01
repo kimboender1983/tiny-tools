@@ -6,6 +6,7 @@ import {
   Put,
   Param,
   Query,
+  Res,
   UseGuards,
   UseInterceptors,
   UploadedFile,
@@ -14,6 +15,7 @@ import {
   BadRequestException,
   Body,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AdminGuard } from '../../auth/guards/admin.guard';
@@ -69,9 +71,48 @@ export class MediaController {
     return this.mediaService.findAll(page || 1, limit || 20);
   }
 
+  @Get(':id/raw')
+  async getRaw(@Param('id') id: string, @Res() res: Response) {
+    const { buffer, mimeType } = await this.mediaService.getBuffer(id);
+    res.setHeader('Content-Type', mimeType);
+    res.setHeader('Cache-Control', 'private, max-age=300');
+    res.send(buffer);
+  }
+
   @Get(':id')
   findById(@Param('id') id: string) {
     return this.mediaService.findById(id);
+  }
+
+  @Put(':id/replace')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 10 * 1024 * 1024 },
+      fileFilter: (
+        _req: unknown,
+        file: Express.Multer.File,
+        cb: (error: Error | null, acceptFile: boolean) => void,
+      ) => {
+        if (file.mimetype.startsWith('image/')) {
+          cb(null, true);
+        } else {
+          cb(new BadRequestException('Only images can be replaced'), false);
+        }
+      },
+    }),
+  )
+  async replace(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No file provided');
+    }
+    return this.mediaService.replace(id, {
+      buffer: file.buffer,
+      mimeType: file.mimetype,
+      size: file.size,
+    });
   }
 
   @Put(':id')

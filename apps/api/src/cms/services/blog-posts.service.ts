@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, FilterQuery, SortOrder } from 'mongoose';
+import { Model, FilterQuery, SortOrder, Types } from 'mongoose';
 import { BlogPost, BlogPostDocument } from '../schemas/blog-post.schema';
 import { CreateBlogPostDto } from '../dto/create-blog-post.dto';
 import { UpdateBlogPostDto } from '../dto/update-blog-post.dto';
@@ -90,12 +90,23 @@ export class BlogPostsService {
     };
   }
 
-  async findById(id: string): Promise<BlogPostDocument> {
-    const post = await this.blogPostModel.findById(id).exec();
+  async findById(idOrSlug: string): Promise<BlogPostDocument> {
+    const post = Types.ObjectId.isValid(idOrSlug)
+      ? await this.blogPostModel.findById(idOrSlug).exec()
+      : await this.blogPostModel.findOne({ slug: idOrSlug }).exec();
     if (!post) {
-      throw new NotFoundException(`Blog post with id "${id}" not found`);
+      throw new NotFoundException(`Blog post "${idOrSlug}" not found`);
     }
     return post;
+  }
+
+  private async resolveId(idOrSlug: string): Promise<string> {
+    if (Types.ObjectId.isValid(idOrSlug)) return idOrSlug;
+    const post = await this.blogPostModel.findOne({ slug: idOrSlug }).select('_id').exec();
+    if (!post) {
+      throw new NotFoundException(`Blog post "${idOrSlug}" not found`);
+    }
+    return post._id.toString();
   }
 
   async findBySlug(slug: string): Promise<BlogPostDocument> {
@@ -107,9 +118,10 @@ export class BlogPostsService {
   }
 
   async update(
-    id: string,
+    idOrSlug: string,
     dto: UpdateBlogPostDto,
   ): Promise<BlogPostDocument> {
+    const id = await this.resolveId(idOrSlug);
     const existing = await this.findById(id);
 
     if (dto.slug && dto.slug !== existing.slug) {
@@ -144,7 +156,8 @@ export class BlogPostsService {
     return updated;
   }
 
-  async toggleFeatured(id: string): Promise<BlogPostDocument> {
+  async toggleFeatured(idOrSlug: string): Promise<BlogPostDocument> {
+    const id = await this.resolveId(idOrSlug);
     const post = await this.findById(id);
     const updated = await this.blogPostModel
       .findByIdAndUpdate(
@@ -159,7 +172,8 @@ export class BlogPostsService {
     return updated;
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(idOrSlug: string): Promise<void> {
+    const id = await this.resolveId(idOrSlug);
     const result = await this.blogPostModel.findByIdAndDelete(id).exec();
     if (!result) {
       throw new NotFoundException(`Blog post with id "${id}" not found`);

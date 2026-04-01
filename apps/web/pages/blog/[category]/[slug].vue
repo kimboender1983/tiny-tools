@@ -167,8 +167,134 @@ onMounted(() => {
       pre.style.position = 'relative';
       pre.appendChild(btn);
     });
+
+    // Image lightbox — click to zoom
+    initImageLightbox();
   });
 });
+
+function initImageLightbox() {
+  const proseEl = document.querySelector('.prose');
+  if (!proseEl) return;
+
+  proseEl.querySelectorAll('img').forEach((img) => {
+    // Skip tiny images (icons, badges)
+    if (img.naturalWidth > 0 && img.naturalWidth < 80) return;
+
+    img.addEventListener('click', () => openLightbox(img));
+  });
+}
+
+let activeLightboxSource: HTMLImageElement | null = null;
+
+function openLightbox(img: HTMLImageElement) {
+  activeLightboxSource = img;
+  const rect = img.getBoundingClientRect();
+
+  const overlay = document.createElement('div');
+  overlay.className = 'image-lightbox';
+
+  const clone = document.createElement('img');
+  clone.src = img.src;
+  clone.alt = img.alt;
+
+  // Position the clone exactly over the source image
+  clone.style.position = 'fixed';
+  clone.style.left = `${rect.left}px`;
+  clone.style.top = `${rect.top}px`;
+  clone.style.width = `${rect.width}px`;
+  clone.style.height = `${rect.height}px`;
+  clone.style.borderRadius = '0.75rem';
+  clone.style.objectFit = 'cover';
+  clone.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+  clone.style.transformOrigin = 'center center';
+  clone.style.zIndex = '101';
+
+  overlay.appendChild(clone);
+
+  // Hide the source image while lightbox is open
+  img.style.visibility = 'hidden';
+
+  // Show caption from figcaption if inside a <figure>
+  const figure = img.closest('figure');
+  const figcaption = figure?.querySelector('figcaption');
+  let captionEl: HTMLElement | null = null;
+  if (figcaption?.textContent) {
+    captionEl = document.createElement('figcaption');
+    captionEl.textContent = figcaption.textContent;
+    captionEl.style.opacity = '0';
+    captionEl.style.transition = 'opacity 0.3s ease 0.15s';
+    overlay.appendChild(captionEl);
+  }
+
+  // Close on click or Escape
+  const close = () => closeLightbox(overlay, img, clone);
+  overlay.addEventListener('click', close);
+  const onKeydown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      close();
+      document.removeEventListener('keydown', onKeydown);
+    }
+  };
+  document.addEventListener('keydown', onKeydown);
+
+  document.body.appendChild(overlay);
+
+  // Animate: overlay fades in, image flies to center
+  requestAnimationFrame(() => {
+    overlay.classList.add('is-visible');
+
+    // Calculate the centered destination
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const padding = 40;
+    const maxW = vw - padding * 2;
+    const maxH = vh - padding * 2;
+
+    // Use natural dimensions to get aspect ratio
+    const natW = img.naturalWidth || rect.width;
+    const natH = img.naturalHeight || rect.height;
+    const scale = Math.min(maxW / natW, maxH / natH, 1);
+    const destW = natW * scale;
+    const destH = natH * scale;
+    const destLeft = (vw - destW) / 2;
+    const destTop = (vh - destH) / 2;
+
+    clone.style.left = `${destLeft}px`;
+    clone.style.top = `${destTop}px`;
+    clone.style.width = `${destW}px`;
+    clone.style.height = `${destH}px`;
+    clone.style.objectFit = 'contain';
+
+    if (captionEl) captionEl.style.opacity = '1';
+  });
+}
+
+function closeLightbox(overlay: HTMLElement, sourceImg: HTMLImageElement, clone: HTMLImageElement) {
+  // Animate back to original position
+  const rect = sourceImg.getBoundingClientRect();
+
+  clone.style.left = `${rect.left}px`;
+  clone.style.top = `${rect.top}px`;
+  clone.style.width = `${rect.width}px`;
+  clone.style.height = `${rect.height}px`;
+  clone.style.objectFit = 'cover';
+
+  overlay.classList.remove('is-visible');
+
+  // Hide caption immediately
+  const captionEl = overlay.querySelector('figcaption') as HTMLElement | null;
+  if (captionEl) {
+    captionEl.style.transition = 'opacity 0.15s ease';
+    captionEl.style.opacity = '0';
+  }
+
+  clone.addEventListener('transitionend', () => {
+    sourceImg.style.visibility = '';
+    overlay.remove();
+    activeLightboxSource = null;
+  }, { once: true });
+}
 
 function formatDate(date: Date | string | undefined): string {
   if (!date) return '';

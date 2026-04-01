@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Upload, Trash2, Copy, Check } from 'lucide-vue-next';
+import { Upload, Trash2, Copy, Check, Pencil } from 'lucide-vue-next';
 import type { IMedia } from '@tiny-tools/shared';
 
 definePageMeta({ layout: 'admin', middleware: ['admin'] });
@@ -16,6 +16,12 @@ const copiedId = ref<string | null>(null);
 const editingAltId = ref<string | null>(null);
 const editingAltText = ref('');
 const isDragOver = ref(false);
+const editingItem = ref<IMedia | null>(null);
+
+async function onEditorSaved(_saved: IMedia) {
+  editingItem.value = null;
+  await loadMedia();
+}
 
 async function loadMedia() {
   loading.value = true;
@@ -204,6 +210,14 @@ onMounted(loadMedia);
               <component :is="copiedId === item._id ? Check : Copy" :size="14" />
             </button>
             <button
+              v-if="isImage(item.mimeType)"
+              class="p-1.5 rounded-lg bg-white/90 text-gray-700 hover:bg-white transition-colors"
+              title="Edit image"
+              @click.stop="editingItem = item"
+            >
+              <Pencil :size="14" />
+            </button>
+            <button
               v-if="deleteConfirmId !== item._id"
               class="p-1.5 rounded-lg bg-white/90 text-red-500 hover:bg-white transition-colors"
               title="Delete"
@@ -277,5 +291,15 @@ onMounted(loadMedia);
         </div>
       </div>
     </div>
+
+    <!-- Image editor -->
+    <ClientOnly>
+      <AdminImageEditor
+        :media-item="editingItem"
+        :open="!!editingItem"
+        @close="editingItem = null"
+        @saved="onEditorSaved"
+      />
+    </ClientOnly>
   </div>
 </template>

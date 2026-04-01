@@ -71,6 +71,11 @@ export function useCms() {
       if (meta?.caption) formData.append('caption', meta.caption);
       return api.post<IMedia>('/cms/media/upload', formData, AUTH);
     },
+    replace: (id: string, file: Blob, filename: string) => {
+      const formData = new FormData();
+      formData.append('file', file, filename);
+      return api.put<IMedia>(`/cms/media/${id}/replace`, formData, AUTH);
+    },
     delete: (id: string) =>
       api.delete<void>(`/cms/media/${id}`, AUTH),
   };

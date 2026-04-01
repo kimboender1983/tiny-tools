@@ -6,6 +6,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
 } from '@aws-sdk/client-s3';
 import { Media, MediaDocument } from '../schemas/media.schema';
 
@@ -123,6 +124,45 @@ export class MediaService {
     return media;
   }
 
+  async getBuffer(id: string): Promise<{ buffer: Buffer; mimeType: string }> {
+    const media = await this.findById(id);
+
+    // Data URI fallback (dev mode)
+    if (media.url.startsWith('data:')) {
+      const matches = media.url.match(/^data:([^;]+);base64,(.+)$/);
+      if (matches) {
+        return {
+          buffer: Buffer.from(matches[2], 'base64'),
+          mimeType: matches[1],
+        };
+      }
+    }
+
+    // Fetch from R2 via S3 client
+    if (this.r2Configured && media.url.startsWith(this.publicUrl)) {
+      const key = media.url.replace(`${this.publicUrl}/`, '');
+      const response = await this.s3Client.send(
+        new GetObjectCommand({ Bucket: this.bucketName, Key: key }),
+      );
+      const stream = response.Body;
+      const chunks: Buffer[] = [];
+      for await (const chunk of stream as AsyncIterable<Buffer>) {
+        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+      }
+      return {
+        buffer: Buffer.concat(chunks),
+        mimeType: media.mimeType,
+      };
+    }
+
+    // Fallback: fetch via public URL
+    const res = await fetch(media.url);
+    return {
+      buffer: Buffer.from(await res.arrayBuffer()),
+      mimeType: media.mimeType,
+    };
+  }
+
   async update(
     id: string,
     data: { alt?: string; caption?: string },
@@ -134,6 +174,67 @@ export class MediaService {
       throw new NotFoundException(`Media with id "${id}" not found`);
     }
     return updated;
+  }
+
+  async replace(
+    id: string,
+    data: {
+      buffer: Buffer;
+      mimeType: string;
+      size: number;
+      width?: number;
+      height?: number;
+    },
+  ): Promise<MediaDocument> {
+    const existing = await this.mediaModel.findById(id).exec();
+    if (!existing) {
+      throw new NotFoundException(`Media with id "${id}" not found`);
+    }
+
+    // Delete old file from R2 if applicable
+    if (this.r2Configured && existing.url.startsWith(this.publicUrl)) {
+      const oldKey = existing.url.replace(`${this.publicUrl}/`, '');
+      await this.s3Client.send(
+        new DeleteObjectCommand({ Bucket: this.bucketName, Key: oldKey }),
+      );
+    }
+
+    // Upload new file
+    const key = `media/${Date.now()}-${existing.filename}`;
+    let url: string;
+
+    if (this.r2Configured) {
+      await this.s3Client.send(
+        new PutObjectCommand({
+          Bucket: this.bucketName,
+          Key: key,
+          Body: data.buffer,
+          ContentType: data.mimeType,
+        }),
+      );
+      url = `${this.publicUrl}/${key}`;
+    } else {
+      const base64 = data.buffer.toString('base64');
+      url = `data:${data.mimeType};base64,${base64}`;
+    }
+
+    const updated = await this.mediaModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            url,
+            mimeType: data.mimeType,
+            size: data.size,
+            width: data.width,
+            height: data.height,
+          },
+        },
+        { new: true },
+      )
+      .exec();
+
+    return updated!;
   }
 
   async delete(id: string): Promise<void> {
