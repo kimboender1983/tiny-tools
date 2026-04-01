@@ -167,24 +167,26 @@ useHead({
           <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-3 flex-1">
             {{ post.excerpt }}
           </p>
-          <div class="mt-4 flex items-center gap-4 text-xs text-gray-500 dark:text-gray-500">
-            <span v-if="post.author && typeof post.author === 'object'" class="inline-flex items-center gap-1.5">
-              <img
-                v-if="post.author.avatar"
-                :src="post.author.avatar"
-                :alt="post.author.name"
-                class="w-4 h-4 rounded-full object-cover"
-              />
-              {{ post.author.name }}
-            </span>
-            <span v-if="post.publishedAt" class="inline-flex items-center gap-1">
-              <Calendar :size="12" />
-              {{ formatDate(post.publishedAt) }}
-            </span>
-            <span v-if="post.readingTime" class="inline-flex items-center gap-1">
-              <Clock :size="12" />
-              {{ post.readingTime }} min read
-            </span>
+          <div class="mt-4 @container">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-gray-500 dark:text-gray-500 @[320px]:flex-nowrap">
+              <span v-if="post.author && typeof post.author === 'object'" class="inline-flex items-center gap-1.5 basis-full @[320px]:basis-auto">
+                <img
+                  v-if="post.author.avatar"
+                  :src="post.author.avatar"
+                  :alt="post.author.name"
+                  class="w-4 h-4 rounded-full object-cover"
+                />
+                {{ post.author.name }}
+              </span>
+              <span v-if="post.publishedAt" class="inline-flex items-center gap-1">
+                <Calendar :size="12" />
+                {{ formatDate(post.publishedAt) }}
+              </span>
+              <span v-if="post.readingTime" class="inline-flex items-center gap-1">
+                <Clock :size="12" />
+                {{ post.readingTime }} min read
+              </span>
+            </div>
           </div>
         </div>
       </NuxtLink>
