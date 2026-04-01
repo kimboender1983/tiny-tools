@@ -23,7 +23,6 @@ FROM node:20-alpine
 WORKDIR /app
 COPY --from=base /app/apps/api/dist ./dist
 COPY --from=base /app/node_modules ./node_modules
-COPY --from=base /app/apps/api/node_modules ./apps/api/node_modules
 
 EXPOSE 3001
 CMD ["node", "dist/main.js"]
