@@ -16,8 +16,6 @@ useHead({
 
 <template>
   <div>
-    <AdsAdUnit slot="home-leaderboard" format="leaderboard" />
-
     <section class="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
       <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium mb-6 dark:bg-brand-900/20 dark:text-brand-400">
         <Sparkles :size="14" />

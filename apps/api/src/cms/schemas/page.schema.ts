@@ -23,7 +23,7 @@ export class Page {
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   slug!: string;
 
-  @Prop({ required: true })
+  @Prop({ default: '' })
   content!: string;
 
   @Prop()
@@ -47,6 +47,18 @@ export class Page {
   @Prop({ type: [String] })
   relatedPages?: string[];
 
+  @Prop({ enum: ['none', 'header', 'footer', 'both'], default: 'none' })
+  navPlacement?: string;
+
+  @Prop()
+  navLabel?: string;
+
+  @Prop()
+  footerGroup?: string;
+
+  @Prop()
+  footerGroupOrder?: number;
+
   @Prop()
   order?: number;
 
@@ -62,3 +74,4 @@ export const PageSchema = SchemaFactory.createForClass(Page);
 PageSchema.index({ slug: 1 });
 PageSchema.index({ status: 1 });
 PageSchema.index({ category: 1 });
+PageSchema.index({ navPlacement: 1, status: 1, order: 1 });

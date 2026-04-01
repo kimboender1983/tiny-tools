@@ -180,6 +180,15 @@ useHead({
               {{ post.excerpt }}
             </p>
             <div class="mt-4 flex items-center gap-4 text-xs text-gray-500">
+              <span v-if="post.author && typeof post.author === 'object'" class="inline-flex items-center gap-1.5">
+                <img
+                  v-if="post.author.avatar"
+                  :src="post.author.avatar"
+                  :alt="post.author.name"
+                  class="w-4 h-4 rounded-full object-cover"
+                />
+                {{ post.author.name }}
+              </span>
               <span v-if="post.publishedAt" class="inline-flex items-center gap-1">
                 <Calendar :size="12" />
                 {{ formatDate(post.publishedAt) }}

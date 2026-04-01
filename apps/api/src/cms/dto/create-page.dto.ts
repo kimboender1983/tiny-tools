@@ -26,8 +26,9 @@ export class CreatePageDto {
   @IsString()
   slug?: string;
 
+  @IsOptional()
   @IsString()
-  content!: string;
+  content?: string;
 
   @IsOptional()
   @IsString()
@@ -59,6 +60,22 @@ export class CreatePageDto {
   @IsArray()
   @IsString({ each: true })
   relatedPages?: string[];
+
+  @IsOptional()
+  @IsIn(['none', 'header', 'footer', 'both'])
+  navPlacement?: string;
+
+  @IsOptional()
+  @IsString()
+  navLabel?: string;
+
+  @IsOptional()
+  @IsString()
+  footerGroup?: string;
+
+  @IsOptional()
+  @IsNumber()
+  footerGroupOrder?: number;
 
   @IsOptional()
   @IsNumber()

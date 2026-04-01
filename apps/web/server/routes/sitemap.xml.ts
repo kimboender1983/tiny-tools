@@ -34,15 +34,7 @@ export default defineEventHandler(async (event) => {
     },
   ];
 
-  // Tool pages
-  for (const tool of TOOLS) {
-    staticUrls.push({
-      loc: `${siteUrl}/${tool.slug}`,
-      lastmod: now,
-      priority: '0.9',
-      changefreq: 'weekly',
-    });
-  }
+  // Tool pages are now included via dynamic CMS pages with categorySlug
 
   // Dynamic entries from API
   let dynamicUrls: Array<{ loc: string; lastmod: string; priority: string; changefreq: string }> = [];
@@ -54,11 +46,12 @@ export default defineEventHandler(async (event) => {
 
     if (data?.pages) {
       for (const page of data.pages) {
+        const path = page.categorySlug ? `/${page.categorySlug}/${page.slug}` : `/${page.slug}`;
         dynamicUrls.push({
-          loc: `${siteUrl}/${page.slug}`,
+          loc: `${siteUrl}${path}`,
           lastmod: page.updatedAt || now,
-          priority: '0.6',
-          changefreq: 'monthly',
+          priority: page.categorySlug ? '0.9' : '0.6',
+          changefreq: page.categorySlug ? 'weekly' : 'monthly',
         });
       }
     }

@@ -29,6 +29,11 @@ const form = reactive({
     ogImage: '',
     noIndex: false,
   },
+  showInHeader: false,
+  showInFooter: false,
+  navLabel: '',
+  footerGroup: '',
+  footerGroupOrder: 0,
   faq: [] as IFaqItem[],
   relatedPages: [] as string[],
 });
@@ -51,6 +56,14 @@ function onTitleInput() {
 function onSlugInput() {
   slugManuallyEdited.value = true;
 }
+
+const existingFooterGroups = computed(() => {
+  const groups = new Set<string>();
+  for (const p of allPages.value) {
+    if (p.footerGroup) groups.add(p.footerGroup);
+  }
+  return [...groups].sort();
+});
 
 function addFaq() {
   form.faq.push({ question: '', answer: '' });
@@ -81,6 +94,13 @@ async function save(publish: boolean) {
       excerpt: form.excerpt || undefined,
       status: publish ? 'published' : form.status,
       template: form.template,
+      navPlacement: form.showInHeader && form.showInFooter ? 'both'
+        : form.showInHeader ? 'header'
+        : form.showInFooter ? 'footer'
+        : 'none',
+      navLabel: form.navLabel || undefined,
+      footerGroup: form.footerGroup || undefined,
+      footerGroupOrder: form.footerGroup ? form.footerGroupOrder : undefined,
       category: form.category || undefined,
       publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
       seo: {
@@ -298,6 +318,57 @@ onMounted(loadFormData);
               <option value="static">Static</option>
               <option value="landing">Landing</option>
             </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Navigation</label>
+            <div class="space-y-1.5">
+              <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <input v-model="form.showInHeader" type="checkbox" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" />
+                Show in header
+              </label>
+              <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <input v-model="form.showInFooter" type="checkbox" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" />
+                Show in footer
+              </label>
+            </div>
+          </div>
+
+          <div v-if="form.showInHeader || form.showInFooter">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Nav Label <span class="text-xs text-gray-500 font-normal">(optional, overrides title)</span>
+            </label>
+            <input
+              v-model="form.navLabel"
+              type="text"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              placeholder="Short label for navigation"
+            />
+          </div>
+
+          <div v-if="form.showInFooter" class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Footer Group</label>
+              <input
+                v-model="form.footerGroup"
+                type="text"
+                list="footer-groups"
+                class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                placeholder="e.g. Tools, Resources, Legal"
+              />
+              <datalist id="footer-groups">
+                <option v-for="g in existingFooterGroups" :key="g" :value="g" />
+              </datalist>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Group Order</label>
+              <input
+                v-model.number="form.footerGroupOrder"
+                type="number"
+                min="0"
+                class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              />
+            </div>
           </div>
 
           <div>

@@ -38,7 +38,7 @@ function close() {
 
 function selectTool(slug: string) {
   close();
-  router.push(`/${slug}`);
+  router.push(`/tools/${slug}`);
 }
 
 function onKeyDown(e: KeyboardEvent) {

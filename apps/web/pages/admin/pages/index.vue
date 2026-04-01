@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Plus, Trash2, Search } from 'lucide-vue-next';
-import type { IPage } from '@tiny-tools/shared';
+import type { IPage, ICategory } from '@tiny-tools/shared';
 
 definePageMeta({ layout: 'admin', middleware: ['admin'] });
 
@@ -14,6 +14,15 @@ const currentPage = ref(1);
 const search = ref('');
 const statusFilter = ref<string>('');
 const deleteConfirmId = ref<string | null>(null);
+const categories = ref<ICategory[]>([]);
+
+const categoryMap = computed(() => {
+  const map = new Map<string, string>();
+  for (const cat of categories.value) {
+    map.set(cat._id, cat.name);
+  }
+  return map;
+});
 
 const tabs = [
   { label: 'All', value: '' },
@@ -27,14 +36,18 @@ async function loadPages() {
   error.value = '';
 
   try {
-    const res = await cms.pages.list({
-      page: currentPage.value,
-      pageSize: 20,
-      status: statusFilter.value || undefined,
-      search: search.value || undefined,
-    });
+    const [res, catsRes] = await Promise.all([
+      cms.pages.list({
+        page: currentPage.value,
+        pageSize: 20,
+        status: statusFilter.value || undefined,
+        search: search.value || undefined,
+      }),
+      categories.value.length === 0 ? cms.categories.list({ pageSize: 100 }) : null,
+    ]);
     pages.value = res.items;
     total.value = res.total;
+    if (catsRes) categories.value = catsRes.items;
   } catch (e: unknown) {
     error.value = e instanceof Error ? e.message : 'Failed to load pages.';
   } finally {
@@ -153,7 +166,7 @@ onMounted(loadPages);
                 {{ page.status }}
               </span>
             </td>
-            <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ page.category || '—' }}</td>
+            <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ page.category ? (categoryMap.get(page.category) || page.category) : '—' }}</td>
             <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ formatDate(page.updatedAt) }}</td>
             <td class="px-4 py-3" @click.stop>
               <button

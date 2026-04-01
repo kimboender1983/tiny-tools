@@ -6,7 +6,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, Braces, KeyRound, ArrowRigh
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'json-diff')!;
 const siteUrl = 'https://tinytools.dev';
-const canonicalUrl = `${siteUrl}/${tool.slug}`;
+const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
   {
@@ -261,7 +261,7 @@ onMounted(() => {
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <NuxtLink
-                to="/json-formatter"
+                to="/tools/json-formatter"
                 class="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-surface-dark-border bg-gray-50 dark:bg-surface-dark-secondary hover:border-brand-300 dark:hover:border-brand-700 hover:bg-brand-50 dark:hover:bg-brand-900/10 transition-colors group"
               >
                 <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 shrink-0">
@@ -274,7 +274,7 @@ onMounted(() => {
                 <ArrowRight :size="16" class="text-gray-300 dark:text-gray-600 group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
               </NuxtLink>
               <NuxtLink
-                to="/jwt-decoder"
+                to="/tools/jwt-decoder"
                 class="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-surface-dark-border bg-gray-50 dark:bg-surface-dark-secondary hover:border-brand-300 dark:hover:border-brand-700 hover:bg-brand-50 dark:hover:bg-brand-900/10 transition-colors group"
               >
                 <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 shrink-0">

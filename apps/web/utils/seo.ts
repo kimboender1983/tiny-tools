@@ -20,7 +20,7 @@ export function generateToolMeta(
 ): HeadMeta {
   const title = `${tool.name} - Free Online Tool | TinyTools`;
   const description = tool.description;
-  const url = `${siteUrl}/tools/${tool.slug}`;
+  const url = `${siteUrl}/${tool.slug}`;
 
   return {
     title,

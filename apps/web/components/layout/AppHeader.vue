@@ -1,9 +1,15 @@
 <script setup lang="ts">
-import { Menu, X, Sun, Moon, Github } from 'lucide-vue-next';
+import { Menu, X, Sun, Moon } from 'lucide-vue-next';
 import { TOOLS } from '@tiny-tools/shared';
 
 const colorMode = useColorMode();
 const mobileMenuOpen = ref(false);
+const { data: nav } = useNavigation();
+const headerItems = computed(() =>
+  nav.value.header.length > 0
+    ? nav.value.header
+    : TOOLS.map(t => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` }))
+);
 
 function toggleTheme() {
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
@@ -23,13 +29,13 @@ watch(() => useRoute().path, () => {
 
       <nav class="hidden md:flex items-center gap-1">
         <NuxtLink
-          v-for="tool in TOOLS"
-          :key="tool.slug"
-          :to="`/${tool.slug}`"
+          v-for="item in headerItems"
+          :key="item.slug"
+          :to="item.path"
           class="px-3 py-1.5 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200"
           active-class="!bg-brand-50 !text-brand-600 dark:!bg-brand-900/20 dark:!text-brand-400"
         >
-          {{ tool.name }}
+          {{ item.title }}
         </NuxtLink>
       </nav>
 
@@ -42,16 +48,6 @@ watch(() => useRoute().path, () => {
           <Sun v-if="colorMode.value === 'dark'" :size="18" />
           <Moon v-else :size="18" />
         </button>
-
-        <a
-          href="https://github.com"
-          target="_blank"
-          rel="noopener"
-          class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200"
-          aria-label="GitHub"
-        >
-          <Github :size="18" />
-        </a>
 
         <button
           class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary"
@@ -78,13 +74,13 @@ watch(() => useRoute().path, () => {
       >
         <nav class="p-4 space-y-1">
           <NuxtLink
-            v-for="tool in TOOLS"
-            :key="tool.slug"
-            :to="`/${tool.slug}`"
+            v-for="item in headerItems"
+            :key="item.slug"
+            :to="item.path"
             class="block px-3 py-2.5 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200"
             active-class="!bg-brand-50 !text-brand-600 dark:!bg-brand-900/20 dark:!text-brand-400"
           >
-            {{ tool.name }}
+            {{ item.title }}
           </NuxtLink>
         </nav>
       </div>

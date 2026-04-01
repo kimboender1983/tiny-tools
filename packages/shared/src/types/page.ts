@@ -7,6 +7,20 @@ export interface IFaqItem {
 
 export type PageStatus = 'draft' | 'published' | 'archived';
 export type PageTemplate = 'tool' | 'static' | 'landing';
+export type PageNavPlacement = 'none' | 'header' | 'footer' | 'both';
+
+export interface INavItem {
+  title: string;
+  slug: string;
+  path: string;
+  order?: number;
+}
+
+export interface IFooterSection {
+  title: string;
+  order: number;
+  items: INavItem[];
+}
 
 export interface IPage {
   _id: string;
@@ -20,6 +34,10 @@ export interface IPage {
   seo: ISeoFields;
   faq?: IFaqItem[];
   relatedPages?: string[];
+  navPlacement?: PageNavPlacement;
+  navLabel?: string;
+  footerGroup?: string;
+  footerGroupOrder?: number;
   order?: number;
   publishedAt?: Date;
   createdAt: Date;

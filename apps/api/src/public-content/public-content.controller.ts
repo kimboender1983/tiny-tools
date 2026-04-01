@@ -65,6 +65,46 @@ export class PublicContentController {
     return obj;
   }
 
+  @Get('navigation')
+  async getNavigation() {
+    const pages = await this.pageModel
+      .find({
+        status: 'published',
+        navPlacement: { $in: ['header', 'footer', 'both'] },
+      })
+      .select('title slug template navPlacement navLabel footerGroup footerGroupOrder order')
+      .sort({ order: 1 })
+      .lean()
+      .exec();
+
+    const toNavItem = (p: Record<string, unknown>) => ({
+      title: (p.navLabel || p.title) as string,
+      slug: p.slug as string,
+      path: p.template === 'tool' ? `/tools/${p.slug}` : `/${p.slug}`,
+      order: p.order as number | undefined,
+    });
+
+    const header = pages
+      .filter(p => p.navPlacement === 'header' || p.navPlacement === 'both')
+      .map(toNavItem);
+
+    // Group footer items by footerGroup
+    const footerPages = pages.filter(p => p.navPlacement === 'footer' || p.navPlacement === 'both');
+    const groupMap = new Map<string, { title: string; order: number; items: ReturnType<typeof toNavItem>[] }>();
+
+    for (const p of footerPages) {
+      const group = (p.footerGroup || 'Links') as string;
+      if (!groupMap.has(group)) {
+        groupMap.set(group, { title: group, order: (p.footerGroupOrder as number) ?? 99, items: [] });
+      }
+      groupMap.get(group)!.items.push(toNavItem(p));
+    }
+
+    const footer = [...groupMap.values()].sort((a, b) => a.order - b.order);
+
+    return { header, footer };
+  }
+
   @Get('pages/:slug')
   async getPage(@Param('slug') slug: string) {
     const page = await this.pageModel
@@ -135,7 +175,7 @@ export class PublicContentController {
     const [pages, posts, categories] = await Promise.all([
       this.pageModel
         .find({ status: 'published' })
-        .select('slug updatedAt')
+        .select('slug category updatedAt')
         .lean()
         .exec(),
       this.blogPostModel
@@ -152,6 +192,7 @@ export class PublicContentController {
     return {
       pages: pages.map((p) => ({
         slug: p.slug,
+        categorySlug: p.category ? (catMap.get(String(p.category)) || undefined) : undefined,
         updatedAt: p.updatedAt,
       })),
       blogPosts: posts.map((p) => ({

@@ -36,6 +36,11 @@ export default defineNuxtConfig({
 
   routeRules: {
     '/admin/**': { ssr: false },
+    // Legacy redirects from root-level tool URLs
+    '/json-formatter': { redirect: { to: '/tools/json-formatter', statusCode: 301 } },
+    '/json-diff': { redirect: { to: '/tools/json-diff', statusCode: 301 } },
+    '/jwt-decoder': { redirect: { to: '/tools/jwt-decoder', statusCode: 301 } },
+    '/image-compressor': { redirect: { to: '/tools/image-compressor', statusCode: 301 } },
   },
 
   typescript: {

@@ -15,7 +15,7 @@ const iconComponent = computed(() => {
 
 <template>
   <NuxtLink
-    :to="`/${tool.slug}`"
+    :to="`/tools/${tool.slug}`"
     class="tool-card group flex flex-col p-5 h-full"
   >
     <div class="flex items-start gap-3.5 mb-3">
@@ -36,7 +36,7 @@ const iconComponent = computed(() => {
       {{ tool.description }}
     </p>
 
-    <div class="mt-4 flex items-center gap-1 text-sm font-medium text-brand-600 dark:text-brand-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+    <div class="mt-4 flex items-center gap-1 text-sm font-medium text-brand-600 dark:text-brand-400">
       Use tool
       <ArrowRight :size="14" class="transition-transform group-hover:translate-x-0.5" />
     </div>
