@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'default' });
+definePageMeta({ layout: false });
 
 const { login, isAuthenticated, loading } = useAuth();
 

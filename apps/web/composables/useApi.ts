@@ -34,13 +34,25 @@ export function useApi() {
       Object.assign(headers, getAuthHeaders());
     }
 
-    return $fetch<T>(path, {
-      baseURL: apiUrl,
-      method,
-      body: body !== undefined ? body : undefined,
-      headers,
-      ...rest,
-    });
+    try {
+      return await $fetch<T>(path, {
+        baseURL: apiUrl,
+        method,
+        body: body !== undefined ? body : undefined,
+        headers,
+        ...rest,
+      });
+    } catch (err: unknown) {
+      // Auto-logout on 401 for authenticated requests
+      if (authenticated && err && typeof err === 'object' && 'statusCode' in err && (err as { statusCode: number }).statusCode === 401) {
+        const token = useCookie('auth_token');
+        if (token.value) {
+          token.value = null;
+          navigateTo('/admin/login', { replace: true });
+        }
+      }
+      throw err;
+    }
   }
 
   function get<T>(path: string, options?: ApiRequestOptions) {

@@ -35,7 +35,7 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/admin/**': { ssr: false },
+    '/admin/**': { ssr: false, robots: 'noindex, nofollow', headers: { 'X-Robots-Tag': 'noindex, nofollow' } },
     // Legacy redirects from root-level tool URLs
     '/json-formatter': { redirect: { to: '/tools/json-formatter', statusCode: 301 } },
     '/json-diff': { redirect: { to: '/tools/json-diff', statusCode: 301 } },

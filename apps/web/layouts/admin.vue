@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { LayoutDashboard, FileText, BookOpen, FolderOpen, Users, Image, Link, LogOut } from 'lucide-vue-next';
 
+const { logout } = useAuth();
+
+useHead({
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+});
+
 const navItems = [
   { label: 'Dashboard', to: '/admin', icon: LayoutDashboard },
   { label: 'Pages', to: '/admin/pages', icon: FileText },
@@ -34,7 +40,8 @@ const navItems = [
       </nav>
       <div class="p-3 border-t border-surface-border dark:border-surface-dark-border">
         <button
-          class="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200"
+          class="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors dark:text-gray-400 dark:hover:bg-red-900/10 dark:hover:text-red-400"
+          @click="logout"
         >
           <LogOut :size="18" />
           Log out
