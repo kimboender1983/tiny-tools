@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { TOOLS } from '@tiny-tools/shared';
 import type { IFooterSection } from '@tiny-tools/shared';
+import { Cookie } from 'lucide-vue-next';
 
 const { data: nav } = useNavigation();
+const { openSettings: openCookieSettings } = useCookieConsent();
 
 const fallbackSections: IFooterSection[] = [
   { title: 'Tools', order: 1, items: TOOLS.map(t => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` })) },
@@ -43,8 +45,15 @@ const footerSections = computed(() =>
         </div>
       </div>
 
-      <div class="mt-8 pt-8 border-t border-surface-border dark:border-surface-dark-border text-center text-sm text-gray-500 dark:text-gray-500">
-        &copy; {{ new Date().getFullYear() }} TinyTools. All rights reserved.
+      <div class="mt-8 pt-8 border-t border-surface-border dark:border-surface-dark-border flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500 dark:text-gray-500">
+        <span>&copy; {{ new Date().getFullYear() }} TinyTools. All rights reserved.</span>
+        <button
+          class="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          @click="openCookieSettings"
+        >
+          <Cookie :size="14" />
+          Cookie Settings
+        </button>
       </div>
     </div>
   </footer>

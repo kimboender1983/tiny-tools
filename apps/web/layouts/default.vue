@@ -8,5 +8,6 @@
       <slot />
     </main>
     <LayoutAppFooter />
+    <CookieConsent />
   </div>
 </template>

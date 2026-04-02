@@ -8,8 +8,9 @@ export function useAds() {
   const config = useRuntimeConfig();
   const adsenseId = config.public.adsenseId as string;
   const route = useRoute();
+  const { hasConsented, preferences } = useCookieConsent();
 
-  const isEnabled = computed(() => !!adsenseId);
+  const isEnabled = computed(() => !!adsenseId && hasConsented.value && preferences.value.advertising);
 
   if (adsenseId) {
     useHead({
