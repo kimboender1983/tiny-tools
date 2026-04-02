@@ -328,7 +328,7 @@ const CHEATSHEET = [
           :key="ex.label"
           type="button"
           class="flex flex-col items-start gap-1 p-4 rounded-xl border border-surface-border bg-surface hover:border-brand-300 hover:bg-brand-50/50 dark:bg-surface-dark dark:border-surface-dark-border dark:hover:border-brand-700 dark:hover:bg-brand-900/10 transition-colors text-left group"
-          @click="loadExample(ex); if (ex.replacement) showReplace = true;"
+          @click="() => { loadExample(ex); if (ex.replacement) showReplace = true; }"
         >
           <div class="flex items-center gap-2">
             <Zap :size="14" class="text-brand-500" />

@@ -346,7 +346,7 @@ useHead({
   script: [
     {
       type: 'application/ld+json',
-      children: JSON.stringify(
+      innerHTML: JSON.stringify(
         generateJsonLd('Article', {
           title: p.title,
           description: p.excerpt,

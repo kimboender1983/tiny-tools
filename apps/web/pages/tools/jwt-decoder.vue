@@ -51,7 +51,7 @@ useHead({
   script: [
     {
       type: 'application/ld+json',
-      children: JSON.stringify(generateJsonLd('SoftwareApplication', {
+      innerHTML: JSON.stringify(generateJsonLd('SoftwareApplication', {
         name: tool.name,
         description: tool.description,
         url: canonicalUrl,
@@ -60,11 +60,11 @@ useHead({
     },
     {
       type: 'application/ld+json',
-      children: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
+      innerHTML: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
     },
     {
       type: 'application/ld+json',
-      children: JSON.stringify(generateJsonLd('BreadcrumbList', [
+      innerHTML: JSON.stringify(generateJsonLd('BreadcrumbList', [
         { name: 'Home', url: siteUrl },
         { name: 'JWT Decoder', url: canonicalUrl },
       ])),
