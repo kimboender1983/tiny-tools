@@ -17,9 +17,9 @@
   .tool-card {
     @apply bg-surface rounded-xl border border-surface-border shadow-tool-card
            transition-all duration-200 ease-out
-           hover:shadow-tool-card-hover hover:border-brand-200
+           hover:shadow-tool-card-hover hover:border-transparent
            dark:bg-surface-dark dark:border-surface-dark-border
-           dark:hover:border-brand-800;
+           dark:hover:border-transparent;
   }
 
   .btn-primary {

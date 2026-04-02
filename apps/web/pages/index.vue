@@ -16,31 +16,57 @@ useHead({
 
 <template>
   <div>
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-8 sm:pb-10 text-center">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium mb-4 dark:bg-brand-900/20 dark:text-brand-400">
-        <Sparkles :size="14" />
-        100% client-side — your data never leaves your browser
-      </div>
+    <!-- Hero with animated background -->
+    <div class="relative overflow-hidden">
+      <UiHeroBackground />
 
-      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
-        Free Developer Tools,
-        <br class="hidden sm:block" />
-        <span class="text-brand-500">Instantly Ready</span>
-      </h1>
+      <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-8 sm:pb-10 text-center">
+        <div class="hero-enter hero-enter-1 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium mb-4 dark:bg-brand-900/20 dark:text-brand-400">
+          <Sparkles :size="14" />
+          100% client-side — your data never leaves your browser
+        </div>
 
-      <p class="mt-4 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-        A growing collection of small, fast, free developer tools. No sign-up required. No data uploaded. Just paste and go.
-      </p>
-    </section>
+        <h1 class="hero-enter hero-enter-2 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+          Free Developer Tools,
+          <br class="hidden sm:block" />
+          <span class="bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600 bg-clip-text text-transparent">Instantly Ready</span>
+        </h1>
+
+        <p class="hero-enter hero-enter-3 mt-4 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          A growing collection of small, fast, free developer tools. No sign-up required. No data uploaded. Just paste and go.
+        </p>
+      </section>
+    </div>
 
     <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <UiToolCard
-          v-for="tool in TOOLS"
+          v-for="(tool, index) in TOOLS"
           :key="tool.slug"
           :tool="tool"
+          :index="index"
         />
       </div>
     </section>
   </div>
 </template>
+
+<style scoped>
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-enter {
+  animation: hero-fade-up 0.6s ease-out both;
+}
+.hero-enter-1 { animation-delay: 0s; }
+.hero-enter-2 { animation-delay: 0.1s; }
+.hero-enter-3 { animation-delay: 0.2s; }
+</style>

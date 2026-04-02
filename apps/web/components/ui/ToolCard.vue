@@ -5,21 +5,30 @@ import type { IToolMeta } from '@tiny-tools/shared';
 
 const props = defineProps<{
   tool: IToolMeta;
+  index?: number;
 }>();
 
 const iconComponent = computed(() => {
   const icon = (icons as Record<string, unknown>)[props.tool.icon];
   return icon ?? null;
 });
+
+const entranceDelay = computed(() =>
+  props.index != null ? `${props.index * 60}ms` : '0ms',
+);
 </script>
 
 <template>
   <NuxtLink
     :to="`/tools/${tool.slug}`"
-    class="tool-card group flex flex-col p-5 h-full"
+    class="tool-card group relative flex flex-col p-5 h-full card-enter"
+    :style="{ animationDelay: entranceDelay }"
   >
+    <!-- Gradient border overlay -->
+    <div class="gradient-border" />
+
     <div class="flex items-start gap-3.5 mb-3">
-      <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 shrink-0 transition-colors group-hover:bg-brand-100 dark:group-hover:bg-brand-900/30">
+      <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 shrink-0 transition-all duration-300 group-hover:bg-brand-100 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] dark:group-hover:bg-brand-900/30 dark:group-hover:shadow-[0_0_20px_rgba(96,165,250,0.15)]">
         <component :is="iconComponent" v-if="iconComponent" :size="20" />
       </div>
       <div class="min-w-0">
@@ -42,3 +51,45 @@ const iconComponent = computed(() => {
     </div>
   </NuxtLink>
 </template>
+
+<style scoped>
+/* Gradient border that fades in on hover */
+.gradient-border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, #60A5FA, #2563EB, #1D4ED8);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  pointer-events: none;
+}
+
+.tool-card:hover .gradient-border {
+  opacity: 1;
+}
+
+/* Staggered card entrance */
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-enter {
+  animation: card-enter 0.45s ease-out both;
+}
+</style>
