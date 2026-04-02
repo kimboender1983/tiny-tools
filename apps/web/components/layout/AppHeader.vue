@@ -40,14 +40,19 @@ watch(() => useRoute().path, () => {
       </nav>
 
       <div class="flex items-center gap-2">
-        <button
-          @click="toggleTheme"
-          class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200"
-          :aria-label="colorMode.value === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
-        >
-          <Sun v-if="colorMode.value === 'dark'" :size="18" />
-          <Moon v-else :size="18" />
-        </button>
+        <ClientOnly>
+          <button
+            @click="toggleTheme"
+            class="p-2 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-300 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-100"
+            :aria-label="colorMode.value === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+          >
+            <Sun v-if="colorMode.value === 'dark'" :size="18" />
+            <Moon v-else :size="18" />
+          </button>
+          <template #fallback>
+            <div class="p-2 w-[34px] h-[34px]" />
+          </template>
+        </ClientOnly>
 
         <button
           class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary"
