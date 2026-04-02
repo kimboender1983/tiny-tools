@@ -13,7 +13,8 @@
     "build:web": "yarn workspace @tiny-tools/shared build && yarn workspace web build",
     "build:api": "yarn workspace @tiny-tools/shared build && yarn workspace api build",
     "lint": "yarn workspaces foreach -Ap --include 'web' --include 'api' run lint",
-    "clean": "yarn workspaces foreach -A exec rm -rf node_modules dist .output .nuxt"
+    "clean": "yarn workspaces foreach -A exec rm -rf node_modules dist .output .nuxt",
+    "db:sync": "bash scripts/sync-db-to-railway.sh"
   },
   "engines": {
     "node": ">=20.0.0"

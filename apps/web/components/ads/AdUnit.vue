@@ -3,10 +3,12 @@ defineProps<{
   slot: string;
   format: 'leaderboard' | 'rectangle' | 'mobile-banner';
 }>();
+
+const { isEnabled } = useAds();
 </script>
 
 <template>
-  <ClientOnly>
+  <ClientOnly v-if="isEnabled">
     <div
       :data-ad-slot="slot"
       :data-ad-format="format"

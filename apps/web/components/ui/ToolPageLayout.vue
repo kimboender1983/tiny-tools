@@ -8,6 +8,8 @@ defineProps<{
   /** When true, the tool gets full viewport width (no sidebar, no max-w constraint). Use for code-heavy tools like JSON formatter/diff. */
   fullWidth?: boolean;
 }>();
+
+const { isEnabled: adsEnabled } = useAds();
 </script>
 
 <template>
@@ -54,14 +56,14 @@ defineProps<{
       </div>
     </template>
 
-    <!-- Tool content: standard mode with sidebar -->
+    <!-- Tool content: standard mode with optional sidebar -->
     <template v-else>
       <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex flex-col lg:flex-row gap-6">
           <div class="flex-1 min-w-0">
             <slot />
           </div>
-          <aside class="hidden lg:block w-[300px] shrink-0">
+          <aside v-if="adsEnabled" class="hidden lg:block w-[300px] shrink-0">
             <div class="sticky top-20">
               <AdsAdUnit slot="sidebar" format="rectangle" />
             </div>

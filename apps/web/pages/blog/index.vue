@@ -152,7 +152,7 @@ useHead({
           :to="blogPostUrl(post)"
           class="group flex flex-col rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden transition-shadow hover:shadow-lg"
         >
-          <div class="aspect-video bg-gray-100 dark:bg-gray-700 overflow-hidden">
+          <div class="aspect-video overflow-hidden">
             <img
               v-if="post.coverImage"
               :src="post.coverImage"
@@ -160,8 +160,12 @@ useHead({
               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
             />
-            <div v-else class="w-full h-full flex items-center justify-center">
-              <BookOpen :size="40" class="text-gray-300 dark:text-gray-500" />
+            <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-50 via-blue-50 to-indigo-100 dark:from-brand-900/30 dark:via-blue-900/20 dark:to-indigo-900/30">
+              <div class="w-14 h-14 rounded-2xl bg-white/80 dark:bg-gray-800/60 flex items-center justify-center shadow-sm mb-2">
+                <component :is="getCategoryIcon(post.category)" v-if="getCategoryIcon(post.category)" :size="24" class="text-brand-500 dark:text-brand-400" />
+                <BookOpen v-else :size="24" class="text-brand-500 dark:text-brand-400" />
+              </div>
+              <span class="text-xs font-medium text-brand-600/60 dark:text-brand-400/50">{{ getCategoryName(post.category) || 'Article' }}</span>
             </div>
           </div>
 

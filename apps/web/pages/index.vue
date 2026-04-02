@@ -16,8 +16,8 @@ useHead({
 
 <template>
   <div>
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium mb-6 dark:bg-brand-900/20 dark:text-brand-400">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-8 sm:pb-10 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium mb-4 dark:bg-brand-900/20 dark:text-brand-400">
         <Sparkles :size="14" />
         100% client-side — your data never leaves your browser
       </div>
@@ -28,12 +28,12 @@ useHead({
         <span class="text-brand-500">Instantly Ready</span>
       </h1>
 
-      <p class="mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+      <p class="mt-4 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
         A growing collection of small, fast, free developer tools. No sign-up required. No data uploaded. Just paste and go.
       </p>
     </section>
 
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <UiToolCard
           v-for="tool in TOOLS"

@@ -91,9 +91,105 @@ const affiliatesMap = computed(() => {
   return map;
 });
 
+const staticLegalContent: Record<string, string> = {
+  privacy: `
+## What Data We Collect
+
+TinyTools is designed with privacy at its core. **All tools run entirely in your browser** — no data you paste, upload, or process is ever sent to our servers.
+
+### Analytics
+
+We may use privacy-respecting analytics (such as server-side page-view counts) to understand which tools are most useful. These analytics do not track individual users, set cookies for tracking purposes, or collect personally identifiable information.
+
+### AdSense
+
+If advertisements are displayed on TinyTools, they are served by Google AdSense. Google may use cookies to serve ads based on your prior visits to this or other websites. You can opt out of personalised advertising by visiting [Google's Ads Settings](https://www.google.com/settings/ads).
+
+### Cookies
+
+TinyTools uses only essential cookies required for site functionality (e.g., colour-mode preference, authentication tokens for admin users). We do not use tracking cookies.
+
+### Local Storage & Session Storage
+
+Some tools persist your preferences (e.g., last-used settings) in your browser's local or session storage. This data never leaves your device and can be cleared at any time through your browser settings.
+
+## Third-Party Services
+
+- **Google Fonts** — We load the Inter and JetBrains Mono typefaces from Google Fonts. Google's [privacy policy](https://policies.google.com/privacy) applies to these requests.
+- **Google AdSense** — If enabled, Google AdSense may set cookies. See [Google's privacy policy](https://policies.google.com/privacy).
+
+## Data Retention
+
+Since we do not collect personal data through our tools, there is nothing to retain or delete. Admin account data (email and hashed password) is stored in our database and can be deleted upon request.
+
+## Changes to This Policy
+
+We may update this privacy policy from time to time. Changes will be reflected on this page with an updated revision date.
+
+## Contact
+
+If you have questions about this privacy policy, please open an issue on our [GitHub repository](https://github.com).
+
+*Last updated: April 2026*
+`,
+  terms: `
+## Acceptance of Terms
+
+By accessing and using TinyTools ("the Service"), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the Service.
+
+## Description of Service
+
+TinyTools provides free, browser-based developer tools including but not limited to JSON formatting, text diffing, JWT decoding, image compression, and other utilities. All processing happens client-side in your browser.
+
+## Use of the Service
+
+You agree to use TinyTools only for lawful purposes and in accordance with these terms. You may not:
+
+- Use the Service in any way that violates applicable laws or regulations
+- Attempt to interfere with or disrupt the Service or its infrastructure
+- Attempt to gain unauthorised access to any part of the Service
+- Use automated tools to scrape or overload the Service
+
+## Intellectual Property
+
+The TinyTools name, logo, and original source code are the property of their respective owners. The tools provided are offered for free use but the underlying code and design remain protected.
+
+## Disclaimer of Warranties
+
+TinyTools is provided **"as is"** and **"as available"** without warranties of any kind, either express or implied. We do not guarantee that:
+
+- The Service will be uninterrupted or error-free
+- The results obtained from using the tools will be accurate or reliable
+- Any defects in the Service will be corrected
+
+## Limitation of Liability
+
+To the fullest extent permitted by law, TinyTools and its creators shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service.
+
+## Data and Privacy
+
+Your use of TinyTools is also governed by our [Privacy Policy](/privacy). All tool processing occurs in your browser — we do not collect, store, or transmit any data you process using our tools.
+
+## Changes to Terms
+
+We reserve the right to modify these terms at any time. Continued use of the Service after changes constitutes acceptance of the updated terms.
+
+## Governing Law
+
+These terms shall be governed by and construed in accordance with applicable law, without regard to conflict of law principles.
+
+## Contact
+
+If you have questions about these terms, please open an issue on our [GitHub repository](https://github.com).
+
+*Last updated: April 2026*
+`,
+};
+
 const renderedContent = computed(() => {
-  if (!page.value?.content) return '';
-  const html = renderMarkdown(page.value.content);
+  const content = page.value?.content || staticLegalContent[slug] || '';
+  if (!content) return '';
+  const html = renderMarkdown(content);
   return processAffiliateLinks(html, affiliatesMap.value);
 });
 </script>
