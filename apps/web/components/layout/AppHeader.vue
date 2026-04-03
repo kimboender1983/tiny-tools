@@ -23,7 +23,7 @@ watch(() => useRoute().path, () => {
 <template>
   <header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-lg border-b border-surface-border dark:bg-surface-dark/80 dark:border-surface-dark-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
-      <NuxtLink to="/" class="flex items-center gap-2 font-bold text-lg">
+      <NuxtLink to="/" class="flex items-center font-bold text-lg">
         <span class="text-brand-500">Pick</span><span>box</span>
       </NuxtLink>
 
