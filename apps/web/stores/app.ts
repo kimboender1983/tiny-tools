@@ -1,10 +1,12 @@
-import { defineStore } from 'pinia';
+import { defineStore, skipHydrate } from 'pinia';
 
 const MAX_RECENT_TOOLS = 5;
-const RECENT_TOOLS_KEY = 'tiny-tools:recent-tools';
+const RECENT_TOOLS_KEY = 'pickbox:recent-tools';
 
 export const useAppStore = defineStore('app', () => {
   // ── Theme ────────────────────────────────────────────────────────
+  // useColorMode() is kept outside Pinia's hydration — it manages its
+  // own SSR state via the color-mode module.
   const colorMode = useColorMode();
   const theme = computed({
     get: () => colorMode.preference as 'light' | 'dark' | 'system',
@@ -14,7 +16,7 @@ export const useAppStore = defineStore('app', () => {
   });
 
   // ── Recent Tools ─────────────────────────────────────────────────
-  const recentTools = ref<string[]>(loadRecentTools());
+  const recentTools = ref<string[]>([]);
 
   function loadRecentTools(): string[] {
     if (import.meta.server) return [];
@@ -54,8 +56,13 @@ export const useAppStore = defineStore('app', () => {
     commandPaletteOpen.value = !commandPaletteOpen.value;
   }
 
+  // Hydrate recent tools on client
+  if (!import.meta.server) {
+    recentTools.value = loadRecentTools();
+  }
+
   return {
-    theme,
+    theme: skipHydrate(theme),
     recentTools,
     addRecentTool,
     clearRecentTools,
