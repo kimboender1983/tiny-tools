@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LayoutDashboard, FileText, BookOpen, FolderOpen, Users, Image, Link, LogOut } from 'lucide-vue-next';
+import { LayoutDashboard, FileText, BookOpen, FolderOpen, Users, Image, Link, LogOut, UserCog } from 'lucide-vue-next';
 
 const { logout } = useAuth();
 
@@ -15,6 +15,7 @@ const navItems = [
   { label: 'Authors', to: '/admin/authors', icon: Users },
   { label: 'Affiliates', to: '/admin/affiliates', icon: Link },
   { label: 'Media', to: '/admin/media', icon: Image },
+  { label: 'Users', to: '/admin/users', icon: UserCog },
 ];
 </script>
 

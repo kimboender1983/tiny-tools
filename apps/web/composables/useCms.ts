@@ -110,5 +110,31 @@ export function useCms() {
       api.get<Record<string, unknown>>('/cms/affiliates/analytics/overview', { ...AUTH, params: { days } }),
   };
 
-  return { pages, blogPosts, categories, media, authors, affiliates };
+  interface CmsUser {
+    _id: string;
+    email: string;
+    name?: string;
+    role: string;
+    plan: string;
+    avatar?: string;
+    createdAt: string;
+    updatedAt: string;
+  }
+
+  const users = {
+    list: () =>
+      api.get<CmsUser[]>('/cms/users', AUTH),
+    get: (id: string) =>
+      api.get<CmsUser>(`/cms/users/${id}`, AUTH),
+    create: (data: { email: string; password: string; name?: string; role?: string }) =>
+      api.post<CmsUser>('/cms/users', data, AUTH),
+    update: (id: string, data: { email?: string; name?: string; role?: string; plan?: string; avatar?: string }) =>
+      api.put<CmsUser>(`/cms/users/${id}`, data, AUTH),
+    changePassword: (id: string, password: string) =>
+      api.patch<void>(`/cms/users/${id}/password`, { password }, AUTH),
+    delete: (id: string) =>
+      api.delete<void>(`/cms/users/${id}`, AUTH),
+  };
+
+  return { pages, blogPosts, categories, media, authors, affiliates, users };
 }
