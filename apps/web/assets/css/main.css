@@ -18,6 +18,7 @@
     @apply bg-surface rounded-xl border border-surface-border shadow-tool-card
            transition-all duration-200 ease-out
            hover:shadow-tool-card-hover hover:border-transparent
+           active:scale-[0.98] active:shadow-tool-card
            dark:bg-surface-dark dark:border-surface-dark-border
            dark:hover:border-transparent;
   }
@@ -25,18 +26,21 @@
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2
            bg-brand-500 text-white font-medium rounded-lg
-           transition-colors duration-150
+           transition-all duration-150
            hover:bg-brand-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500
-           disabled:opacity-50 disabled:cursor-not-allowed;
+           active:scale-95 active:bg-brand-700
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
   }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2
            bg-surface border border-surface-border text-gray-700 font-medium rounded-lg
-           transition-colors duration-150
+           transition-all duration-150
            hover:bg-gray-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500
+           active:scale-95 active:bg-gray-200
            dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-300 dark:hover:bg-surface-dark-secondary
-           disabled:opacity-50 disabled:cursor-not-allowed;
+           dark:active:bg-surface-dark-secondary/80
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
   }
 
   .input-field {
