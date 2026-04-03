@@ -63,7 +63,7 @@ function clear() {
 
 <template>
   <div>
-    <label v-if="label" class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+    <label v-if="label" class="block text-xs font-medium text-content-muted mb-1">
       {{ label }}
     </label>
 
@@ -71,7 +71,7 @@ function clear() {
     <div v-if="model" class="flex items-center gap-2">
       <button
         type="button"
-        class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-surface-border dark:border-surface-dark-border bg-white dark:bg-surface-dark-secondary text-sm text-gray-900 dark:text-gray-100 hover:border-brand-300 dark:hover:border-brand-700 transition-colors"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-surface-border bg-white text-sm text-content hover:border-brand-300 transition-colors"
         @click="open = true"
       >
         <component :is="getIcon(model)" v-if="getIcon(model)" :size="16" />
@@ -89,7 +89,7 @@ function clear() {
     <button
       v-else
       type="button"
-      class="px-3 py-1.5 text-xs font-medium rounded-lg border border-dashed border-surface-border dark:border-surface-dark-border text-gray-500 dark:text-gray-400 hover:border-brand-300 hover:text-brand-500 dark:hover:border-brand-700 dark:hover:text-brand-400 transition-colors"
+      class="px-3 py-1.5 text-xs font-medium rounded-lg border border-dashed border-surface-border text-content-muted hover:border-brand-300 hover:text-brand-500 transition-colors"
       @click="open = true"
     >
       Select icon
@@ -108,13 +108,13 @@ function clear() {
           class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
           @click.self="open = false"
         >
-          <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col">
+          <div class="bg-surface border border-surface-border rounded-xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col">
             <!-- Header -->
-            <div class="flex items-center justify-between px-4 py-3 border-b border-surface-border dark:border-surface-dark-border">
-              <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Select Icon</h3>
+            <div class="flex items-center justify-between px-4 py-3 border-b border-surface-border">
+              <h3 class="text-sm font-semibold text-content">Select Icon</h3>
               <button
                 type="button"
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                class="p-1 text-content-muted hover:text-content-secondary transition-colors"
                 @click="open = false"
               >
                 <X :size="18" />
@@ -122,21 +122,21 @@ function clear() {
             </div>
 
             <!-- Search -->
-            <div class="px-4 py-3 border-b border-surface-border dark:border-surface-dark-border">
+            <div class="px-4 py-3 border-b border-surface-border">
               <div class="relative">
                 <Search :size="14" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   v-model="search"
                   type="text"
                   placeholder="Search icons..."
-                  class="w-full pl-9 pr-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="w-full pl-9 pr-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 />
               </div>
             </div>
 
             <!-- Grid -->
             <div class="flex-1 overflow-auto p-4">
-              <div v-if="filteredIcons.length === 0" class="text-center py-8 text-sm text-gray-500 dark:text-gray-400">
+              <div v-if="filteredIcons.length === 0" class="text-center py-8 text-sm text-content-muted">
                 No icons match "{{ search }}"
               </div>
               <div v-else class="grid grid-cols-8 gap-1">
@@ -146,8 +146,8 @@ function clear() {
                   type="button"
                   class="flex flex-col items-center justify-center p-2 rounded-lg transition-colors group"
                   :class="model === name
-                    ? 'bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-surface-dark-secondary'"
+                    ? 'bg-brand-50 text-brand-600'
+                    : 'text-content-tertiary hover:bg-surface-secondary'"
                   :title="name"
                   @click="select(name)"
                 >

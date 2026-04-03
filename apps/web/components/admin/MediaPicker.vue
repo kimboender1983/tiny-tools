@@ -96,7 +96,7 @@ async function uploadFile(e: Event) {
     <button
       v-else
       type="button"
-      class="w-full h-24 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-surface-border text-content-muted hover:border-brand-300 hover:text-brand-500 dark:hover:border-brand-700 dark:hover:text-brand-400 transition-colors"
+      class="w-full h-24 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-surface-border text-content-muted hover:border-brand-300 hover:text-brand-500 transition-colors"
       @click="openPicker"
     >
       <ImageIcon :size="20" />
@@ -122,7 +122,7 @@ async function uploadFile(e: Event) {
               <h3 class="text-sm font-semibold text-content">Select Image</h3>
               <button
                 type="button"
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                class="p-1 text-content-muted hover:text-content-secondary transition-colors"
                 @click="open = false"
               >
                 <X :size="18" />
@@ -145,7 +145,7 @@ async function uploadFile(e: Event) {
                 <Loader2 :size="24" class="animate-spin text-gray-400" />
               </div>
 
-              <div v-else-if="mediaItems.length === 0" class="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+              <div v-else-if="mediaItems.length === 0" class="flex flex-col items-center justify-center py-12 text-content-faint">
                 <ImageIcon :size="32" />
                 <p class="text-sm mt-2">No images yet. Upload one above.</p>
               </div>
@@ -158,7 +158,7 @@ async function uploadFile(e: Event) {
                   class="relative group aspect-square rounded-lg overflow-hidden border-2 transition-colors"
                   :class="modelValue === item.url
                     ? 'border-brand-500'
-                    : 'border-transparent hover:border-brand-300 dark:hover:border-brand-700'"
+                    : 'border-transparent hover:border-brand-300'"
                   @click="selectImage(item.url)"
                 >
                   <img
