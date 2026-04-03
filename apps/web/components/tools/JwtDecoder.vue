@@ -165,7 +165,7 @@ function syncScroll() {
     <!-- Token Input -->
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between">
-        <label for="jwt-input" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label for="jwt-input" class="text-sm font-medium text-content-secondary">
           JWT Token
         </label>
         <div class="flex items-center gap-2">
@@ -181,7 +181,7 @@ function syncScroll() {
           </span>
           <button
             type="button"
-            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200 transition-colors"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg text-content-tertiary hover:bg-surface-secondary hover:text-content transition-colors"
             @click="clear"
           >
             <Eraser :size="15" />
@@ -190,7 +190,7 @@ function syncScroll() {
         </div>
       </div>
 
-      <div class="relative rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 transition-colors">
+      <div class="relative rounded-xl border border-surface-border overflow-hidden bg-surface focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 transition-colors">
         <!-- Colored overlay -->
         <pre
           v-if="tokenParts"
@@ -203,8 +203,8 @@ function syncScroll() {
           id="jwt-input"
           ref="textareaRef"
           v-model="token"
-          class="relative w-full min-h-[120px] py-3 px-4 font-mono text-sm leading-relaxed bg-transparent resize-y focus:outline-none placeholder-gray-500 dark:placeholder-gray-600"
-          :class="tokenParts ? 'text-transparent caret-gray-900 dark:caret-gray-100' : 'text-gray-900 dark:text-gray-100'"
+          class="relative w-full min-h-[120px] py-3 px-4 font-mono text-sm leading-relaxed bg-transparent resize-y focus:outline-none placeholder-placeholder"
+          :class="tokenParts ? 'text-transparent caret-caret' : 'text-content'"
           placeholder="Paste your JWT token here (e.g. eyJhbGciOiJIUzI1NiIs...)"
           spellcheck="false"
           autocomplete="off"
@@ -216,7 +216,7 @@ function syncScroll() {
 
       <!-- Legend + Copy -->
       <div class="flex items-center justify-between">
-        <div v-if="tokenParts" class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+        <div v-if="tokenParts" class="flex items-center gap-4 text-xs text-content-muted">
           <span class="flex items-center gap-1">
             <span class="w-2.5 h-2.5 rounded-full bg-red-500" />
             Header
@@ -238,20 +238,20 @@ function syncScroll() {
 
     <!-- Example tokens -->
     <div v-if="!decoded && !error" class="flex flex-col gap-3">
-      <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Try an example:</p>
+      <p class="text-sm font-medium text-content-tertiary">Try an example:</p>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <button
           v-for="ex in examples"
           :key="ex.label"
           type="button"
-          class="flex flex-col items-start gap-1 p-4 rounded-xl border border-surface-border bg-surface hover:border-brand-300 hover:bg-brand-50/50 dark:bg-surface-dark dark:border-surface-dark-border dark:hover:border-brand-700 dark:hover:bg-brand-900/10 transition-colors text-left group"
+          class="flex flex-col items-start gap-1 p-4 rounded-xl border border-surface-border bg-surface hover:border-brand-300 hover:bg-brand-50 transition-colors text-left group"
           @click="loadExample(ex)"
         >
           <div class="flex items-center gap-2">
             <Zap :size="14" class="text-brand-500" />
-            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400">{{ ex.label }}</span>
+            <span class="text-sm font-semibold text-content group-hover:text-brand-accent">{{ ex.label }}</span>
           </div>
-          <span class="text-xs text-gray-500 dark:text-gray-400">{{ ex.description }}</span>
+          <span class="text-xs text-content-muted">{{ ex.description }}</span>
         </button>
       </div>
     </div>
@@ -310,11 +310,11 @@ function syncScroll() {
     <!-- Decoded panels -->
     <div v-if="decoded" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <!-- Header Panel -->
-      <div class="flex flex-col rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark">
-        <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border dark:border-surface-dark-border border-t-2 border-t-red-500">
+      <div class="flex flex-col rounded-xl border border-surface-border overflow-hidden bg-surface">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border border-t-2 border-t-red-500">
           <div class="flex items-center gap-2">
             <FileCode :size="15" class="text-red-500" />
-            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Header</span>
+            <span class="text-sm font-semibold text-content">Header</span>
           </div>
           <UiCopyButton :text="JSON.stringify(decoded.header, null, 2)" />
         </div>
@@ -322,20 +322,20 @@ function syncScroll() {
           <!-- Algorithm badge + info -->
           <div v-if="decoded.header.alg" class="mb-3">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Algorithm</span>
+              <span class="text-xs font-medium text-content-muted">Algorithm</span>
               <span
                 class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono font-semibold"
                 :class="decoded.header.alg === 'none'
                   ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                  : 'bg-gray-100 text-gray-700 dark:bg-surface-dark-secondary dark:text-gray-300'"
+                  : 'bg-surface-secondary text-content-secondary'"
               >
                 <ShieldCheck v-if="decoded.header.alg !== 'none'" :size="12" />
                 <ShieldAlert v-else :size="12" />
                 {{ decoded.header.alg }}
               </span>
               <template v-if="algoInfo">
-                <span class="text-xs text-gray-500 dark:text-gray-400">{{ algoInfo.name }}</span>
-                <span class="text-xs px-1.5 py-0.5 rounded bg-gray-100 dark:bg-surface-dark-secondary text-gray-600 dark:text-gray-400">{{ algoInfo.type }}</span>
+                <span class="text-xs text-content-muted">{{ algoInfo.name }}</span>
+                <span class="text-xs px-1.5 py-0.5 rounded bg-surface-secondary text-content-tertiary">{{ algoInfo.type }}</span>
                 <a
                   :href="algoInfo.wiki"
                   target="_blank"
@@ -349,17 +349,17 @@ function syncScroll() {
             </div>
           </div>
 
-          <pre class="text-sm font-mono leading-relaxed whitespace-pre-wrap break-words text-gray-900 dark:text-gray-100" v-html="highlightedHeader" />
+          <pre class="text-sm font-mono leading-relaxed whitespace-pre-wrap break-words text-content" v-html="highlightedHeader" />
         </div>
       </div>
 
       <!-- Payload Panel -->
-      <div class="flex flex-col rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark">
-        <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border dark:border-surface-dark-border border-t-2 border-t-purple-500">
+      <div class="flex flex-col rounded-xl border border-surface-border overflow-hidden bg-surface">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border border-t-2 border-t-purple-500">
           <div class="flex items-center gap-2">
             <Key :size="15" class="text-purple-500" />
-            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Payload</span>
-            <span class="text-xs text-gray-500 dark:text-gray-500">{{ Object.keys(decoded.payload).length }} claims</span>
+            <span class="text-sm font-semibold text-content">Payload</span>
+            <span class="text-xs text-content-muted">{{ Object.keys(decoded.payload).length }} claims</span>
           </div>
           <UiCopyButton :text="JSON.stringify(decoded.payload, null, 2)" />
         </div>
@@ -372,7 +372,7 @@ function syncScroll() {
                   <button
                     v-if="claim.description"
                     type="button"
-                    class="relative text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    class="relative text-gray-500 hover:text-content-secondary transition-colors"
                     @click="toggleTooltip(claim.key)"
                     @mouseenter="activeTooltip = claim.key"
                     @mouseleave="activeTooltip = null"
@@ -388,7 +388,7 @@ function syncScroll() {
                     >
                       <span
                         v-if="activeTooltip === claim.key"
-                        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1.5 text-xs font-normal text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-lg shadow-lg whitespace-nowrap z-10 pointer-events-none"
+                        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2.5 py-1.5 text-xs font-normal bg-tooltip text-tooltip-text rounded-lg shadow-lg whitespace-nowrap z-10 pointer-events-none"
                       >
                         {{ claim.description }}
                       </span>
@@ -396,9 +396,9 @@ function syncScroll() {
                   </button>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <code class="text-sm font-mono text-gray-700 dark:text-gray-300 break-all">{{ formatValue(claim.value) }}</code>
+                  <code class="text-sm font-mono text-content-secondary break-all">{{ formatValue(claim.value) }}</code>
                   <div v-if="claim.isTimestamp && claim.timestampInfo" class="mt-1 flex flex-wrap items-center gap-2">
-                    <span class="inline-flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                    <span class="inline-flex items-center gap-1 text-xs text-content-muted">
                       <Clock :size="11" />
                       {{ claim.timestampInfo.humanReadable }}
                     </span>
@@ -411,37 +411,37 @@ function syncScroll() {
                     >
                       {{ expiryStatus.label }}
                     </span>
-                    <span v-else class="text-xs text-gray-500 dark:text-gray-500">({{ claim.timestampInfo.relative }})</span>
+                    <span v-else class="text-xs text-content-muted">({{ claim.timestampInfo.relative }})</span>
                   </div>
                 </div>
               </div>
-              <div class="mt-2.5 border-b border-surface-border/50 dark:border-surface-dark-border/50 last:border-0" />
+              <div class="mt-2.5 border-b border-surface-border/50 last:border-0" />
             </div>
           </div>
         </div>
       </div>
 
       <!-- Signature Panel -->
-      <div class="flex flex-col rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark">
-        <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border dark:border-surface-dark-border border-t-2 border-t-blue-500">
+      <div class="flex flex-col rounded-xl border border-surface-border overflow-hidden bg-surface">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border border-t-2 border-t-blue-500">
           <div class="flex items-center gap-2">
             <Lock :size="15" class="text-blue-500" />
-            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Signature</span>
+            <span class="text-sm font-semibold text-content">Signature</span>
           </div>
           <UiCopyButton :text="decoded.signature" />
         </div>
         <div class="p-4 space-y-3">
           <div class="flex items-center gap-2">
-            <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Signed with</span>
+            <span class="text-xs font-medium text-content-muted">Signed with</span>
             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-mono font-semibold bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
               {{ decoded.header.alg || 'Unknown' }}
             </span>
           </div>
           <div>
-            <span class="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1.5">Raw (base64url)</span>
-            <code class="block text-sm font-mono text-gray-700 dark:text-gray-300 break-all bg-surface-secondary dark:bg-surface-dark-secondary p-3 rounded-lg leading-relaxed">{{ decoded.signature }}</code>
+            <span class="text-xs font-medium text-content-muted block mb-1.5">Raw (base64url)</span>
+            <code class="block text-sm font-mono text-content-secondary break-all bg-surface-secondary p-3 rounded-lg leading-relaxed">{{ decoded.signature }}</code>
           </div>
-          <p class="text-xs text-gray-500 dark:text-gray-500 leading-relaxed">
+          <p class="text-xs text-content-muted leading-relaxed">
             Signature verification requires the secret key or public key and is not performed client-side.
           </p>
         </div>
@@ -453,10 +453,10 @@ function syncScroll() {
       v-if="!decoded && !error && token.trim()"
       class="flex flex-col items-center justify-center py-16 text-center"
     >
-      <div class="w-12 h-12 rounded-xl bg-gray-100 dark:bg-surface-dark-secondary flex items-center justify-center mb-4">
+      <div class="w-12 h-12 rounded-xl bg-surface-secondary flex items-center justify-center mb-4">
         <Key :size="24" class="text-gray-500" />
       </div>
-      <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Decoding...</p>
+      <p class="text-sm font-medium text-content-tertiary">Decoding...</p>
     </div>
   </div>
 </template>

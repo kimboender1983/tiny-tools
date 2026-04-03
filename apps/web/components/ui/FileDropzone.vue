@@ -97,8 +97,8 @@ const acceptLabel = computed(() => {
       class="relative flex flex-col items-center justify-center gap-3 px-6 py-10 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
       :class="[
         isDragging
-          ? 'border-brand-500 bg-brand-50/50 dark:bg-brand-900/10 scale-[1.01]'
-          : 'border-surface-border hover:border-brand-300 dark:border-surface-dark-border dark:hover:border-brand-700 bg-surface-secondary dark:bg-surface-dark-secondary',
+          ? 'border-brand-500 bg-brand-50 scale-[1.01]'
+          : 'border-surface-border hover:border-brand-300 bg-surface-secondary',
       ]"
       @click="onClick"
       @keydown.enter="onClick"
@@ -110,24 +110,24 @@ const acceptLabel = computed(() => {
     >
       <div
         class="flex items-center justify-center w-12 h-12 rounded-full transition-colors duration-200"
-        :class="isDragging ? 'bg-brand-100 dark:bg-brand-900/30' : 'bg-gray-100 dark:bg-surface-dark'"
+        :class="isDragging ? 'bg-brand-100' : 'bg-surface-secondary'"
       >
         <Upload
           :size="24"
           class="transition-colors duration-200"
-          :class="isDragging ? 'text-brand-500' : 'text-gray-500 dark:text-gray-500'"
+          :class="isDragging ? 'text-brand-500' : 'text-content-muted'"
         />
       </div>
 
       <div class="text-center">
-        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">
-          <span v-if="isDragging" class="text-brand-600 dark:text-brand-400">Drop files here</span>
+        <p class="text-sm font-medium text-content-secondary">
+          <span v-if="isDragging" class="text-brand-accent">Drop files here</span>
           <template v-else>
-            <span class="text-brand-600 dark:text-brand-400">Click to browse</span>
+            <span class="text-brand-accent">Click to browse</span>
             or drag and drop
           </template>
         </p>
-        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        <p class="mt-1 text-xs text-content-muted">
           {{ acceptLabel }}
           <template v-if="maxSize"> &middot; Max {{ formatSize(maxSize) }}</template>
           <template v-if="multiple"> &middot; Multiple files</template>

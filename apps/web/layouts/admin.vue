@@ -20,9 +20,9 @@ const navItems = [
 </script>
 
 <template>
-  <div class="min-h-screen flex bg-page-light dark:bg-page-dark">
-    <aside class="w-64 bg-surface border-r border-surface-border dark:bg-surface-dark dark:border-surface-dark-border flex flex-col">
-      <div class="p-4 border-b border-surface-border dark:border-surface-dark-border">
+  <div class="min-h-screen flex bg-page">
+    <aside class="w-64 bg-surface border-r border-surface-border flex flex-col">
+      <div class="p-4 border-b border-surface-border">
         <NuxtLink to="/admin" class="text-lg font-bold text-brand-500">
           Pickbox Admin
         </NuxtLink>
@@ -32,16 +32,16 @@ const navItems = [
           v-for="item in navItems"
           :key="item.to"
           :to="item.to"
-          class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200"
-          active-class="!bg-brand-50 !text-brand-600 dark:!bg-brand-900/20 dark:!text-brand-400"
+          class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-content-tertiary hover:bg-surface-secondary hover:text-content transition-colors"
+          active-class="!bg-brand-50 !text-brand-600"
         >
           <component :is="item.icon" :size="18" />
           {{ item.label }}
         </NuxtLink>
       </nav>
-      <div class="p-3 border-t border-surface-border dark:border-surface-dark-border">
+      <div class="p-3 border-t border-surface-border">
         <button
-          class="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors dark:text-gray-400 dark:hover:bg-red-900/10 dark:hover:text-red-400"
+          class="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-content-tertiary hover:bg-red-50 hover:text-red-600 transition-colors"
           @click="logout"
         >
           <LogOut :size="18" />
@@ -50,8 +50,8 @@ const navItems = [
       </div>
     </aside>
     <div class="flex-1 flex flex-col">
-      <header class="h-14 border-b border-surface-border bg-surface dark:bg-surface-dark dark:border-surface-dark-border flex items-center px-6">
-        <h1 class="text-sm font-medium text-gray-500 dark:text-gray-400">Admin Panel</h1>
+      <header class="h-14 border-b border-surface-border bg-surface flex items-center px-6">
+        <h1 class="text-sm font-medium text-content-muted">Admin Panel</h1>
       </header>
       <main class="flex-1 p-6">
         <slot />

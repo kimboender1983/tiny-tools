@@ -195,11 +195,11 @@ const renderedContent = computed(() => {
 </script>
 
 <template>
-  <div v-if="notFound" class="min-h-screen flex items-center justify-center bg-page-light dark:bg-page-dark px-4">
+  <div v-if="notFound" class="min-h-screen flex items-center justify-center bg-page px-4">
     <div class="text-center">
       <p class="text-6xl font-bold text-brand-500 mb-4">404</p>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-2">Page not found</h1>
-      <p class="text-gray-500 dark:text-gray-400 mb-8">The page you're looking for doesn't exist.</p>
+      <h1 class="text-2xl font-bold text-content mb-2">Page not found</h1>
+      <p class="text-content-muted mb-8">The page you're looking for doesn't exist.</p>
       <NuxtLink
         to="/"
         class="px-6 py-2.5 rounded-lg bg-brand-500 text-white text-sm font-medium hover:bg-brand-600 transition-colors"
@@ -211,7 +211,7 @@ const renderedContent = computed(() => {
 
   <div v-else class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
     <h1
-      class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50 mb-8"
+      class="text-3xl sm:text-4xl font-bold tracking-tight text-content mb-8"
     >
       {{ page!.title }}
     </h1>

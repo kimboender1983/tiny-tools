@@ -64,7 +64,7 @@ async function save() {
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">New Affiliate</h1>
+      <h1 class="text-2xl font-bold text-content">New Affiliate</h1>
       <button
         :disabled="saving || !form.name || !form.url"
         class="px-4 py-1.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
@@ -80,52 +80,52 @@ async function save() {
 
     <div class="grid grid-cols-1 lg:grid-cols-10 gap-6">
       <div class="lg:col-span-7 space-y-4">
-        <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5 space-y-4">
+        <div class="bg-surface border border-surface-border rounded-xl p-5 space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company Name</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Company Name</label>
             <input
               v-model="form.name"
               type="text"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="e.g. Vercel"
               @input="onNameInput"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Affiliate URL</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Affiliate URL</label>
             <input
               v-model="form.url"
               type="url"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="https://vercel.com/?ref=pickbox"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Description</label>
             <textarea
               v-model="form.description"
               rows="2"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y"
               placeholder="Short description of the company..."
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Program Info (Markdown)</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Program Info (Markdown)</label>
             <AdminMarkdownEditor v-model="form.programInfo" placeholder="Commission rates, cookie duration, payment terms..." />
           </div>
         </div>
       </div>
 
       <div class="lg:col-span-3 space-y-4">
-        <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5 space-y-4">
+        <div class="bg-surface border border-surface-border rounded-xl p-5 space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Status</label>
             <select
               v-model="form.status"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -133,15 +133,15 @@ async function save() {
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Slug</label>
             <input
               v-model="form.slug"
               type="text"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               @input="onSlugInput"
             />
-            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Use in posts: <code class="px-1 py-0.5 bg-gray-100 dark:bg-gray-800 rounded font-mono" v-text="`{{aff:${form.slug || '...'}}}`" />
+            <p class="mt-1 text-xs text-content-muted">
+              Use in posts: <code class="px-1 py-0.5 bg-surface-secondary rounded font-mono" v-text="`{{aff:${form.slug || '...'}}}`" />
             </p>
           </div>
 

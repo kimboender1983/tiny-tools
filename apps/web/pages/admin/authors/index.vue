@@ -112,7 +112,7 @@ onMounted(loadAuthors);
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">Authors</h1>
+      <h1 class="text-2xl font-bold text-content">Authors</h1>
       <button
         v-if="!showAddForm"
         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors"
@@ -127,26 +127,26 @@ onMounted(loadAuthors);
       {{ error }}
     </div>
 
-    <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl overflow-hidden">
+    <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
       <!-- Add new form -->
-      <div v-if="showAddForm" class="px-4 py-3 bg-gray-50 dark:bg-surface-dark-secondary border-b border-surface-border dark:border-surface-dark-border">
+      <div v-if="showAddForm" class="px-4 py-3 bg-surface-secondary border-b border-surface-border">
         <form class="flex items-end gap-3" @submit.prevent="createAuthor">
           <div class="flex-1">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Name</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Name</label>
             <input
               v-model="newForm.name"
               type="text"
               required
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="Author name"
             />
           </div>
           <div class="flex-1">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Bio</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Bio</label>
             <input
               v-model="newForm.bio"
               type="text"
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="Short bio"
             />
           </div>
@@ -162,7 +162,7 @@ onMounted(loadAuthors);
             </button>
             <button
               type="button"
-              class="p-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors dark:border-surface-dark-border dark:text-gray-400"
+              class="p-1.5 rounded-lg border border-divider text-content-tertiary hover:bg-surface-secondary transition-colors"
               @click="showAddForm = false"
             >
               <X :size="16" />
@@ -172,18 +172,18 @@ onMounted(loadAuthors);
       </div>
 
       <!-- Table -->
-      <div v-if="loading" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">Loading...</div>
-      <div v-else-if="authors.length === 0 && !showAddForm" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">No authors yet.</div>
+      <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
+      <div v-else-if="authors.length === 0 && !showAddForm" class="p-8 text-center text-sm text-content-muted">No authors yet.</div>
       <table v-else-if="authors.length > 0" class="w-full text-sm">
         <thead>
-          <tr class="border-b border-surface-border dark:border-surface-dark-border text-left">
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-12">Avatar</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Name</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Bio</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-24">Actions</th>
+          <tr class="border-b border-surface-border text-left">
+            <th class="px-4 py-3 font-medium text-content-muted w-12">Avatar</th>
+            <th class="px-4 py-3 font-medium text-content-muted">Name</th>
+            <th class="px-4 py-3 font-medium text-content-muted">Bio</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-24">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-surface-border dark:divide-surface-dark-border">
+        <tbody class="divide-y divide-surface-border">
           <tr v-for="author in authors" :key="author._id">
             <!-- Display mode -->
             <template v-if="editingId !== author._id">
@@ -194,12 +194,12 @@ onMounted(loadAuthors);
                   :alt="author.name"
                   class="w-8 h-8 rounded-full object-cover"
                 />
-                <div v-else class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400">
+                <div v-else class="w-8 h-8 rounded-full bg-[var(--color-switch-off)] flex items-center justify-center text-xs text-content-muted">
                   {{ author.name.charAt(0).toUpperCase() }}
                 </div>
               </td>
-              <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ author.name }}</td>
-              <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ truncate(author.bio, 80) }}</td>
+              <td class="px-4 py-3 font-medium text-content">{{ author.name }}</td>
+              <td class="px-4 py-3 text-content-muted">{{ truncate(author.bio, 80) }}</td>
               <td class="px-4 py-3">
                 <div v-if="deleteConfirmId !== author._id" class="flex items-center gap-1">
                   <button
@@ -225,7 +225,7 @@ onMounted(loadAuthors);
                     Delete
                   </button>
                   <button
-                    class="px-2 py-0.5 text-xs rounded border border-gray-300 text-gray-600 hover:bg-gray-100 dark:border-surface-dark-border dark:text-gray-400"
+                    class="px-2 py-0.5 text-xs rounded border border-divider text-content-tertiary hover:bg-surface-secondary"
                     @click="deleteConfirmId = null"
                   >
                     Cancel
@@ -243,14 +243,14 @@ onMounted(loadAuthors);
                 <input
                   v-model="editForm.name"
                   type="text"
-                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 />
               </td>
               <td class="px-4 py-2">
                 <input
                   v-model="editForm.bio"
                   type="text"
-                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 />
               </td>
               <td class="px-4 py-2">

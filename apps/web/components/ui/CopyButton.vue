@@ -43,7 +43,7 @@ onUnmounted(() => {
 <template>
   <button
     type="button"
-    class="relative inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-150 text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
+    class="relative inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-150 text-content-tertiary hover:bg-surface-secondary hover:text-content focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
     :aria-label="copied ? 'Copied!' : (label ?? 'Copy to clipboard')"
     @click="copy"
   >
@@ -72,7 +72,7 @@ onUnmounted(() => {
     >
       <span
         v-if="copied"
-        class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-gray-100 dark:text-gray-900 rounded-md shadow-lg whitespace-nowrap pointer-events-none"
+        class="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 text-xs font-medium text-tooltip-text bg-tooltip rounded-md shadow-lg whitespace-nowrap pointer-events-none"
       >
         Copied!
       </span>

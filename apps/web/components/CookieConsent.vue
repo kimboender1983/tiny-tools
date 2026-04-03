@@ -64,7 +64,7 @@ function onKeydown(e: KeyboardEvent) {
       >
         <div class="mx-auto max-w-2xl">
           <div
-            class="relative overflow-hidden rounded-2xl border border-surface-border/60 bg-white/95 shadow-2xl shadow-black/10 backdrop-blur-xl dark:border-surface-dark-border/60 dark:bg-surface-dark/95 dark:shadow-black/40"
+            class="relative overflow-hidden rounded-2xl border border-surface-border/60 bg-surface/95 shadow-2xl shadow-black/10 backdrop-blur-xl"
           >
             <!-- Subtle gradient accent along top edge -->
             <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-500/50 to-transparent" />
@@ -72,14 +72,14 @@ function onKeydown(e: KeyboardEvent) {
             <!-- Compact banner view -->
             <div v-if="showBanner && !showSettings" class="p-5 sm:p-6">
               <div class="flex items-start gap-4">
-                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-900/20">
+                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50">
                   <Cookie :size="20" class="text-brand-500" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                  <h2 class="text-sm font-semibold text-content">
                     We value your privacy
                   </h2>
-                  <p class="mt-1 text-sm leading-relaxed text-gray-500 dark:text-gray-400">
+                  <p class="mt-1 text-sm leading-relaxed text-content-muted">
                     We use cookies to improve your experience and analyse site traffic. Choose your preference below.
                   </p>
                 </div>
@@ -87,7 +87,7 @@ function onKeydown(e: KeyboardEvent) {
 
               <div class="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <button
-                  class="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                  class="inline-flex items-center gap-1.5 text-sm font-medium text-content-muted transition-colors hover:text-content"
                   @click="openSettings"
                 >
                   <ChevronDown :size="14" />
@@ -114,13 +114,13 @@ function onKeydown(e: KeyboardEvent) {
             <div v-if="showSettings" class="p-5 sm:p-6">
               <div class="flex items-center justify-between mb-5">
                 <div class="flex items-center gap-3">
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 dark:bg-brand-900/20">
+                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50">
                     <Cookie :size="20" class="text-brand-500" />
                   </div>
-                  <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Cookie preferences</h2>
+                  <h2 class="text-sm font-semibold text-content">Cookie preferences</h2>
                 </div>
                 <button
-                  class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+                  class="flex h-8 w-8 items-center justify-center rounded-lg text-content-faint transition-colors hover:bg-surface-secondary hover:text-content-secondary"
                   @click="showSettings = false"
                   aria-label="Close"
                 >
@@ -130,13 +130,13 @@ function onKeydown(e: KeyboardEvent) {
 
               <div class="space-y-3">
                 <!-- Essential -->
-                <div class="flex items-center gap-4 rounded-xl border border-surface-border/50 bg-gray-50/50 p-4 dark:border-surface-dark-border/50 dark:bg-white/[0.02]">
+                <div class="flex items-center gap-4 rounded-xl border border-surface-border/50 bg-gray-50/50 p-4 dark:bg-white/[0.02]">
                   <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400">
                     <Shield :size="18" />
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Essential</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Required for the site to function. Always active.</p>
+                    <p class="text-sm font-medium text-content">Essential</p>
+                    <p class="text-xs text-content-muted">Required for the site to function. Always active.</p>
                   </div>
                   <div class="flex h-6 w-11 shrink-0 items-center rounded-full bg-emerald-500 px-0.5 cursor-not-allowed" aria-label="Always enabled">
                     <div class="h-5 w-5 translate-x-5 rounded-full bg-white shadow-sm" />
@@ -144,13 +144,13 @@ function onKeydown(e: KeyboardEvent) {
                 </div>
 
                 <!-- Analytics -->
-                <label class="group flex items-center gap-4 rounded-xl border border-surface-border/50 p-4 transition-colors hover:bg-gray-50/80 dark:border-surface-dark-border/50 dark:hover:bg-white/[0.02] cursor-pointer">
+                <label class="group flex items-center gap-4 rounded-xl border border-surface-border/50 p-4 transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02] cursor-pointer">
                   <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
                     <BarChart3 :size="18" />
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Analytics</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Help us understand how visitors use the site.</p>
+                    <p class="text-sm font-medium text-content">Analytics</p>
+                    <p class="text-xs text-content-muted">Help us understand how visitors use the site.</p>
                   </div>
                   <button
                     type="button"
@@ -168,13 +168,13 @@ function onKeydown(e: KeyboardEvent) {
                 </label>
 
                 <!-- Advertising -->
-                <label class="group flex items-center gap-4 rounded-xl border border-surface-border/50 p-4 transition-colors hover:bg-gray-50/80 dark:border-surface-dark-border/50 dark:hover:bg-white/[0.02] cursor-pointer">
+                <label class="group flex items-center gap-4 rounded-xl border border-surface-border/50 p-4 transition-colors hover:bg-gray-50/80 dark:hover:bg-white/[0.02] cursor-pointer">
                   <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400">
                     <Megaphone :size="18" />
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Advertising</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Show personalised ads powered by Google AdSense.</p>
+                    <p class="text-sm font-medium text-content">Advertising</p>
+                    <p class="text-xs text-content-muted">Show personalised ads powered by Google AdSense.</p>
                   </div>
                   <button
                     type="button"

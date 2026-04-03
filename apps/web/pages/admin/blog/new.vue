@@ -146,15 +146,15 @@ onMounted(loadFormData);
   <div>
     <div class="flex items-center justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">New Blog Post</h1>
-        <p v-if="form.content" class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <h1 class="text-2xl font-bold text-content">New Blog Post</h1>
+        <p v-if="form.content" class="text-sm text-content-muted mt-1">
           ~{{ readingTime }} min read
         </p>
       </div>
       <div class="flex gap-2">
         <button
           :disabled="saving || !form.title"
-          class="px-4 py-1.5 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:border-surface-dark-border dark:text-gray-300 dark:hover:bg-surface-dark-secondary"
+          class="px-4 py-1.5 text-sm font-medium rounded-lg border border-divider text-content-secondary hover:bg-surface-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           @click="save(false)"
         >
           Save Draft
@@ -176,46 +176,46 @@ onMounted(loadFormData);
     <div class="grid grid-cols-1 lg:grid-cols-10 gap-6">
       <!-- Left column (70%) -->
       <div class="lg:col-span-7 space-y-4">
-        <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5 space-y-4">
+        <div class="bg-surface border border-surface-border rounded-xl p-5 space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Title</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Title</label>
             <input
               v-model="form.title"
               type="text"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="Post title"
               @input="onTitleInput"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Content (Markdown)</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Content (Markdown)</label>
             <AdminMarkdownEditor v-model="form.content" placeholder="Write your post in Markdown..." />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Excerpt</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Excerpt</label>
             <textarea
               v-model="form.excerpt"
               rows="3"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y"
               placeholder="Short summary for listings..."
             />
           </div>
         </div>
 
         <!-- SEO Section -->
-        <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl overflow-hidden">
+        <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
           <button
-            class="w-full flex items-center justify-between px-5 py-4 text-sm font-semibold text-gray-900 dark:text-gray-50 hover:bg-gray-100 dark:hover:bg-surface-dark-secondary transition-colors"
+            class="w-full flex items-center justify-between px-5 py-4 text-sm font-semibold text-content hover:bg-surface-secondary transition-colors"
             @click="seoOpen = !seoOpen"
           >
             SEO Settings
             <component :is="seoOpen ? ChevronUp : ChevronDown" :size="16" />
           </button>
-          <div v-if="seoOpen" class="px-5 pb-5 space-y-4 border-t border-surface-border dark:border-surface-dark-border pt-4">
+          <div v-if="seoOpen" class="px-5 pb-5 space-y-4 border-t border-surface-border pt-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label class="block text-sm font-medium text-content-secondary mb-1">
                 Meta Title
                 <span class="text-xs font-normal" :class="form.seo.metaTitle.length > 60 ? 'text-red-500' : 'text-gray-500'">
                   {{ form.seo.metaTitle.length }}/60
@@ -224,11 +224,11 @@ onMounted(loadFormData);
               <input
                 v-model="form.seo.metaTitle"
                 type="text"
-                class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              <label class="block text-sm font-medium text-content-secondary mb-1">
                 Meta Description
                 <span class="text-xs font-normal" :class="form.seo.metaDescription.length > 160 ? 'text-red-500' : 'text-gray-500'">
                   {{ form.seo.metaDescription.length }}/160
@@ -237,23 +237,23 @@ onMounted(loadFormData);
               <textarea
                 v-model="form.seo.metaDescription"
                 rows="2"
-                class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y"
               />
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Focus Keyword</label>
+                <label class="block text-sm font-medium text-content-secondary mb-1">Focus Keyword</label>
                 <input
                   v-model="form.seo.focusKeyword"
                   type="text"
-                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 />
               </div>
               <div>
                 <AdminMediaPicker v-model="form.seo.ogImage" label="OG Image" />
               </div>
             </div>
-            <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+            <label class="flex items-center gap-2 text-sm text-content-secondary">
               <input v-model="form.seo.noIndex" type="checkbox" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" />
               noIndex (hide from search engines)
             </label>
@@ -261,9 +261,9 @@ onMounted(loadFormData);
         </div>
 
         <!-- FAQ Section -->
-        <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5">
+        <div class="bg-surface border border-surface-border rounded-xl p-5">
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-50">FAQ</h3>
+            <h3 class="text-sm font-semibold text-content">FAQ</h3>
             <button
               class="inline-flex items-center gap-1 text-sm text-brand-500 hover:text-brand-600"
               @click="addFaq"
@@ -272,19 +272,19 @@ onMounted(loadFormData);
               Add Question
             </button>
           </div>
-          <div v-if="form.faq.length === 0" class="text-sm text-gray-500 dark:text-gray-400">No FAQ items yet.</div>
+          <div v-if="form.faq.length === 0" class="text-sm text-content-muted">No FAQ items yet.</div>
           <div v-else class="space-y-3">
             <div
               v-for="(item, index) in form.faq"
               :key="index"
-              class="p-3 border border-gray-200 dark:border-surface-dark-border rounded-lg space-y-2"
+              class="p-3 border border-divider rounded-lg space-y-2"
             >
               <div class="flex items-start justify-between gap-2">
                 <input
                   v-model="item.question"
                   type="text"
                   placeholder="Question"
-                  class="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="flex-1 px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 />
                 <button class="p-1 text-gray-500 hover:text-red-500" @click="removeFaq(index)">
                   <Trash2 :size="14" />
@@ -294,7 +294,7 @@ onMounted(loadFormData);
                 v-model="item.answer"
                 rows="2"
                 placeholder="Answer"
-                class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y"
               />
             </div>
           </div>
@@ -303,12 +303,12 @@ onMounted(loadFormData);
 
       <!-- Right column (30%) -->
       <div class="lg:col-span-3 space-y-4">
-        <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5 space-y-4">
+        <div class="bg-surface border border-surface-border rounded-xl p-5 space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Status</label>
             <select
               v-model="form.status"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
@@ -317,10 +317,10 @@ onMounted(loadFormData);
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Category</label>
             <select
               v-model="form.category"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             >
               <option value="">None</option>
               <option v-for="cat in categories" :key="cat._id" :value="cat._id">{{ cat.name }}</option>
@@ -328,21 +328,21 @@ onMounted(loadFormData);
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Slug</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Slug</label>
             <input
               v-model="form.slug"
               type="text"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               @input="onSlugInput"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (comma separated)</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Tags (comma separated)</label>
             <input
               v-model="form.tags"
               type="text"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="javascript, tutorial, tips"
             />
           </div>
@@ -352,23 +352,23 @@ onMounted(loadFormData);
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Published Date</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Published Date</label>
             <input
               v-model="form.publishedAt"
               type="datetime-local"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             />
           </div>
         </div>
 
         <!-- Author -->
-        <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5 space-y-4">
-          <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-50">Author</h3>
+        <div class="bg-surface border border-surface-border rounded-xl p-5 space-y-4">
+          <h3 class="text-sm font-semibold text-content">Author</h3>
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Author</label>
+            <label class="block text-sm font-medium text-content-secondary mb-1">Author</label>
             <select
               v-model="form.author"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             >
               <option value="">None</option>
               <option v-for="a in authors" :key="a._id" :value="a._id">{{ a.name }}</option>

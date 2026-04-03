@@ -170,7 +170,7 @@ onMounted(loadUsers);
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">Users</h1>
+      <h1 class="text-2xl font-bold text-content">Users</h1>
       <button
         v-if="!showAddForm"
         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors"
@@ -185,45 +185,45 @@ onMounted(loadUsers);
       {{ error }}
     </div>
 
-    <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl overflow-hidden">
+    <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
       <!-- Add new form -->
-      <div v-if="showAddForm" class="px-4 py-3 bg-gray-50 dark:bg-surface-dark-secondary border-b border-surface-border dark:border-surface-dark-border">
+      <div v-if="showAddForm" class="px-4 py-3 bg-surface-secondary border-b border-surface-border">
         <form class="flex items-end gap-3 flex-wrap" @submit.prevent="createUser">
           <div class="flex-1 min-w-[180px]">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Email</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Email</label>
             <input
               v-model="newForm.email"
               type="email"
               required
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="user@example.com"
             />
           </div>
           <div class="flex-1 min-w-[180px]">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Password</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Password</label>
             <input
               v-model="newForm.password"
               type="password"
               required
               minlength="8"
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="Min. 8 characters"
             />
           </div>
           <div class="w-40">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Name</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Name</label>
             <input
               v-model="newForm.name"
               type="text"
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="Optional"
             />
           </div>
           <div class="w-28">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Role</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Role</label>
             <select
               v-model="newForm.role"
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             >
               <option value="admin">Admin</option>
               <option value="editor">Editor</option>
@@ -235,7 +235,7 @@ onMounted(loadUsers);
             </button>
             <button
               type="button"
-              class="p-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors dark:border-surface-dark-border dark:text-gray-400"
+              class="p-1.5 rounded-lg border border-divider text-content-tertiary hover:bg-surface-secondary transition-colors"
               @click="showAddForm = false"
             >
               <X :size="16" />
@@ -245,37 +245,37 @@ onMounted(loadUsers);
       </div>
 
       <!-- Table -->
-      <div v-if="loading" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">Loading...</div>
-      <div v-else-if="users.length === 0 && !showAddForm" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">No users yet.</div>
+      <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
+      <div v-else-if="users.length === 0 && !showAddForm" class="p-8 text-center text-sm text-content-muted">No users yet.</div>
       <table v-else-if="users.length > 0" class="w-full text-sm">
         <thead>
-          <tr class="border-b border-surface-border dark:border-surface-dark-border text-left">
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Email</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Name</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-24">Role</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-28">Created</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-32">Actions</th>
+          <tr class="border-b border-surface-border text-left">
+            <th class="px-4 py-3 font-medium text-content-muted">Email</th>
+            <th class="px-4 py-3 font-medium text-content-muted">Name</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-24">Role</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-28">Created</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-32">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-surface-border dark:divide-surface-dark-border">
+        <tbody class="divide-y divide-surface-border">
           <template v-for="user in users" :key="user._id">
             <tr>
               <!-- Display mode -->
               <template v-if="editingId !== user._id">
-                <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ user.email }}</td>
-                <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ user.name || '—' }}</td>
+                <td class="px-4 py-3 font-medium text-content">{{ user.email }}</td>
+                <td class="px-4 py-3 text-content-muted">{{ user.name || '—' }}</td>
                 <td class="px-4 py-3">
                   <span
                     class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
                     :class="user.role === 'admin'
                       ? 'bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-400'
-                      : 'bg-gray-100 text-gray-600 dark:bg-surface-dark-secondary dark:text-gray-400'"
+                      : 'bg-surface-secondary text-content-tertiary'"
                   >
                     <Shield v-if="user.role === 'admin'" :size="10" />
                     {{ user.role }}
                   </span>
                 </td>
-                <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">{{ formatDate(user.createdAt) }}</td>
+                <td class="px-4 py-3 text-content-muted text-xs">{{ formatDate(user.createdAt) }}</td>
                 <td class="px-4 py-3">
                   <div v-if="deleteConfirmId !== user._id" class="flex items-center gap-1">
                     <button
@@ -308,7 +308,7 @@ onMounted(loadUsers);
                       Delete
                     </button>
                     <button
-                      class="px-2 py-0.5 text-xs rounded border border-gray-300 text-gray-600 hover:bg-gray-100 dark:border-surface-dark-border dark:text-gray-400"
+                      class="px-2 py-0.5 text-xs rounded border border-divider text-content-tertiary hover:bg-surface-secondary"
                       @click="deleteConfirmId = null"
                     >
                       Cancel
@@ -323,20 +323,20 @@ onMounted(loadUsers);
                   <input
                     v-model="editForm.email"
                     type="email"
-                    class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                    class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                   />
                 </td>
                 <td class="px-4 py-2">
                   <input
                     v-model="editForm.name"
                     type="text"
-                    class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                    class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                   />
                 </td>
                 <td class="px-4 py-2">
                   <select
                     v-model="editForm.role"
-                    class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                    class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                   >
                     <option value="admin">admin</option>
                     <option value="editor">editor</option>
@@ -370,7 +370,7 @@ onMounted(loadUsers);
                       type="password"
                       required
                       minlength="8"
-                      class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+                      class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                       placeholder="New password"
                     />
                   </div>
@@ -380,7 +380,7 @@ onMounted(loadUsers);
                       type="password"
                       required
                       minlength="8"
-                      class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+                      class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                       placeholder="Confirm password"
                     />
                   </div>
@@ -390,7 +390,7 @@ onMounted(loadUsers);
                     </button>
                     <button
                       type="button"
-                      class="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors dark:border-surface-dark-border dark:text-gray-400"
+                      class="px-3 py-1.5 text-xs font-medium rounded-lg border border-divider text-content-tertiary hover:bg-surface-secondary transition-colors"
                       @click="passwordChangeId = null"
                     >
                       Cancel

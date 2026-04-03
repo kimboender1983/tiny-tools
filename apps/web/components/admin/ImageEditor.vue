@@ -799,42 +799,42 @@ onBeforeUnmount(() => {
             v-if="showSaveOptions"
             class="absolute inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm"
           >
-            <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl shadow-2xl p-6 w-full max-w-sm mx-4 space-y-4">
-              <h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+            <div class="bg-surface border border-surface-border rounded-xl shadow-2xl p-6 w-full max-w-sm mx-4 space-y-4">
+              <h4 class="text-base font-semibold text-content">
                 Save edited image
               </h4>
-              <p class="text-sm text-gray-500 dark:text-gray-400">
+              <p class="text-sm text-content-muted">
                 How would you like to save this image?
               </p>
               <div class="space-y-2">
                 <button
                   :disabled="saving"
-                  class="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-surface-border dark:border-surface-dark-border hover:bg-gray-50 dark:hover:bg-surface-dark-secondary transition-colors text-left disabled:opacity-50"
+                  class="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-surface-border hover:bg-surface-secondary transition-colors text-left disabled:opacity-50"
                   @click="saveAsOriginal"
                 >
                   <Save :size="18" class="text-brand-500 shrink-0" />
                   <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Replace original</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Overwrite the existing image</p>
+                    <p class="text-sm font-medium text-content">Replace original</p>
+                    <p class="text-xs text-content-muted">Overwrite the existing image</p>
                   </div>
                   <Loader2 v-if="saving" :size="16" class="ml-auto animate-spin text-gray-400" />
                 </button>
                 <button
                   :disabled="saving"
-                  class="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-surface-border dark:border-surface-dark-border hover:bg-gray-50 dark:hover:bg-surface-dark-secondary transition-colors text-left disabled:opacity-50"
+                  class="w-full flex items-center gap-3 px-4 py-3 rounded-lg border border-surface-border hover:bg-surface-secondary transition-colors text-left disabled:opacity-50"
                   @click="saveAsCopy"
                 >
                   <CopyPlus :size="18" class="text-brand-500 shrink-0" />
                   <div>
-                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">Save as copy</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Keep original, create a new file</p>
+                    <p class="text-sm font-medium text-content">Save as copy</p>
+                    <p class="text-xs text-content-muted">Keep original, create a new file</p>
                   </div>
                   <Loader2 v-if="saving" :size="16" class="ml-auto animate-spin text-gray-400" />
                 </button>
               </div>
               <button
                 :disabled="saving"
-                class="w-full px-4 py-2 text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                class="w-full px-4 py-2 text-sm text-content-muted hover:text-content-secondary transition-colors"
                 @click="showSaveOptions = false"
               >
                 Cancel

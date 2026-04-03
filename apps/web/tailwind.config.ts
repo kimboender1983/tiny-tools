@@ -1,34 +1,43 @@
 import type { Config } from 'tailwindcss';
 
 export default {
-  darkMode: 'class',
+  darkMode: ['class', ':is(.dark, .vibrant)'],
   content: [],
   theme: {
     extend: {
       colors: {
         brand: {
-          50: '#EFF6FF',
-          100: '#DBEAFE',
-          200: '#BFDBFE',
-          300: '#93C5FD',
-          400: '#60A5FA',
-          500: '#2563EB',
-          600: '#1D4ED8',
-          700: '#1E40AF',
-          800: '#1E3A8A',
-          900: '#172554',
+          50: 'rgb(var(--color-brand-50) / <alpha-value>)',
+          100: 'rgb(var(--color-brand-100) / <alpha-value>)',
+          200: 'rgb(var(--color-brand-200) / <alpha-value>)',
+          300: 'rgb(var(--color-brand-300) / <alpha-value>)',
+          400: 'rgb(var(--color-brand-400) / <alpha-value>)',
+          500: 'rgb(var(--color-brand-500) / <alpha-value>)',
+          600: 'rgb(var(--color-brand-600) / <alpha-value>)',
+          700: 'rgb(var(--color-brand-700) / <alpha-value>)',
+          800: 'rgb(var(--color-brand-800) / <alpha-value>)',
+          900: 'rgb(var(--color-brand-900) / <alpha-value>)',
+          accent: 'rgb(var(--color-brand-accent) / <alpha-value>)',
         },
         surface: {
-          DEFAULT: '#FFFFFF',
-          secondary: '#F3F4F6',
-          border: '#D1D5DB',
-          dark: '#141414',
-          'dark-secondary': '#1C1C1C',
-          'dark-border': '#2A2A2A',
+          DEFAULT: 'rgb(var(--color-surface) / <alpha-value>)',
+          secondary: 'rgb(var(--color-surface-secondary) / <alpha-value>)',
+          border: 'rgb(var(--color-surface-border) / <alpha-value>)',
         },
-        page: {
-          light: '#F3F4F6',
-          dark: '#0A0A0A',
+        page: 'rgb(var(--color-page) / <alpha-value>)',
+        content: {
+          DEFAULT: 'rgb(var(--color-text) / <alpha-value>)',
+          secondary: 'rgb(var(--color-text-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--color-text-tertiary) / <alpha-value>)',
+          muted: 'rgb(var(--color-text-muted) / <alpha-value>)',
+          faint: 'rgb(var(--color-text-faint) / <alpha-value>)',
+        },
+        divider: 'rgb(var(--color-divider) / <alpha-value>)',
+        caret: 'rgb(var(--color-caret) / <alpha-value>)',
+        placeholder: 'rgb(var(--color-placeholder) / <alpha-value>)',
+        tooltip: {
+          DEFAULT: 'rgb(var(--color-tooltip-bg) / <alpha-value>)',
+          text: 'rgb(var(--color-tooltip-text) / <alpha-value>)',
         },
       },
       fontFamily: {

@@ -323,15 +323,15 @@ function onOutputScroll() {
   <div class="flex flex-col gap-0 h-[calc(100vh-12rem)]">
     <!-- Toolbar -->
     <div
-      class="flex flex-wrap items-center gap-2 px-3 py-2 bg-surface border border-surface-border rounded-t-xl dark:bg-surface-dark dark:border-surface-dark-border"
+      class="flex flex-wrap items-center gap-2 px-3 py-2 bg-surface border border-surface-border rounded-t-xl"
     >
       <!-- Indent selector -->
       <div class="flex items-center gap-1.5">
-        <label for="indent-select" class="text-xs font-medium text-gray-500 dark:text-gray-400">Indent</label>
+        <label for="indent-select" class="text-xs font-medium text-content-muted">Indent</label>
         <select
           id="indent-select"
           v-model="indentStyle"
-          class="text-sm bg-surface-secondary border border-surface-border rounded-md px-2 py-1 text-gray-700 dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+          class="text-sm bg-surface-secondary border border-surface-border rounded-md px-2 py-1 text-content-secondary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
         >
           <option value="2">2 spaces</option>
           <option value="4">4 spaces</option>
@@ -339,7 +339,7 @@ function onOutputScroll() {
         </select>
       </div>
 
-      <div class="w-px h-5 bg-surface-border dark:bg-surface-dark-border" />
+      <div class="w-px h-5 bg-surface-border" />
 
       <!-- Action buttons -->
       <button type="button" class="toolbar-btn" title="Format (pretty-print)" @click="format">
@@ -380,7 +380,7 @@ function onOutputScroll() {
         <span class="hidden sm:inline">Scroll Lock</span>
       </button>
 
-      <div class="w-px h-5 bg-surface-border dark:bg-surface-dark-border" />
+      <div class="w-px h-5 bg-surface-border" />
 
       <CopyButton :text="formattedOutput" label="Copy" />
 
@@ -441,15 +441,15 @@ function onOutputScroll() {
 
     <!-- Split pane content -->
     <div
-      class="flex-1 min-h-0 border border-t-0 border-surface-border rounded-b-xl overflow-hidden dark:border-surface-dark-border"
-      :class="{ 'border-t border-t-surface-border dark:border-t-surface-dark-border': !error }"
+      class="flex-1 min-h-0 border border-t-0 border-surface-border rounded-b-xl overflow-hidden"
+      :class="{ 'border-t border-t-surface-border': !error }"
     >
       <UiSplitPane>
         <template #left>
           <!-- Input editor -->
           <div
             class="relative h-full flex"
-            :class="isDragging ? 'ring-2 ring-inset ring-brand-500/50 bg-brand-50/30 dark:bg-brand-900/10' : ''"
+            :class="isDragging ? 'ring-2 ring-inset ring-brand-500/50 bg-brand-50/30' : ''"
             @dragenter="onDragEnter"
             @dragleave="onDragLeave"
             @dragover="onDragOver"
@@ -458,7 +458,7 @@ function onOutputScroll() {
             <!-- Line numbers gutter -->
             <div
               ref="inputGutter"
-              class="shrink-0 w-12 py-3 pr-2 text-right text-xs font-mono leading-[1.625rem] text-gray-500 dark:text-gray-600 select-none overflow-hidden bg-surface-secondary dark:bg-surface-dark-secondary border-r border-surface-border dark:border-surface-dark-border"
+              class="shrink-0 w-12 py-3 pr-2 text-right text-xs font-mono leading-[1.625rem] text-content-faint select-none overflow-hidden bg-surface-secondary border-r border-surface-border"
               aria-hidden="true"
             >
               <div v-for="n in inputLines" :key="n">{{ n }}</div>
@@ -474,7 +474,7 @@ function onOutputScroll() {
               <textarea
                 ref="inputTextarea"
                 v-model="input"
-                class="relative w-full h-full py-3 px-3 font-mono text-sm leading-[1.625rem] bg-transparent text-transparent caret-gray-900 dark:caret-gray-100 resize-none focus:outline-none placeholder-gray-500 dark:placeholder-gray-600"
+                class="relative w-full h-full py-3 px-3 font-mono text-sm leading-[1.625rem] bg-transparent text-transparent caret-caret resize-none focus:outline-none placeholder-placeholder"
                 placeholder="Paste JSON here or drop a .json file"
                 spellcheck="false"
                 autocomplete="off"
@@ -518,9 +518,9 @@ function onOutputScroll() {
             >
               <div
                 v-if="isDragging"
-                class="absolute inset-0 flex items-center justify-center bg-brand-50/80 dark:bg-brand-900/30 backdrop-blur-sm pointer-events-none"
+                class="absolute inset-0 flex items-center justify-center bg-brand-50/80 backdrop-blur-sm pointer-events-none"
               >
-                <div class="flex flex-col items-center gap-2 text-brand-600 dark:text-brand-400">
+                <div class="flex flex-col items-center gap-2 text-brand-accent">
                   <Download :size="28" />
                   <span class="text-sm font-medium">Drop .json file</span>
                 </div>
@@ -545,7 +545,7 @@ function onOutputScroll() {
               <!-- Tree view -->
               <div
                 ref="treeContainer"
-                class="flex-1 h-full overflow-auto p-3 font-mono text-sm bg-surface-secondary dark:bg-surface-dark-secondary"
+                class="flex-1 h-full overflow-auto p-3 font-mono text-sm bg-surface-secondary"
                 @scroll="onOutputScroll"
               >
                 <ToolsJsonTreeNode :node="treeData" :is-root="true" @toggle="toggleNode" />
@@ -556,7 +556,7 @@ function onOutputScroll() {
               <!-- Formatted output with syntax highlighting -->
               <div
                 ref="outputGutter"
-                class="shrink-0 w-12 py-3 pr-2 text-right text-xs font-mono leading-[1.625rem] text-gray-500 dark:text-gray-600 select-none overflow-hidden bg-surface-secondary dark:bg-surface-dark-secondary border-r border-surface-border dark:border-surface-dark-border"
+                class="shrink-0 w-12 py-3 pr-2 text-right text-xs font-mono leading-[1.625rem] text-content-faint select-none overflow-hidden bg-surface-secondary border-r border-surface-border"
                 aria-hidden="true"
               >
                 <template v-if="formattedOutput">
@@ -566,9 +566,9 @@ function onOutputScroll() {
 
               <pre
                 ref="outputPre"
-                class="flex-1 h-full overflow-auto py-3 px-3 font-mono text-sm leading-[1.625rem] whitespace-pre bg-transparent text-gray-900 dark:text-gray-100"
+                class="flex-1 h-full overflow-auto py-3 px-3 font-mono text-sm leading-[1.625rem] whitespace-pre bg-transparent text-content"
                 @scroll="onOutputScroll"
-              ><code v-if="formattedOutput" v-html="highlightedOutput" /><span v-else class="text-gray-500 dark:text-gray-600 italic">Formatted output will appear here</span></pre>
+              ><code v-if="formattedOutput" v-html="highlightedOutput" /><span v-else class="text-content-faint italic">Formatted output will appear here</span></pre>
 
               <!-- Scroll buttons (output) -->
               <div class="absolute bottom-2 right-2 flex flex-col gap-1 z-10">
@@ -598,11 +598,11 @@ function onOutputScroll() {
     </div>
 
     <!-- Status bar -->
-    <div class="flex items-center justify-between px-3 py-1 text-[11px] font-mono text-gray-500 dark:text-gray-500 bg-surface-secondary border border-t-0 border-surface-border rounded-b-xl dark:bg-surface-dark-secondary dark:border-surface-dark-border">
+    <div class="flex items-center justify-between px-3 py-1 text-[11px] font-mono text-content-muted bg-surface-secondary border border-t-0 border-surface-border rounded-b-xl">
       <span v-if="inputStats">
         Input: {{ inputStats.lines }} lines &middot; {{ inputStats.size }}
       </span>
-      <span v-else class="text-gray-400 dark:text-gray-600">No input</span>
+      <span v-else class="text-content-faint">No input</span>
       <span v-if="outputStats">
         Output: {{ outputStats.lines }} lines &middot; {{ outputStats.size }}
       </span>
@@ -615,45 +615,18 @@ function onOutputScroll() {
 <style scoped>
 .toolbar-btn {
   @apply inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg
-         text-gray-600 hover:bg-gray-100 hover:text-gray-900
-         dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200
+         text-content-tertiary hover:bg-surface-secondary hover:text-content
          transition-colors duration-150
          disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent;
 }
 
 .toolbar-btn-active {
-  @apply bg-brand-50 text-brand-700 hover:bg-brand-100
-         dark:bg-brand-900/20 dark:text-brand-300 dark:hover:bg-brand-900/30;
+  @apply bg-brand-50 text-brand-accent hover:bg-brand-100;
 }
 
 .scroll-btn {
   @apply p-1.5 rounded-full bg-surface/90 border border-surface-border shadow-sm
-         text-gray-500 hover:text-gray-800 hover:bg-gray-100
-         dark:bg-surface-dark/90 dark:border-surface-dark-border dark:text-gray-400
-         dark:hover:text-gray-200 dark:hover:bg-surface-dark-secondary
+         text-content-muted hover:text-content hover:bg-surface-secondary
          backdrop-blur-sm transition-colors duration-150 cursor-pointer;
-}
-</style>
-
-<style>
-/* JSON syntax highlighting (unscoped so v-html picks it up) */
-.json-key {
-  @apply text-brand-700 dark:text-brand-300;
-}
-
-.json-string {
-  @apply text-green-600 dark:text-green-400;
-}
-
-.json-number {
-  @apply text-blue-600 dark:text-blue-400;
-}
-
-.json-boolean {
-  @apply text-purple-600 dark:text-purple-400;
-}
-
-.json-null {
-  @apply text-gray-500 dark:text-gray-500 italic;
 }
 </style>

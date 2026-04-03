@@ -28,24 +28,24 @@ const entranceDelay = computed(() =>
     <div class="gradient-border" />
 
     <div class="flex items-start gap-3.5 mb-3">
-      <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 shrink-0 transition-all duration-300 group-hover:bg-brand-100 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(37,99,235,0.15)] dark:group-hover:bg-brand-900/30 dark:group-hover:shadow-[0_0_20px_rgba(96,165,250,0.15)]">
+      <div class="flex items-center justify-center w-10 h-10 rounded-lg bg-brand-50 text-brand-accent shrink-0 transition-all duration-300 group-hover:bg-brand-100 group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(var(--color-brand-500),0.15)]">
         <component :is="iconComponent" v-if="iconComponent" :size="20" />
       </div>
       <div class="min-w-0">
-        <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors truncate">
+        <h3 class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors truncate">
           {{ tool.name }}
         </h3>
-        <span class="inline-block mt-1 px-2 py-0.5 text-[11px] font-medium rounded-full bg-gray-100 text-gray-500 dark:bg-surface-dark-secondary dark:text-gray-400">
+        <span class="inline-block mt-1 px-2 py-0.5 text-[11px] font-medium rounded-full bg-surface-secondary text-content-muted">
           {{ tool.category }}
         </span>
       </div>
     </div>
 
-    <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 flex-1">
+    <p class="text-sm text-content-tertiary line-clamp-2 flex-1">
       {{ tool.description }}
     </p>
 
-    <div class="mt-4 flex items-center gap-1 text-sm font-medium text-brand-600 dark:text-brand-400">
+    <div class="mt-4 flex items-center gap-1 text-sm font-medium text-brand-accent">
       Use tool
       <ArrowRight :size="14" class="transition-transform group-hover:translate-x-0.5" />
     </div>
@@ -59,7 +59,7 @@ const entranceDelay = computed(() =>
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, #60A5FA, #2563EB, #1D4ED8);
+  background: var(--gradient-border);
   mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);

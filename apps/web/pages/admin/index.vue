@@ -76,7 +76,7 @@ onMounted(loadDashboard);
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">Dashboard</h1>
+      <h1 class="text-2xl font-bold text-content">Dashboard</h1>
       <div class="flex gap-2">
         <NuxtLink
           to="/admin/pages/new"
@@ -87,7 +87,7 @@ onMounted(loadDashboard);
         </NuxtLink>
         <NuxtLink
           to="/admin/blog/new"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors dark:border-surface-dark-border dark:text-gray-300 dark:hover:bg-surface-dark-secondary"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-divider text-content-secondary hover:bg-surface-secondary transition-colors"
         >
           <Plus :size="16" />
           New Post
@@ -99,7 +99,7 @@ onMounted(loadDashboard);
       {{ error }}
     </div>
 
-    <div v-if="loading" class="text-sm text-gray-500 dark:text-gray-400">Loading dashboard...</div>
+    <div v-if="loading" class="text-sm text-content-muted">Loading dashboard...</div>
 
     <template v-else>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -107,28 +107,28 @@ onMounted(loadDashboard);
           v-for="card in statCards"
           :key="card.label"
           :to="card.to"
-          class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5 hover:shadow-sm transition-shadow"
+          class="bg-surface border border-surface-border rounded-xl p-5 hover:shadow-sm transition-shadow"
         >
           <div class="flex items-center justify-between mb-3">
             <component :is="card.icon" :size="20" class="text-gray-500" />
           </div>
-          <p class="text-2xl font-bold text-gray-900 dark:text-gray-50">{{ card.value }}</p>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ card.label }}</p>
+          <p class="text-2xl font-bold text-content">{{ card.value }}</p>
+          <p class="text-sm text-content-muted mt-1">{{ card.label }}</p>
         </NuxtLink>
       </div>
 
-      <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl">
-        <div class="px-5 py-4 border-b border-surface-border dark:border-surface-dark-border">
-          <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-50">Recent Edits</h2>
+      <div class="bg-surface border border-surface-border rounded-xl">
+        <div class="px-5 py-4 border-b border-surface-border">
+          <h2 class="text-sm font-semibold text-content">Recent Edits</h2>
         </div>
-        <div v-if="recentItems.length === 0" class="p-5 text-sm text-gray-500 dark:text-gray-400">
+        <div v-if="recentItems.length === 0" class="p-5 text-sm text-content-muted">
           No content yet. Create your first page or blog post.
         </div>
-        <ul v-else class="divide-y divide-surface-border dark:divide-surface-dark-border">
+        <ul v-else class="divide-y divide-surface-border">
           <li v-for="item in recentItems" :key="item.id">
             <NuxtLink
               :to="item.type === 'page' ? `/admin/pages/${item.id}` : `/admin/blog/${item.id}`"
-              class="flex items-center justify-between px-5 py-3 hover:bg-gray-100 dark:hover:bg-surface-dark-secondary transition-colors"
+              class="flex items-center justify-between px-5 py-3 hover:bg-surface-secondary transition-colors"
             >
               <div class="flex items-center gap-3">
                 <span
@@ -139,9 +139,9 @@ onMounted(loadDashboard);
                 >
                   {{ item.type === 'page' ? 'Page' : 'Post' }}
                 </span>
-                <span class="text-sm text-gray-900 dark:text-gray-100">{{ item.title }}</span>
+                <span class="text-sm text-content">{{ item.title }}</span>
               </div>
-              <span class="text-xs text-gray-500 dark:text-gray-400">{{ formatDate(item.updatedAt) }}</span>
+              <span class="text-xs text-content-muted">{{ formatDate(item.updatedAt) }}</span>
             </NuxtLink>
           </li>
         </ul>

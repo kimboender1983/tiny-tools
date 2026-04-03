@@ -21,18 +21,18 @@ useHead({
       <UiHeroBackground />
 
       <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-8 sm:pb-10 text-center">
-        <div class="hero-enter hero-enter-1 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium mb-4 dark:bg-brand-900/20 dark:text-brand-400">
+        <div class="hero-enter hero-enter-1 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-accent text-sm font-medium mb-4">
           <Sparkles :size="14" />
           100% client-side — your data never leaves your browser
         </div>
 
-        <h1 class="hero-enter hero-enter-2 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+        <h1 class="hero-enter hero-enter-2 text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-content">
           Free Developer Tools,
           <br class="hidden sm:block" />
           <span class="bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600 bg-clip-text text-transparent">Instantly Ready</span>
         </h1>
 
-        <p class="hero-enter hero-enter-3 mt-4 text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+        <p class="hero-enter hero-enter-3 mt-4 text-lg sm:text-xl text-content-tertiary max-w-2xl mx-auto">
           A growing collection of small, fast, free developer tools. No sign-up required. No data uploaded. Just paste and go.
         </p>
       </section>

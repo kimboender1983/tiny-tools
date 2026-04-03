@@ -26,16 +26,16 @@ const toolsByCategory = computed(() => {
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
     <div class="text-center mb-12">
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50 mb-4">
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-content mb-4">
         Developer Tools
       </h1>
-      <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+      <p class="text-lg text-content-tertiary max-w-2xl mx-auto">
         Free, fast tools that run entirely in your browser. Your data never leaves your device.
       </p>
     </div>
 
     <div v-for="[category, tools] in toolsByCategory" :key="category" class="mb-12 last:mb-0">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-50 mb-4">{{ category }}</h2>
+      <h2 class="text-xl font-semibold text-content mb-4">{{ category }}</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <UiToolCard v-for="tool in tools" :key="tool.slug" :tool="tool" />
       </div>

@@ -18,25 +18,25 @@ const footerSections = computed(() =>
 </script>
 
 <template>
-  <footer class="border-t border-surface-border dark:border-surface-dark-border bg-surface dark:bg-surface-dark">
+  <footer class="border-t border-surface-border bg-surface">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-8" :class="`lg:grid-cols-${footerSections.length + 1}`">
         <div>
           <div class="font-bold text-lg mb-3">
             <span class="text-brand-500">Pick</span><span>box</span>
           </div>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <p class="text-sm text-content-tertiary">
             Free, fast developer tools that run entirely in your browser. Your data never leaves your device.
           </p>
         </div>
 
         <div v-for="section in footerSections" :key="section.title">
-          <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">{{ section.title }}</h3>
+          <h3 class="text-sm font-semibold text-content mb-3">{{ section.title }}</h3>
           <ul class="space-y-2">
             <li v-for="item in section.items" :key="item.slug">
               <NuxtLink
                 :to="item.path"
-                class="text-sm text-gray-500 hover:text-brand-500 transition-colors dark:text-gray-400"
+                class="text-sm text-content-muted hover:text-brand-500 transition-colors"
               >
                 {{ item.title }}
               </NuxtLink>
@@ -45,10 +45,10 @@ const footerSections = computed(() =>
         </div>
       </div>
 
-      <div class="mt-8 pt-8 border-t border-surface-border dark:border-surface-dark-border flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500 dark:text-gray-500">
+      <div class="mt-8 pt-8 border-t border-surface-border flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-content-muted">
         <span>&copy; {{ new Date().getFullYear() }} Pickbox. All rights reserved.</span>
         <button
-          class="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+          class="inline-flex items-center gap-1.5 text-sm text-content-faint transition-colors hover:text-content-secondary"
           @click="openCookieSettings"
         >
           <Cookie :size="14" />

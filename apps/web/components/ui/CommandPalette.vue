@@ -132,20 +132,20 @@ defineExpose({ open });
           appear
         >
           <div
-            class="relative w-full max-w-lg bg-surface dark:bg-surface-dark rounded-xl border border-surface-border dark:border-surface-dark-border shadow-2xl overflow-hidden"
+            class="relative w-full max-w-lg bg-surface rounded-xl border border-surface-border shadow-2xl overflow-hidden"
             @keydown="onKeyDown"
           >
             <!-- Search input -->
-            <div class="flex items-center gap-3 px-4 border-b border-surface-border dark:border-surface-dark-border">
-              <Search :size="18" class="text-gray-500 dark:text-gray-500 shrink-0" />
+            <div class="flex items-center gap-3 px-4 border-b border-surface-border">
+              <Search :size="18" class="text-content-muted shrink-0" />
               <input
                 ref="inputRef"
                 v-model="query"
                 type="text"
                 placeholder="Search tools..."
-                class="w-full py-3.5 bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 outline-none text-sm"
+                class="w-full py-3.5 bg-transparent text-content placeholder-placeholder outline-none text-sm"
               />
-              <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[11px] font-medium text-gray-500 dark:text-gray-500 bg-gray-100 dark:bg-surface-dark-secondary rounded border border-gray-200 dark:border-surface-dark-border shrink-0">
+              <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[11px] font-medium text-content-muted bg-surface-secondary rounded border border-divider shrink-0">
                 ESC
               </kbd>
             </div>
@@ -154,7 +154,7 @@ defineExpose({ open });
             <div class="max-h-72 overflow-y-auto overscroll-contain py-2">
               <div
                 v-if="filteredTools.length === 0"
-                class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400"
+                class="px-4 py-8 text-center text-sm text-content-muted"
               >
                 No tools found for "{{ query }}"
               </div>
@@ -164,8 +164,8 @@ defineExpose({ open });
                 :key="tool.slug"
                 class="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors duration-75"
                 :class="index === activeIndex
-                  ? 'bg-brand-50 dark:bg-brand-900/20'
-                  : 'hover:bg-gray-100 dark:hover:bg-surface-dark-secondary'"
+                  ? 'bg-brand-50'
+                  : 'hover:bg-surface-secondary'"
                 :data-command-active="index === activeIndex"
                 @click="selectTool(tool.slug)"
                 @mouseenter="activeIndex = index"
@@ -173,27 +173,27 @@ defineExpose({ open });
                 <div
                   class="flex items-center justify-center w-8 h-8 rounded-lg shrink-0"
                   :class="index === activeIndex
-                    ? 'bg-brand-100 text-brand-600 dark:bg-brand-900/30 dark:text-brand-400'
-                    : 'bg-gray-100 text-gray-500 dark:bg-surface-dark dark:text-gray-400'"
+                    ? 'bg-brand-100 text-brand-accent'
+                    : 'bg-surface-secondary text-content-muted'"
                 >
                   <component :is="getIcon(tool.icon)" v-if="getIcon(tool.icon)" :size="16" />
                 </div>
                 <div class="min-w-0 flex-1">
-                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                  <div class="text-sm font-medium text-content truncate">
                     {{ tool.name }}
                   </div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <div class="text-xs text-content-muted truncate">
                     {{ tool.description }}
                   </div>
                 </div>
-                <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 dark:bg-surface-dark-secondary dark:text-gray-400 shrink-0">
+                <span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-surface-secondary text-content-muted shrink-0">
                   {{ tool.category }}
                 </span>
               </button>
             </div>
 
             <!-- Footer hints -->
-            <div class="flex items-center gap-4 px-4 py-2.5 border-t border-surface-border dark:border-surface-dark-border text-xs text-gray-500 dark:text-gray-500">
+            <div class="flex items-center gap-4 px-4 py-2.5 border-t border-surface-border text-xs text-content-muted">
               <span class="inline-flex items-center gap-1">
                 <ArrowUp :size="12" />
                 <ArrowDown :size="12" />
@@ -204,7 +204,7 @@ defineExpose({ open });
                 select
               </span>
               <span class="inline-flex items-center gap-1">
-                <kbd class="px-1 py-0.5 text-[10px] font-medium bg-gray-100 dark:bg-surface-dark-secondary rounded border border-gray-200 dark:border-surface-dark-border">ESC</kbd>
+                <kbd class="px-1 py-0.5 text-[10px] font-medium bg-surface-secondary rounded border border-divider">ESC</kbd>
                 close
               </span>
             </div>

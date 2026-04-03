@@ -148,18 +148,18 @@ const CHEATSHEET = [
     <!-- Pattern input -->
     <div class="flex flex-col gap-2">
       <div class="flex items-center gap-2">
-        <div class="flex-1 flex items-center rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 transition-colors">
-          <span class="pl-4 pr-2 text-gray-400 dark:text-gray-600 font-mono text-sm select-none">/</span>
+        <div class="flex-1 flex items-center rounded-xl border border-surface-border overflow-hidden bg-surface focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 transition-colors">
+          <span class="pl-4 pr-2 text-content-faint font-mono text-sm select-none">/</span>
           <input
             v-model="pattern"
             type="text"
-            class="flex-1 py-2.5 font-mono text-sm bg-transparent focus:outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600"
+            class="flex-1 py-2.5 font-mono text-sm bg-transparent focus:outline-none text-content placeholder-placeholder"
             placeholder="Enter regex pattern..."
             spellcheck="false"
             autocomplete="off"
           />
-          <span class="pr-2 text-gray-400 dark:text-gray-600 font-mono text-sm select-none">/</span>
-          <div class="flex items-center border-l border-surface-border dark:border-surface-dark-border">
+          <span class="pr-2 text-content-faint font-mono text-sm select-none">/</span>
+          <div class="flex items-center border-l border-surface-border">
             <button
               v-for="f in FLAG_INFO"
               :key="f.flag"
@@ -178,7 +178,7 @@ const CHEATSHEET = [
 
         <button
           type="button"
-          class="inline-flex items-center gap-1.5 px-2.5 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200 transition-colors"
+          class="inline-flex items-center gap-1.5 px-2.5 py-2.5 text-sm font-medium rounded-lg text-content-tertiary hover:bg-surface-secondary hover:text-content transition-colors"
           @click="showReplace = !showReplace"
           :class="showReplace ? 'bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400' : ''"
           title="Toggle replace"
@@ -188,7 +188,7 @@ const CHEATSHEET = [
 
         <button
           type="button"
-          class="inline-flex items-center gap-1.5 px-2.5 py-2.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200 transition-colors"
+          class="inline-flex items-center gap-1.5 px-2.5 py-2.5 text-sm font-medium rounded-lg text-content-tertiary hover:bg-surface-secondary hover:text-content transition-colors"
           @click="clear"
         >
           <Eraser :size="16" />
@@ -205,12 +205,12 @@ const CHEATSHEET = [
         leave-to-class="opacity-0 -translate-y-1 max-h-0"
       >
         <div v-if="showReplace" class="overflow-hidden">
-          <div class="flex items-center rounded-xl border border-surface-border dark:border-surface-dark-border bg-surface dark:bg-surface-dark focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 transition-colors">
-            <span class="pl-4 pr-2 text-xs text-gray-400 dark:text-gray-600 select-none uppercase tracking-wide">Replace</span>
+          <div class="flex items-center rounded-xl border border-surface-border bg-surface focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500 transition-colors">
+            <span class="pl-4 pr-2 text-xs text-content-faint select-none uppercase tracking-wide">Replace</span>
             <input
               v-model="replacement"
               type="text"
-              class="flex-1 py-2.5 pr-4 font-mono text-sm bg-transparent focus:outline-none text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-600"
+              class="flex-1 py-2.5 pr-4 font-mono text-sm bg-transparent focus:outline-none text-content placeholder-placeholder"
               placeholder="Replacement string (use $1, $2 for groups)..."
               spellcheck="false"
             />
@@ -239,7 +239,7 @@ const CHEATSHEET = [
 
     <!-- Match stats -->
     <div v-if="pattern && !error" class="flex items-center gap-4 text-sm">
-      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium" :class="matchCount > 0 ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-surface-dark-secondary dark:text-gray-400'">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium" :class="matchCount > 0 ? 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 'bg-surface-secondary text-content-muted'">
         {{ matchCount }} match{{ matchCount !== 1 ? 'es' : '' }}
       </span>
       <span v-if="groupCount > 0" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400 font-medium">
@@ -248,23 +248,23 @@ const CHEATSHEET = [
     </div>
 
     <!-- Test string with highlights -->
-    <div class="rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark">
-      <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border dark:border-surface-dark-border bg-surface-secondary dark:bg-surface-dark-secondary">
-        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Test String</span>
+    <div class="rounded-xl border border-surface-border overflow-hidden bg-surface">
+      <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border bg-surface-secondary">
+        <span class="text-sm font-semibold text-content">Test String</span>
         <UiCopyButton v-if="testString" :text="testString" />
       </div>
       <div class="relative">
         <!-- Highlighted overlay -->
         <pre
           v-if="matches.length"
-          class="absolute inset-0 p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words pointer-events-none m-0 text-gray-900 dark:text-gray-100 overflow-hidden"
+          class="absolute inset-0 p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words pointer-events-none m-0 text-content overflow-hidden"
           aria-hidden="true"
           v-html="highlightedHtml"
         />
         <textarea
           v-model="testString"
-          class="relative w-full min-h-[180px] p-4 font-mono text-sm leading-relaxed bg-transparent resize-y focus:outline-none placeholder-gray-400 dark:placeholder-gray-600"
-          :class="matches.length ? 'text-transparent caret-gray-900 dark:caret-gray-100' : 'text-gray-900 dark:text-gray-100'"
+          class="relative w-full min-h-[180px] p-4 font-mono text-sm leading-relaxed bg-transparent resize-y focus:outline-none placeholder-placeholder"
+          :class="matches.length ? 'text-transparent caret-caret' : 'text-content'"
           placeholder="Type or paste your test string here..."
           spellcheck="false"
         />
@@ -280,30 +280,30 @@ const CHEATSHEET = [
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-1"
     >
-      <div v-if="showReplace && replacedOutput" class="rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark">
-        <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border dark:border-surface-dark-border bg-surface-secondary dark:bg-surface-dark-secondary">
-          <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Replace Result</span>
+      <div v-if="showReplace && replacedOutput" class="rounded-xl border border-surface-border overflow-hidden bg-surface">
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border bg-surface-secondary">
+          <span class="text-sm font-semibold text-content">Replace Result</span>
           <UiCopyButton :text="replacedOutput" />
         </div>
-        <pre class="p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words text-gray-900 dark:text-gray-100 m-0">{{ replacedOutput }}</pre>
+        <pre class="p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words text-content m-0">{{ replacedOutput }}</pre>
       </div>
     </Transition>
 
     <!-- Match details -->
-    <div v-if="matches.length" class="rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark">
-      <div class="px-4 py-2.5 border-b border-surface-border dark:border-surface-dark-border bg-surface-secondary dark:bg-surface-dark-secondary">
-        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Match Details</span>
+    <div v-if="matches.length" class="rounded-xl border border-surface-border overflow-hidden bg-surface">
+      <div class="px-4 py-2.5 border-b border-surface-border bg-surface-secondary">
+        <span class="text-sm font-semibold text-content">Match Details</span>
       </div>
-      <div class="divide-y divide-surface-border/50 dark:divide-surface-dark-border/50 max-h-[320px] overflow-y-auto">
+      <div class="divide-y divide-surface-border/50 max-h-[320px] overflow-y-auto">
         <div
           v-for="(m, i) in matches"
           :key="i"
           class="px-4 py-3"
         >
           <div class="flex items-center gap-3 mb-1">
-            <span class="text-xs font-semibold text-gray-500 dark:text-gray-500">Match {{ i + 1 }}</span>
-            <code class="text-sm font-mono font-semibold text-gray-900 dark:text-gray-100 bg-yellow-100 dark:bg-yellow-500/20 px-1.5 py-0.5 rounded">{{ m.value }}</code>
-            <span class="text-xs text-gray-400 dark:text-gray-600">index {{ m.index }}</span>
+            <span class="text-xs font-semibold text-content-muted">Match {{ i + 1 }}</span>
+            <code class="text-sm font-mono font-semibold text-content bg-yellow-100 dark:bg-yellow-500/20 px-1.5 py-0.5 rounded">{{ m.value }}</code>
+            <span class="text-xs text-content-faint">index {{ m.index }}</span>
           </div>
           <div v-if="m.groups.length" class="mt-2 flex flex-wrap gap-2">
             <div
@@ -312,7 +312,7 @@ const CHEATSHEET = [
               class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/15 text-xs"
             >
               <span class="font-semibold text-blue-600 dark:text-blue-400">{{ g.name ? `${g.name}` : `$${g.index}` }}</span>
-              <code class="font-mono text-gray-700 dark:text-gray-300">{{ g.value || '(empty)' }}</code>
+              <code class="font-mono text-content-secondary">{{ g.value || '(empty)' }}</code>
             </div>
           </div>
         </div>
@@ -321,36 +321,36 @@ const CHEATSHEET = [
 
     <!-- Examples -->
     <div v-if="!pattern" class="flex flex-col gap-3">
-      <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Try an example:</p>
+      <p class="text-sm font-medium text-content-tertiary">Try an example:</p>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <button
           v-for="ex in examples"
           :key="ex.label"
           type="button"
-          class="flex flex-col items-start gap-1 p-4 rounded-xl border border-surface-border bg-surface hover:border-brand-300 hover:bg-brand-50/50 dark:bg-surface-dark dark:border-surface-dark-border dark:hover:border-brand-700 dark:hover:bg-brand-900/10 transition-colors text-left group"
+          class="flex flex-col items-start gap-1 p-4 rounded-xl border border-surface-border bg-surface hover:border-brand-300 hover:bg-brand-50 transition-colors text-left group"
           @click="() => { loadExample(ex); if (ex.replacement) showReplace = true; }"
         >
           <div class="flex items-center gap-2">
             <Zap :size="14" class="text-brand-500" />
-            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400">{{ ex.label }}</span>
+            <span class="text-sm font-semibold text-content group-hover:text-brand-accent">{{ ex.label }}</span>
           </div>
-          <code class="text-xs font-mono text-gray-500 dark:text-gray-400 truncate w-full">/{{ ex.pattern }}/{{ ex.flags }}</code>
+          <code class="text-xs font-mono text-content-muted truncate w-full">/{{ ex.pattern }}/{{ ex.flags }}</code>
         </button>
       </div>
     </div>
 
     <!-- Cheatsheet -->
-    <div class="rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark">
-      <div class="px-4 py-2.5 border-b border-surface-border dark:border-surface-dark-border bg-surface-secondary dark:bg-surface-dark-secondary">
-        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Quick Reference</span>
+    <div class="rounded-xl border border-surface-border overflow-hidden bg-surface">
+      <div class="px-4 py-2.5 border-b border-surface-border bg-surface-secondary">
+        <span class="text-sm font-semibold text-content">Quick Reference</span>
       </div>
-      <div class="grid grid-cols-2 lg:grid-cols-4 divide-x divide-surface-border/50 dark:divide-surface-dark-border/50">
+      <div class="grid grid-cols-2 lg:grid-cols-4 divide-x divide-surface-border/50">
         <div v-for="cat in CHEATSHEET" :key="cat.cat" class="p-3">
-          <p class="text-xs font-semibold text-gray-500 dark:text-gray-500 mb-2 uppercase tracking-wide">{{ cat.cat }}</p>
+          <p class="text-xs font-semibold text-content-muted mb-2 uppercase tracking-wide">{{ cat.cat }}</p>
           <div class="space-y-1">
             <div v-for="item in cat.items" :key="item.token" class="flex items-center gap-2">
-              <code class="text-xs font-mono font-bold text-brand-600 dark:text-brand-400 w-14 shrink-0">{{ item.token }}</code>
-              <span class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ item.desc }}</span>
+              <code class="text-xs font-mono font-bold text-brand-accent w-14 shrink-0">{{ item.token }}</code>
+              <span class="text-xs text-content-muted truncate">{{ item.desc }}</span>
             </div>
           </div>
         </div>

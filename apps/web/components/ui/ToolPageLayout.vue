@@ -16,30 +16,30 @@ const { isEnabled: adsEnabled } = useAds();
   <div class="min-h-[calc(100vh-3.5rem)]">
     <!-- Breadcrumb -->
     <div class="mx-auto px-4 sm:px-6 pt-4" :class="fullWidth ? 'max-w-full' : 'max-w-7xl'">
-      <nav aria-label="Breadcrumb" class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
+      <nav aria-label="Breadcrumb" class="flex items-center gap-1.5 text-sm text-content-muted">
         <NuxtLink
           to="/"
-          class="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+          class="flex items-center gap-1 hover:text-content-secondary transition-colors"
         >
           <Home :size="14" />
           <span>Home</span>
         </NuxtLink>
-        <ChevronRight :size="14" class="text-gray-300 dark:text-gray-600" />
-        <span class="text-gray-900 dark:text-gray-100 font-medium">{{ title }}</span>
+        <ChevronRight :size="14" class="text-content-faint" />
+        <span class="text-content font-medium">{{ title }}</span>
       </nav>
     </div>
 
     <!-- Header -->
     <div class="mx-auto px-4 sm:px-6 pt-3 pb-4" :class="fullWidth ? 'max-w-full' : 'max-w-7xl'">
       <div class="flex items-center gap-3 mb-1">
-        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <h1 class="text-xl sm:text-2xl font-bold text-content">
           {{ title }}
         </h1>
-        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-brand-50 text-brand-700 dark:bg-brand-900/20 dark:text-brand-300">
+        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-brand-50 text-brand-accent">
           {{ category }}
         </span>
       </div>
-      <p class="text-sm text-gray-600 dark:text-gray-400 max-w-2xl">
+      <p class="text-sm text-content-tertiary max-w-2xl">
         {{ description }}
       </p>
     </div>

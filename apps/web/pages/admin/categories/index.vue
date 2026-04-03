@@ -127,7 +127,7 @@ onMounted(loadCategories);
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">Categories</h1>
+      <h1 class="text-2xl font-bold text-content">Categories</h1>
       <button
         v-if="!showAddForm"
         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors"
@@ -142,38 +142,38 @@ onMounted(loadCategories);
       {{ error }}
     </div>
 
-    <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl overflow-hidden">
+    <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
       <!-- Add new form -->
-      <div v-if="showAddForm" class="px-4 py-3 bg-gray-50 dark:bg-surface-dark-secondary border-b border-surface-border dark:border-surface-dark-border">
+      <div v-if="showAddForm" class="px-4 py-3 bg-surface-secondary border-b border-surface-border">
         <form class="flex items-end gap-3" @submit.prevent="createCategory">
           <div class="flex-1">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Name</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Name</label>
             <input
               v-model="newForm.name"
               type="text"
               required
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
               placeholder="Category name"
               @input="newForm.slug = generateSlug(newForm.name)"
             />
           </div>
           <div class="flex-1">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Slug</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Slug</label>
             <input
               v-model="newForm.slug"
               type="text"
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             />
           </div>
           <div class="w-48">
             <AdminIconPicker v-model="newForm.icon" label="Icon" />
           </div>
           <div class="w-20">
-            <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Order</label>
+            <label class="block text-xs font-medium text-content-muted mb-1">Order</label>
             <input
               v-model.number="newForm.order"
               type="number"
-              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark dark:border-surface-dark-border dark:text-gray-100"
+              class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             />
           </div>
           <div class="flex gap-1">
@@ -185,7 +185,7 @@ onMounted(loadCategories);
             </button>
             <button
               type="button"
-              class="p-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 transition-colors dark:border-surface-dark-border dark:text-gray-400"
+              class="p-1.5 rounded-lg border border-divider text-content-tertiary hover:bg-surface-secondary transition-colors"
               @click="showAddForm = false"
             >
               <X :size="16" />
@@ -195,29 +195,29 @@ onMounted(loadCategories);
       </div>
 
       <!-- Table -->
-      <div v-if="loading" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">Loading...</div>
-      <div v-else-if="categories.length === 0 && !showAddForm" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">No categories yet.</div>
+      <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
+      <div v-else-if="categories.length === 0 && !showAddForm" class="p-8 text-center text-sm text-content-muted">No categories yet.</div>
       <table v-else-if="categories.length > 0" class="w-full text-sm">
         <thead>
-          <tr class="border-b border-surface-border dark:border-surface-dark-border text-left">
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Name</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Slug</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-24">Icon</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-20">Order</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-24">Actions</th>
+          <tr class="border-b border-surface-border text-left">
+            <th class="px-4 py-3 font-medium text-content-muted">Name</th>
+            <th class="px-4 py-3 font-medium text-content-muted">Slug</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-24">Icon</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-20">Order</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-24">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-surface-border dark:divide-surface-dark-border">
+        <tbody class="divide-y divide-surface-border">
           <tr v-for="cat in categories" :key="cat._id">
             <!-- Display mode -->
             <template v-if="editingId !== cat._id">
-              <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{{ cat.name }}</td>
-              <td class="px-4 py-3 text-gray-500 dark:text-gray-400 font-mono text-xs">{{ cat.slug }}</td>
+              <td class="px-4 py-3 font-medium text-content">{{ cat.name }}</td>
+              <td class="px-4 py-3 text-content-muted font-mono text-xs">{{ cat.slug }}</td>
               <td class="px-4 py-3">
-                <component :is="getIcon(cat.icon)" v-if="cat.icon && getIcon(cat.icon)" :size="18" class="text-gray-600 dark:text-gray-400" />
-                <span v-else class="text-gray-500 dark:text-gray-400">—</span>
+                <component :is="getIcon(cat.icon)" v-if="cat.icon && getIcon(cat.icon)" :size="18" class="text-content-tertiary" />
+                <span v-else class="text-content-muted">—</span>
               </td>
-              <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ cat.order }}</td>
+              <td class="px-4 py-3 text-content-muted">{{ cat.order }}</td>
               <td class="px-4 py-3">
                 <div v-if="deleteConfirmId !== cat._id" class="flex items-center gap-1">
                   <button
@@ -243,7 +243,7 @@ onMounted(loadCategories);
                     Delete
                   </button>
                   <button
-                    class="px-2 py-0.5 text-xs rounded border border-gray-300 text-gray-600 hover:bg-gray-100 dark:border-surface-dark-border dark:text-gray-400"
+                    class="px-2 py-0.5 text-xs rounded border border-divider text-content-tertiary hover:bg-surface-secondary"
                     @click="deleteConfirmId = null"
                   >
                     Cancel
@@ -258,14 +258,14 @@ onMounted(loadCategories);
                 <input
                   v-model="editForm.name"
                   type="text"
-                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 />
               </td>
               <td class="px-4 py-2">
                 <input
                   v-model="editForm.slug"
                   type="text"
-                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm font-mono focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 />
               </td>
               <td class="px-4 py-2">
@@ -275,7 +275,7 @@ onMounted(loadCategories);
                 <input
                   v-model.number="editForm.order"
                   type="number"
-                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                 />
               </td>
               <td class="px-4 py-2">

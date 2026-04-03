@@ -101,7 +101,7 @@ useHead({
     <!-- Back link -->
     <NuxtLink
       to="/blog"
-      class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-brand-500 transition-colors mb-8"
+      class="inline-flex items-center gap-1.5 text-sm text-content-muted hover:text-brand-500 transition-colors mb-8"
     >
       <ArrowLeft :size="16" />
       All posts
@@ -112,15 +112,15 @@ useHead({
       <div class="flex items-center gap-3">
         <div
           v-if="categoryIconComponent"
-          class="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400"
+          class="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-50 text-brand-accent"
         >
           <component :is="categoryIconComponent" :size="24" />
         </div>
         <div>
-          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50">
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-content">
             {{ category?.name || categorySlug }}
           </h1>
-          <p v-if="category?.description" class="mt-1 text-gray-600 dark:text-gray-400">
+          <p v-if="category?.description" class="mt-1 text-content-tertiary">
             {{ category.description }}
           </p>
         </div>
@@ -128,14 +128,14 @@ useHead({
     </div>
 
     <!-- Error state -->
-    <div v-if="error" class="text-center py-16 text-gray-500 dark:text-gray-400">
-      <BookOpen :size="48" class="mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+    <div v-if="error" class="text-center py-16 text-content-muted">
+      <BookOpen :size="48" class="mx-auto mb-4 text-content-faint" />
       <p>Unable to load posts. Please try again later.</p>
     </div>
 
     <!-- Empty state -->
-    <div v-else-if="posts.length === 0" class="text-center py-16 text-gray-500 dark:text-gray-400">
-      <BookOpen :size="48" class="mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+    <div v-else-if="posts.length === 0" class="text-center py-16 text-content-muted">
+      <BookOpen :size="48" class="mx-auto mb-4 text-content-faint" />
       <p>No posts in this category yet.</p>
     </div>
 
@@ -145,7 +145,7 @@ useHead({
         v-for="post in posts"
         :key="post._id"
         :to="blogPostUrl(post)"
-        class="group flex flex-col rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden transition-shadow hover:shadow-lg"
+        class="group flex flex-col rounded-xl border border-surface-border bg-surface overflow-hidden transition-shadow hover:shadow-lg"
       >
         <div class="aspect-video overflow-hidden">
           <img
@@ -155,24 +155,24 @@ useHead({
             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
-          <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-50 via-blue-50 to-indigo-100 dark:from-brand-900/30 dark:via-blue-900/20 dark:to-indigo-900/30">
-            <div class="w-14 h-14 rounded-2xl bg-white/80 dark:bg-gray-800/60 flex items-center justify-center shadow-sm mb-2">
-              <component :is="getCategoryIcon(post.category)" v-if="getCategoryIcon(post.category)" :size="24" class="text-brand-500 dark:text-brand-400" />
-              <BookOpen v-else :size="24" class="text-brand-500 dark:text-brand-400" />
+          <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-50 via-blue-50 to-indigo-100">
+            <div class="w-14 h-14 rounded-2xl bg-white/80 flex items-center justify-center shadow-sm mb-2">
+              <component :is="getCategoryIcon(post.category)" v-if="getCategoryIcon(post.category)" :size="24" class="text-brand-accent" />
+              <BookOpen v-else :size="24" class="text-brand-accent" />
             </div>
-            <span class="text-xs font-medium text-brand-600/60 dark:text-brand-400/50">{{ getCategoryName(post.category) || 'Article' }}</span>
+            <span class="text-xs font-medium text-brand-accent/60">{{ getCategoryName(post.category) || 'Article' }}</span>
           </div>
         </div>
 
         <div class="flex flex-col flex-1 p-5">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-50 group-hover:text-brand-500 transition-colors line-clamp-2">
+          <h2 class="text-lg font-semibold text-content group-hover:text-brand-500 transition-colors line-clamp-2">
             {{ post.title }}
           </h2>
-          <p class="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-3 flex-1">
+          <p class="mt-2 text-sm text-content-tertiary line-clamp-3 flex-1">
             {{ post.excerpt }}
           </p>
           <div class="mt-4 @container">
-            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-gray-500 dark:text-gray-500 @[320px]:flex-nowrap">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-content-muted @[320px]:flex-nowrap">
               <span v-if="post.author && typeof post.author === 'object'" class="inline-flex items-center gap-1.5 basis-full @[320px]:basis-auto">
                 <img
                   v-if="post.author.avatar"
@@ -209,7 +209,7 @@ useHead({
           'inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium transition-colors',
           page === currentPage
             ? 'bg-brand-500 text-white'
-            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700',
+            : 'bg-surface-secondary text-content-tertiary hover:bg-surface-secondary',
         ]"
       >
         {{ page }}

@@ -109,13 +109,13 @@ async function handleDownloadZip() {
     <!-- Global controls bar -->
     <div
       v-if="images.length > 0"
-      class="flex flex-col gap-3 px-4 py-3 bg-surface border border-surface-border rounded-xl dark:bg-surface-dark dark:border-surface-dark-border"
+      class="flex flex-col gap-3 px-4 py-3 bg-surface border border-surface-border rounded-xl"
     >
       <!-- Settings row -->
       <div class="flex flex-col sm:flex-row sm:items-end gap-3">
         <!-- Quality slider -->
         <div class="flex flex-col gap-1.5 flex-1 min-w-[140px]">
-          <label class="text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center gap-1">
+          <label class="text-xs font-medium text-content-muted flex items-center gap-1">
             <Settings2 :size="12" />
             Quality
           </label>
@@ -126,9 +126,9 @@ async function handleDownloadZip() {
               min="1"
               max="100"
               step="1"
-              class="flex-1 h-1.5 rounded-full appearance-none cursor-pointer bg-gray-200 dark:bg-gray-700 accent-brand-500"
+              class="flex-1 h-1.5 rounded-full appearance-none cursor-pointer bg-[var(--color-switch-off)] accent-brand-500"
             />
-            <span class="text-sm font-mono font-medium text-gray-700 dark:text-gray-300 w-9 text-right tabular-nums">
+            <span class="text-sm font-mono font-medium text-content-secondary w-9 text-right tabular-nums">
               {{ globalSettings.quality }}
             </span>
           </div>
@@ -139,11 +139,11 @@ async function handleDownloadZip() {
 
         <!-- Output format -->
         <div class="flex flex-col gap-1.5">
-          <label for="output-format" class="text-xs font-medium text-gray-500 dark:text-gray-400">Format</label>
+          <label for="output-format" class="text-xs font-medium text-content-muted">Format</label>
           <select
             id="output-format"
             v-model="globalSettings.outputFormat"
-            class="text-sm bg-surface-secondary border border-surface-border rounded-lg px-2.5 py-1.5 text-gray-700 dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+            class="text-sm bg-surface-secondary border border-surface-border rounded-lg px-2.5 py-1.5 text-content-secondary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
           >
             <option value="original">Original</option>
             <option value="webp">WebP</option>
@@ -154,7 +154,7 @@ async function handleDownloadZip() {
 
         <!-- Max Width -->
         <div class="flex flex-col gap-1.5">
-          <label for="max-width" class="text-xs font-medium text-gray-500 dark:text-gray-400">Max width</label>
+          <label for="max-width" class="text-xs font-medium text-content-muted">Max width</label>
           <input
             id="max-width"
             :value="globalSettings.maxWidth ?? ''"
@@ -162,13 +162,13 @@ async function handleDownloadZip() {
             min="1"
             placeholder="Auto"
             @input="globalSettings.maxWidth = ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : undefined"
-            class="text-sm w-24 bg-surface-secondary border border-surface-border rounded-lg px-2.5 py-1.5 text-gray-700 dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 placeholder-gray-500 dark:placeholder-gray-600"
+            class="text-sm w-24 bg-surface-secondary border border-surface-border rounded-lg px-2.5 py-1.5 text-content-secondary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 placeholder-placeholder"
           />
         </div>
 
         <!-- Max Height -->
         <div class="flex flex-col gap-1.5">
-          <label for="max-height" class="text-xs font-medium text-gray-500 dark:text-gray-400">Max height</label>
+          <label for="max-height" class="text-xs font-medium text-content-muted">Max height</label>
           <input
             id="max-height"
             :value="globalSettings.maxHeight ?? ''"
@@ -176,13 +176,13 @@ async function handleDownloadZip() {
             min="1"
             placeholder="Auto"
             @input="globalSettings.maxHeight = ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : undefined"
-            class="text-sm w-24 bg-surface-secondary border border-surface-border rounded-lg px-2.5 py-1.5 text-gray-700 dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 placeholder-gray-500 dark:placeholder-gray-600"
+            class="text-sm w-24 bg-surface-secondary border border-surface-border rounded-lg px-2.5 py-1.5 text-content-secondary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 placeholder-placeholder"
           />
         </div>
 
         <!-- Scale -->
         <div class="flex flex-col gap-1.5">
-          <label for="scale-pct" class="text-xs font-medium text-gray-500 dark:text-gray-400">Scale %</label>
+          <label for="scale-pct" class="text-xs font-medium text-content-muted">Scale %</label>
           <input
             id="scale-pct"
             :value="globalSettings.scale ?? ''"
@@ -191,13 +191,13 @@ async function handleDownloadZip() {
             max="200"
             placeholder="100"
             @input="globalSettings.scale = ($event.target as HTMLInputElement).value ? Number(($event.target as HTMLInputElement).value) : undefined"
-            class="text-sm w-20 bg-surface-secondary border border-surface-border rounded-lg px-2.5 py-1.5 text-gray-700 dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 placeholder-gray-500 dark:placeholder-gray-600"
+            class="text-sm w-20 bg-surface-secondary border border-surface-border rounded-lg px-2.5 py-1.5 text-content-secondary focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 placeholder-placeholder"
           />
         </div>
       </div>
 
       <!-- Action buttons row -->
-      <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-surface-border dark:border-surface-dark-border">
+      <div class="flex flex-wrap items-center gap-2 pt-1 border-t border-surface-border">
         <button
           type="button"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
@@ -211,7 +211,7 @@ async function handleDownloadZip() {
 
         <button
           type="button"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg text-content-tertiary hover:bg-surface-secondary hover:text-content disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           :disabled="!hasCompressedImages || isDownloadingZip"
           @click="handleDownloadZip"
         >
@@ -237,9 +237,9 @@ async function handleDownloadZip() {
     <!-- Empty state -->
     <div
       v-if="images.length === 0"
-      class="flex flex-col items-center justify-center gap-3 py-16 text-gray-500 dark:text-gray-600"
+      class="flex flex-col items-center justify-center gap-3 py-16 text-content-faint"
     >
-      <div class="flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-surface-dark-secondary">
+      <div class="flex items-center justify-center w-16 h-16 rounded-full bg-surface-secondary">
         <ImageDown :size="28" />
       </div>
       <p class="text-sm font-medium">No images uploaded</p>
@@ -251,7 +251,7 @@ async function handleDownloadZip() {
       <div
         v-for="img in images"
         :key="img.id"
-        class="relative flex flex-col border border-surface-border rounded-xl overflow-hidden bg-surface dark:bg-surface-dark dark:border-surface-dark-border"
+        class="relative flex flex-col border border-surface-border rounded-xl overflow-hidden bg-surface"
       >
         <!-- Remove button -->
         <button
@@ -265,11 +265,11 @@ async function handleDownloadZip() {
         </button>
 
         <!-- Before / After comparison -->
-        <div class="flex border-b border-surface-border dark:border-surface-dark-border">
+        <div class="flex border-b border-surface-border">
           <!-- Original -->
-          <div class="flex-1 flex flex-col items-center p-3 border-r border-surface-border dark:border-surface-dark-border">
-            <span class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-500 mb-1.5">Original</span>
-            <div class="w-full aspect-square rounded-lg overflow-hidden bg-gray-50 dark:bg-surface-dark-secondary flex items-center justify-center">
+          <div class="flex-1 flex flex-col items-center p-3 border-r border-surface-border">
+            <span class="text-[10px] uppercase tracking-wider font-semibold text-content-muted mb-1.5">Original</span>
+            <div class="w-full aspect-square rounded-lg overflow-hidden bg-surface-secondary flex items-center justify-center">
               <img
                 :src="img.previewUrl"
                 :alt="img.originalFile.name"
@@ -280,18 +280,18 @@ async function handleDownloadZip() {
 
           <!-- Compressed -->
           <div class="flex-1 flex flex-col items-center p-3">
-            <span class="text-[10px] uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-500 mb-1.5">Compressed</span>
-            <div class="w-full aspect-square rounded-lg overflow-hidden bg-gray-50 dark:bg-surface-dark-secondary flex items-center justify-center">
+            <span class="text-[10px] uppercase tracking-wider font-semibold text-content-muted mb-1.5">Compressed</span>
+            <div class="w-full aspect-square rounded-lg overflow-hidden bg-surface-secondary flex items-center justify-center">
               <img
                 v-if="img.compressedPreviewUrl"
                 :src="img.compressedPreviewUrl"
                 :alt="`Compressed ${img.originalFile.name}`"
                 class="max-w-full max-h-full object-contain"
               />
-              <div v-else-if="img.status === 'compressing'" class="flex flex-col items-center gap-2 text-gray-500 dark:text-gray-500">
+              <div v-else-if="img.status === 'compressing'" class="flex flex-col items-center gap-2 text-content-muted">
                 <Loader2 :size="24" class="animate-spin" />
               </div>
-              <div v-else class="text-gray-300 dark:text-gray-600">
+              <div v-else class="text-content-faint">
                 <ImageIcon :size="32" />
               </div>
             </div>
@@ -301,14 +301,14 @@ async function handleDownloadZip() {
         <!-- Info & controls -->
         <div class="px-3 py-2.5 flex flex-col gap-2">
           <!-- Filename -->
-          <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate" :title="img.originalFile.name">
+          <p class="text-sm font-medium text-content truncate" :title="img.originalFile.name">
             {{ img.originalFile.name }}
           </p>
 
           <!-- Progress bar -->
           <div
             v-if="img.status === 'compressing'"
-            class="w-full h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden"
+            class="w-full h-1.5 rounded-full bg-[var(--color-switch-off)] overflow-hidden"
           >
             <div
               class="h-full rounded-full bg-brand-500 transition-all duration-300 ease-out"
@@ -318,11 +318,11 @@ async function handleDownloadZip() {
 
           <!-- Size info -->
           <div class="flex items-center gap-2 text-xs">
-            <span class="text-gray-500 dark:text-gray-400">{{ formatBytes(img.originalSize) }}</span>
+            <span class="text-content-muted">{{ formatBytes(img.originalSize) }}</span>
 
             <template v-if="img.status === 'done'">
-              <span class="text-gray-500 dark:text-gray-500">&rarr;</span>
-              <span class="font-medium text-gray-700 dark:text-gray-300">{{ formatBytes(img.compressedSize) }}</span>
+              <span class="text-content-muted">&rarr;</span>
+              <span class="font-medium text-content-secondary">{{ formatBytes(img.compressedSize) }}</span>
               <span
                 class="font-semibold px-1.5 py-0.5 rounded-full text-[10px]"
                 :class="getSavings(img).percent >= 0
@@ -345,7 +345,7 @@ async function handleDownloadZip() {
             </template>
 
             <template v-else>
-              <span class="text-gray-500 dark:text-gray-500">Pending</span>
+              <span class="text-content-muted">Pending</span>
             </template>
           </div>
 
@@ -365,7 +365,7 @@ async function handleDownloadZip() {
             <button
               v-if="img.status === 'done'"
               type="button"
-              class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-surface-dark-secondary transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-md text-content-tertiary hover:bg-surface-secondary transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               :disabled="isCompressing"
               @click="img.status = 'pending'; img.progress = 0; compressSingle(img)"
             >

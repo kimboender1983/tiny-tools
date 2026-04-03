@@ -100,7 +100,7 @@ onMounted(() => {
             ]"
             :key="link.id"
             :href="`#${link.id}`"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-brand-50 hover:text-brand-600 dark:bg-surface-dark-secondary dark:text-gray-300 dark:hover:bg-brand-900/20 dark:hover:text-brand-400 transition-colors scroll-smooth"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-secondary text-content-secondary hover:bg-brand-50 hover:text-brand-accent transition-colors scroll-smooth"
           >
             <ChevronRight :size="14" />
             {{ link.label }}
@@ -109,75 +109,75 @@ onMounted(() => {
 
         <div class="space-y-6">
           <!-- What is Regex -->
-          <section id="what-is-regex" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8 dark:bg-surface-dark dark:border-surface-dark-border">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
+          <section id="what-is-regex" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
+            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
               <BookOpen :size="20" class="text-brand-500" />
               What is a Regular Expression?
             </h2>
             <div class="space-y-4">
-              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              <p class="text-content-tertiary leading-relaxed">
                 A regular expression (regex or regexp) is a pattern that describes a set of strings. Originally developed
                 by mathematician Stephen Kleene in the 1950s, regular expressions are now a fundamental tool in
                 programming, text processing, and data validation.
               </p>
-              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              <p class="text-content-tertiary leading-relaxed">
                 In JavaScript, regular expressions are created with the
-                <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">RegExp</code> constructor or
-                literal syntax <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">/pattern/flags</code>.
-                They power methods like <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">.match()</code>,
-                <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">.replace()</code>,
-                <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">.test()</code>, and
-                <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">.split()</code>.
+                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">RegExp</code> constructor or
+                literal syntax <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">/pattern/flags</code>.
+                They power methods like <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">.match()</code>,
+                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">.replace()</code>,
+                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">.test()</code>, and
+                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">.split()</code>.
               </p>
             </div>
           </section>
 
           <!-- Syntax Guide -->
-          <section id="syntax-guide" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8 dark:bg-surface-dark dark:border-surface-dark-border">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
+          <section id="syntax-guide" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
+            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
               <Code :size="20" class="text-brand-500" />
               Regex Syntax Guide
             </h2>
             <div class="space-y-4">
-              <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+              <p class="text-content-tertiary leading-relaxed">
                 Regular expressions are built from literal characters and metacharacters. Here are the key building blocks:
               </p>
               <ul class="space-y-3">
                 <li class="flex items-start gap-3">
                   <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                  <span class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    <strong class="text-gray-900 dark:text-gray-100">Character classes</strong> like
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">\d</code> (digit),
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">\w</code> (word character), and
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">[a-z]</code> (ranges) match categories of characters.
+                  <span class="text-content-tertiary leading-relaxed">
+                    <strong class="text-content">Character classes</strong> like
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">\d</code> (digit),
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">\w</code> (word character), and
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">[a-z]</code> (ranges) match categories of characters.
                   </span>
                 </li>
                 <li class="flex items-start gap-3">
                   <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                  <span class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    <strong class="text-gray-900 dark:text-gray-100">Quantifiers</strong> like
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">*</code>,
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">+</code>,
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">?</code>, and
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">{n,m}</code> control how many times a pattern repeats.
-                    Append <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">?</code> for lazy (non-greedy) matching.
+                  <span class="text-content-tertiary leading-relaxed">
+                    <strong class="text-content">Quantifiers</strong> like
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">*</code>,
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">+</code>,
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">?</code>, and
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">{n,m}</code> control how many times a pattern repeats.
+                    Append <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">?</code> for lazy (non-greedy) matching.
                   </span>
                 </li>
                 <li class="flex items-start gap-3">
                   <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                  <span class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    <strong class="text-gray-900 dark:text-gray-100">Groups and backreferences</strong> use
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">(pattern)</code> to capture submatches and
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">\1</code> or
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">$1</code> to reference them in replacements.
+                  <span class="text-content-tertiary leading-relaxed">
+                    <strong class="text-content">Groups and backreferences</strong> use
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">(pattern)</code> to capture submatches and
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">\1</code> or
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">$1</code> to reference them in replacements.
                   </span>
                 </li>
                 <li class="flex items-start gap-3">
                   <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                  <span class="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    <strong class="text-gray-900 dark:text-gray-100">Lookahead and lookbehind</strong> —
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">(?=...)</code> and
-                    <code class="bg-gray-100 dark:bg-gray-800 text-brand-600 dark:text-brand-400 px-1.5 py-0.5 rounded text-sm font-mono">(?&lt;=...)</code> — assert that what follows or precedes
+                  <span class="text-content-tertiary leading-relaxed">
+                    <strong class="text-content">Lookahead and lookbehind</strong> —
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">(?=...)</code> and
+                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">(?&lt;=...)</code> — assert that what follows or precedes
                     the current position matches a pattern, without including it in the match.
                   </span>
                 </li>
@@ -186,8 +186,8 @@ onMounted(() => {
           </section>
 
           <!-- Common Patterns -->
-          <section id="common-patterns" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8 dark:bg-surface-dark dark:border-surface-dark-border">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
+          <section id="common-patterns" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
+            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
               <Code :size="20" class="text-brand-500" />
               Common Regex Patterns
             </h2>
@@ -204,17 +204,17 @@ onMounted(() => {
                   { label: 'HTML tag', pattern: '<\\/?[a-zA-Z][\\w-]*(?:\\s[^>]*)?\\/?>'}
                 ]"
                 :key="p.label"
-                class="rounded-lg border border-surface-border dark:border-surface-dark-border p-4"
+                class="rounded-lg border border-surface-border p-4"
               >
-                <span class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ p.label }}</span>
-                <code class="block mt-1.5 text-xs font-mono text-brand-600 dark:text-brand-400 break-all">{{ p.pattern }}</code>
+                <span class="text-sm font-medium text-content">{{ p.label }}</span>
+                <code class="block mt-1.5 text-xs font-mono text-brand-accent break-all">{{ p.pattern }}</code>
               </div>
             </div>
           </section>
 
           <!-- FAQ -->
-          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8 dark:bg-surface-dark dark:border-surface-dark-border">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
+          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
+            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
               <BookOpen :size="20" class="text-brand-500" />
               Frequently Asked Questions
             </h2>
@@ -222,13 +222,13 @@ onMounted(() => {
               <details
                 v-for="(faq, index) in faqItems"
                 :key="index"
-                class="group rounded-lg border border-gray-200 dark:border-surface-dark-border bg-gray-50 dark:bg-surface-dark-secondary overflow-hidden"
+                class="group rounded-lg border border-surface-border bg-surface-secondary overflow-hidden"
               >
-                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-surface-dark transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
+                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-content hover:bg-surface-secondary transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
                   <span>{{ faq.question }}</span>
                   <span class="shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none font-light">+</span>
                 </summary>
-                <p class="px-4 pb-4 text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p class="px-4 pb-4 text-content-tertiary leading-relaxed">
                   {{ faq.answer }}
                 </p>
               </details>
@@ -236,12 +236,12 @@ onMounted(() => {
           </section>
 
           <!-- Built with -->
-          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8 dark:bg-surface-dark dark:border-surface-dark-border">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
+          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
+            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
               <Code :size="20" class="text-brand-500" />
               Built With
             </h2>
-            <p class="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+            <p class="text-content-tertiary leading-relaxed mb-4">
               This tester uses JavaScript's native RegExp engine — the same engine your code runs against.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -249,61 +249,61 @@ onMounted(() => {
                 href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-surface-dark-border bg-gray-50 dark:bg-surface-dark-secondary hover:border-brand-300 dark:hover:border-brand-700 hover:bg-brand-50 dark:hover:bg-brand-900/10 transition-colors group"
+                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
               >
                 <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
                 <div>
-                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400">MDN RegExp</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-500">Complete JS regex reference</div>
+                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">MDN RegExp</div>
+                  <div class="text-xs text-content-muted">Complete JS regex reference</div>
                 </div>
               </a>
               <a
                 href="https://262.ecma-international.org/15.0/#sec-regexp-regular-expression-objects"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-surface-dark-border bg-gray-50 dark:bg-surface-dark-secondary hover:border-brand-300 dark:hover:border-brand-700 hover:bg-brand-50 dark:hover:bg-brand-900/10 transition-colors group"
+                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
               >
                 <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
                 <div>
-                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400">ECMAScript Spec</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-500">RegExp specification</div>
+                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">ECMAScript Spec</div>
+                  <div class="text-xs text-content-muted">RegExp specification</div>
                 </div>
               </a>
             </div>
           </section>
 
           <!-- Related Tools -->
-          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8 dark:bg-surface-dark dark:border-surface-dark-border">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
+          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
+            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
               <BookOpen :size="20" class="text-brand-500" />
               Related Tools
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <NuxtLink
                 to="/tools/json-formatter"
-                class="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-surface-dark-border bg-gray-50 dark:bg-surface-dark-secondary hover:border-brand-300 dark:hover:border-brand-700 hover:bg-brand-50 dark:hover:bg-brand-900/10 transition-colors group"
+                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
               >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 shrink-0">
+                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
                   <Braces :size="18" />
                 </div>
                 <div class="min-w-0">
-                  <div class="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">JSON Formatter</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">Format, validate, and beautify JSON</div>
+                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JSON Formatter</div>
+                  <div class="text-xs text-content-muted">Format, validate, and beautify JSON</div>
                 </div>
-                <ArrowRight :size="16" class="text-gray-300 dark:text-gray-600 group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
+                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
               </NuxtLink>
               <NuxtLink
                 to="/tools/uuid-generator"
-                class="flex items-center gap-3 p-4 rounded-lg border border-gray-200 dark:border-surface-dark-border bg-gray-50 dark:bg-surface-dark-secondary hover:border-brand-300 dark:hover:border-brand-700 hover:bg-brand-50 dark:hover:bg-brand-900/10 transition-colors group"
+                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
               >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400 shrink-0">
+                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
                   <Fingerprint :size="18" />
                 </div>
                 <div class="min-w-0">
-                  <div class="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">UUID Generator</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">Generate UUID v4 and v7 identifiers</div>
+                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">UUID Generator</div>
+                  <div class="text-xs text-content-muted">Generate UUID v4 and v7 identifiers</div>
                 </div>
-                <ArrowRight :size="16" class="text-gray-300 dark:text-gray-600 group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
+                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
               </NuxtLink>
             </div>
           </section>

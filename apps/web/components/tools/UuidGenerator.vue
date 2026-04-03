@@ -69,13 +69,13 @@ function adjustCount(delta: number) {
     <!-- Toolbar -->
     <div class="flex flex-wrap items-center gap-2">
       <!-- Version toggle -->
-      <div class="inline-flex items-center rounded-lg border border-surface-border dark:border-surface-dark-border overflow-hidden">
+      <div class="inline-flex items-center rounded-lg border border-surface-border overflow-hidden">
         <button
           type="button"
           class="px-3 py-1.5 text-sm font-medium transition-colors"
           :class="version === 'v4'
             ? 'bg-brand-500 text-white'
-            : 'bg-surface text-gray-600 hover:bg-gray-100 dark:bg-surface-dark dark:text-gray-400 dark:hover:bg-surface-dark-secondary'"
+            : 'bg-surface text-content-tertiary hover:bg-surface-secondary'"
           @click="version = 'v4'"
         >
           v4
@@ -85,20 +85,20 @@ function adjustCount(delta: number) {
           class="px-3 py-1.5 text-sm font-medium transition-colors"
           :class="version === 'v7'
             ? 'bg-brand-500 text-white'
-            : 'bg-surface text-gray-600 hover:bg-gray-100 dark:bg-surface-dark dark:text-gray-400 dark:hover:bg-surface-dark-secondary'"
+            : 'bg-surface text-content-tertiary hover:bg-surface-secondary'"
           @click="version = 'v7'"
         >
           v7
         </button>
       </div>
 
-      <div class="w-px h-5 bg-surface-border dark:bg-surface-dark-border" />
+      <div class="w-px h-5 bg-surface-border" />
 
       <!-- Count -->
       <div class="inline-flex items-center gap-1">
         <button
           type="button"
-          class="p-1 rounded text-gray-500 hover:bg-gray-100 dark:hover:bg-surface-dark-secondary transition-colors"
+          class="p-1 rounded text-gray-500 hover:bg-surface-secondary transition-colors"
           @click="adjustCount(-1)"
           :disabled="count <= 1"
         >
@@ -109,11 +109,11 @@ function adjustCount(delta: number) {
           type="number"
           min="1"
           max="1000"
-          class="w-14 text-center text-sm font-mono py-1 rounded-lg border border-surface-border dark:border-surface-dark-border bg-surface dark:bg-surface-dark text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
+          class="w-14 text-center text-sm font-mono py-1 rounded-lg border border-surface-border bg-surface text-content focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500"
         />
         <button
           type="button"
-          class="p-1 rounded text-gray-500 hover:bg-gray-100 dark:hover:bg-surface-dark-secondary transition-colors"
+          class="p-1 rounded text-gray-500 hover:bg-surface-secondary transition-colors"
           @click="adjustCount(1)"
           :disabled="count >= 1000"
         >
@@ -121,7 +121,7 @@ function adjustCount(delta: number) {
         </button>
       </div>
 
-      <div class="w-px h-5 bg-surface-border dark:bg-surface-dark-border" />
+      <div class="w-px h-5 bg-surface-border" />
 
       <!-- Uppercase toggle -->
       <label class="inline-flex items-center gap-2 cursor-pointer select-none">
@@ -130,7 +130,7 @@ function adjustCount(delta: number) {
           role="switch"
           :aria-checked="uppercase"
           class="relative flex h-5 w-9 items-center rounded-full px-0.5 transition-colors duration-200"
-          :class="uppercase ? 'bg-brand-500' : 'bg-gray-200 dark:bg-gray-700'"
+          :class="uppercase ? 'bg-brand-500' : 'bg-[var(--color-switch-off)]'"
           @click="uppercase = !uppercase"
         >
           <div
@@ -138,10 +138,10 @@ function adjustCount(delta: number) {
             :class="uppercase ? 'translate-x-4' : 'translate-x-0'"
           />
         </button>
-        <span class="text-sm text-gray-600 dark:text-gray-400">UPPER</span>
+        <span class="text-sm text-content-tertiary">UPPER</span>
       </label>
 
-      <div class="w-px h-5 bg-surface-border dark:bg-surface-dark-border" />
+      <div class="w-px h-5 bg-surface-border" />
 
       <!-- Actions -->
       <button
@@ -155,7 +155,7 @@ function adjustCount(delta: number) {
 
       <button
         type="button"
-        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200 transition-colors"
+        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg text-content-tertiary hover:bg-surface-secondary hover:text-content transition-colors"
         @click="copyAll"
       >
         <component :is="copiedAll ? Check : Copy" :size="15" />
@@ -164,7 +164,7 @@ function adjustCount(delta: number) {
 
       <button
         type="button"
-        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200 transition-colors"
+        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg text-content-tertiary hover:bg-surface-secondary hover:text-content transition-colors"
         @click="downloadUuids"
       >
         <Download :size="15" />
@@ -173,7 +173,7 @@ function adjustCount(delta: number) {
 
       <button
         type="button"
-        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200 transition-colors"
+        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg text-content-tertiary hover:bg-surface-secondary hover:text-content transition-colors"
         @click="clear"
       >
         <Eraser :size="15" />
@@ -182,23 +182,23 @@ function adjustCount(delta: number) {
     </div>
 
     <!-- UUID Output -->
-    <div class="rounded-xl border border-surface-border dark:border-surface-dark-border overflow-hidden bg-surface dark:bg-surface-dark">
-      <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border dark:border-surface-dark-border bg-surface-secondary dark:bg-surface-dark-secondary">
-        <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+    <div class="rounded-xl border border-surface-border overflow-hidden bg-surface">
+      <div class="flex items-center justify-between px-4 py-2.5 border-b border-surface-border bg-surface-secondary">
+        <span class="text-sm font-semibold text-content">
           {{ formattedUuids.length }} UUID{{ formattedUuids.length !== 1 ? 's' : '' }}
-          <span class="font-normal text-gray-500 dark:text-gray-500">· {{ version.toUpperCase() }}</span>
+          <span class="font-normal text-content-muted">· {{ version.toUpperCase() }}</span>
         </span>
       </div>
-      <div class="divide-y divide-surface-border/50 dark:divide-surface-dark-border/50 max-h-[460px] overflow-y-auto">
+      <div class="divide-y divide-surface-border/50 max-h-[460px] overflow-y-auto">
         <div
           v-for="entry in formattedUuids"
           :key="entry.id"
-          class="group flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-surface-dark-secondary/50 transition-colors cursor-pointer"
+          class="group flex items-center gap-3 px-4 py-2.5 hover:bg-surface-secondary/50 transition-colors cursor-pointer"
           @click="copyUuid(entry)"
         >
-          <code class="flex-1 text-sm font-mono text-gray-900 dark:text-gray-100 select-all">{{ entry.value }}</code>
+          <code class="flex-1 text-sm font-mono text-content select-all">{{ entry.value }}</code>
           <span
-            class="shrink-0 text-xs text-gray-400 dark:text-gray-600 opacity-0 group-hover:opacity-100 transition-opacity"
+            class="shrink-0 text-xs text-content-faint opacity-0 group-hover:opacity-100 transition-opacity"
             :class="copiedId === entry.id ? '!opacity-100 !text-green-500 dark:!text-green-400' : ''"
           >
             <component :is="copiedId === entry.id ? Check : Copy" :size="14" />
@@ -213,13 +213,13 @@ function adjustCount(delta: number) {
         class="flex-1 rounded-xl border p-4 transition-colors"
         :class="version === 'v4'
           ? 'border-brand-200 bg-brand-50/50 dark:border-brand-800/50 dark:bg-brand-900/10'
-          : 'border-surface-border bg-surface dark:border-surface-dark-border dark:bg-surface-dark'"
+          : 'border-surface-border bg-surface'"
       >
         <div class="flex items-center gap-2 mb-1.5">
-          <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">UUID v4</span>
-          <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 dark:bg-surface-dark-secondary dark:text-gray-400">Random</span>
+          <span class="text-sm font-semibold text-content">UUID v4</span>
+          <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-surface-secondary text-content-tertiary">Random</span>
         </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+        <p class="text-xs text-content-muted leading-relaxed">
           122 random bits. No ordering or timestamp. Best for general-purpose unique identifiers.
         </p>
       </div>
@@ -227,13 +227,13 @@ function adjustCount(delta: number) {
         class="flex-1 rounded-xl border p-4 transition-colors"
         :class="version === 'v7'
           ? 'border-brand-200 bg-brand-50/50 dark:border-brand-800/50 dark:bg-brand-900/10'
-          : 'border-surface-border bg-surface dark:border-surface-dark-border dark:bg-surface-dark'"
+          : 'border-surface-border bg-surface'"
       >
         <div class="flex items-center gap-2 mb-1.5">
-          <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">UUID v7</span>
-          <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-gray-100 text-gray-600 dark:bg-surface-dark-secondary dark:text-gray-400">Time-sorted</span>
+          <span class="text-sm font-semibold text-content">UUID v7</span>
+          <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-surface-secondary text-content-tertiary">Time-sorted</span>
         </div>
-        <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+        <p class="text-xs text-content-muted leading-relaxed">
           48-bit Unix timestamp + random. Sortable by creation time. Ideal for database primary keys.
         </p>
       </div>

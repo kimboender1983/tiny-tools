@@ -46,11 +46,11 @@ onMounted(loadAffiliates);
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">Affiliates</h1>
+      <h1 class="text-2xl font-bold text-content">Affiliates</h1>
       <div class="flex gap-2">
         <NuxtLink
           to="/admin/affiliates/analytics"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-colors dark:border-surface-dark-border dark:text-gray-300 dark:hover:bg-surface-dark-secondary"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg border border-divider text-content-secondary hover:bg-surface-secondary transition-colors"
         >
           <BarChart3 :size="16" />
           Analytics
@@ -75,34 +75,34 @@ onMounted(loadAffiliates);
       in blog posts and pages to insert tracked affiliate links.
     </div>
 
-    <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl overflow-hidden">
-      <div v-if="loading" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">Loading...</div>
-      <div v-else-if="affiliates.length === 0" class="p-8 text-center text-sm text-gray-500 dark:text-gray-400">No affiliates yet.</div>
+    <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
+      <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
+      <div v-else-if="affiliates.length === 0" class="p-8 text-center text-sm text-content-muted">No affiliates yet.</div>
       <table v-else class="w-full text-sm">
         <thead>
-          <tr class="border-b border-surface-border dark:border-surface-dark-border text-left">
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Name</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Slug</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">URL</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400">Status</th>
-            <th class="px-4 py-3 font-medium text-gray-500 dark:text-gray-400 w-24"></th>
+          <tr class="border-b border-surface-border text-left">
+            <th class="px-4 py-3 font-medium text-content-muted">Name</th>
+            <th class="px-4 py-3 font-medium text-content-muted">Slug</th>
+            <th class="px-4 py-3 font-medium text-content-muted">URL</th>
+            <th class="px-4 py-3 font-medium text-content-muted">Status</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-24"></th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-surface-border dark:divide-surface-dark-border">
+        <tbody class="divide-y divide-surface-border">
           <tr
             v-for="aff in affiliates"
             :key="aff._id"
-            class="hover:bg-gray-100 dark:hover:bg-surface-dark-secondary transition-colors cursor-pointer"
+            class="hover:bg-surface-secondary transition-colors cursor-pointer"
             @click="navigateTo(`/admin/affiliates/${aff._id}`)"
           >
             <td class="px-4 py-3">
               <div class="flex items-center gap-2">
                 <img v-if="aff.logo" :src="aff.logo" :alt="aff.name" class="w-6 h-6 rounded object-contain" />
-                <span class="font-medium text-gray-900 dark:text-gray-100">{{ aff.name }}</span>
+                <span class="font-medium text-content">{{ aff.name }}</span>
               </div>
             </td>
-            <td class="px-4 py-3 text-gray-500 dark:text-gray-400 font-mono text-xs">{{ aff.slug }}</td>
-            <td class="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs max-w-xs truncate">
+            <td class="px-4 py-3 text-content-muted font-mono text-xs">{{ aff.slug }}</td>
+            <td class="px-4 py-3 text-content-muted text-xs max-w-xs truncate">
               <a :href="aff.url" target="_blank" rel="noopener" class="hover:text-brand-500 inline-flex items-center gap-1" @click.stop>
                 {{ aff.url }}
                 <ExternalLink :size="10" />
@@ -130,7 +130,7 @@ onMounted(loadAffiliates);
                   Delete
                 </button>
                 <button
-                  class="px-2 py-0.5 text-xs rounded border border-gray-300 text-gray-600 hover:bg-gray-100 dark:border-surface-dark-border dark:text-gray-400"
+                  class="px-2 py-0.5 text-xs rounded border border-divider text-content-tertiary hover:bg-surface-secondary"
                   @click="deleteConfirmId = null"
                 >
                   Cancel

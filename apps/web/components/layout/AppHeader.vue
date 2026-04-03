@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Menu, X, Sun, Moon } from 'lucide-vue-next';
+import { Menu, X, Sun, Moon, Palette } from 'lucide-vue-next';
 import { TOOLS } from '@tiny-tools/shared';
 
 const colorMode = useColorMode();
@@ -11,9 +11,28 @@ const headerItems = computed(() =>
     : TOOLS.map(t => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` }))
 );
 
+const MODES = ['light', 'dark', 'vibrant'] as const;
+
 function toggleTheme() {
-  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
+  const current = MODES.indexOf(colorMode.value as typeof MODES[number]);
+  colorMode.preference = MODES[(current + 1) % MODES.length];
 }
+
+const themeIcon = computed(() => {
+  switch (colorMode.value) {
+    case 'dark': return Moon;
+    case 'vibrant': return Palette;
+    default: return Sun;
+  }
+});
+
+const themeLabel = computed(() => {
+  switch (colorMode.value) {
+    case 'dark': return 'Switch to vibrant mode';
+    case 'vibrant': return 'Switch to light mode';
+    default: return 'Switch to dark mode';
+  }
+});
 
 watch(() => useRoute().path, () => {
   mobileMenuOpen.value = false;
@@ -21,7 +40,7 @@ watch(() => useRoute().path, () => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-lg border-b border-surface-border dark:bg-surface-dark/80 dark:border-surface-dark-border">
+  <header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-lg border-b border-surface-border">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
       <NuxtLink to="/" class="flex items-center font-bold text-lg">
         <span class="text-brand-500">Pick</span><span>box</span>
@@ -32,8 +51,8 @@ watch(() => useRoute().path, () => {
           v-for="item in headerItems"
           :key="item.slug"
           :to="item.path"
-          class="px-3 py-1.5 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200"
-          active-class="!bg-brand-50 !text-brand-600 dark:!bg-brand-900/20 dark:!text-brand-400"
+          class="px-3 py-1.5 text-sm font-medium text-content-tertiary rounded-lg hover:bg-surface-secondary hover:text-content transition-colors"
+          active-class="!bg-brand-50 !text-brand-accent"
         >
           {{ item.title }}
         </NuxtLink>
@@ -43,11 +62,10 @@ watch(() => useRoute().path, () => {
         <ClientOnly>
           <button
             @click="toggleTheme"
-            class="p-2 rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-300 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-100"
-            :aria-label="colorMode.value === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+            class="p-2 rounded-lg text-content-secondary hover:bg-surface-secondary hover:text-content transition-colors"
+            :aria-label="themeLabel"
           >
-            <Sun v-if="colorMode.value === 'dark'" :size="18" />
-            <Moon v-else :size="18" />
+            <component :is="themeIcon" :size="18" />
           </button>
           <template #fallback>
             <div class="p-2 w-[34px] h-[34px]" />
@@ -55,7 +73,7 @@ watch(() => useRoute().path, () => {
         </ClientOnly>
 
         <button
-          class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary"
+          class="md:hidden p-2 rounded-lg text-content-muted hover:bg-surface-secondary transition-colors"
           @click="mobileMenuOpen = !mobileMenuOpen"
           :aria-label="mobileMenuOpen ? 'Close menu' : 'Open menu'"
         >
@@ -75,15 +93,15 @@ watch(() => useRoute().path, () => {
     >
       <div
         v-if="mobileMenuOpen"
-        class="md:hidden border-t border-surface-border dark:border-surface-dark-border bg-surface dark:bg-surface-dark"
+        class="md:hidden border-t border-surface-border bg-surface"
       >
         <nav class="p-4 space-y-1">
           <NuxtLink
             v-for="item in headerItems"
             :key="item.slug"
             :to="item.path"
-            class="block px-3 py-2.5 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200"
-            active-class="!bg-brand-50 !text-brand-600 dark:!bg-brand-900/20 dark:!text-brand-400"
+            class="block px-3 py-2.5 text-sm font-medium text-content-tertiary rounded-lg hover:bg-surface-secondary hover:text-content transition-colors"
+            active-class="!bg-brand-50 !text-brand-accent"
           >
             {{ item.title }}
           </NuxtLink>

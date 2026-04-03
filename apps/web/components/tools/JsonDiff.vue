@@ -189,9 +189,9 @@ const rightStats = computed(() => {
 <template>
   <div class="flex flex-col gap-0 h-[calc(100vh-12rem)]">
     <!-- Toolbar -->
-    <div class="flex flex-wrap items-center gap-2 px-3 py-2 bg-surface border border-surface-border rounded-t-xl dark:bg-surface-dark dark:border-surface-dark-border">
+    <div class="flex flex-wrap items-center gap-2 px-3 py-2 bg-surface border border-surface-border rounded-t-xl">
       <!-- Mode toggles -->
-      <div class="flex items-center rounded-lg border border-surface-border dark:border-surface-dark-border overflow-hidden">
+      <div class="flex items-center rounded-lg border border-surface-border overflow-hidden">
         <button type="button" class="toolbar-mode-btn" :class="mode === 'json' ? 'toolbar-mode-btn-active' : ''" @click="mode = 'json'">
           <FileJson :size="15" />
           <span class="hidden sm:inline">JSON</span>
@@ -202,13 +202,13 @@ const rightStats = computed(() => {
         </button>
       </div>
 
-      <label class="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">
-        <input v-model="ignoreWhitespace" type="checkbox" class="w-3.5 h-3.5 rounded border-gray-300 text-brand-500 focus:ring-brand-500/20 dark:border-gray-600 dark:bg-surface-dark-secondary" />
+      <label class="flex items-center gap-1.5 text-sm text-content-tertiary cursor-pointer select-none">
+        <input v-model="ignoreWhitespace" type="checkbox" class="w-3.5 h-3.5 rounded border-gray-300 text-brand-500 focus:ring-brand-500/20" />
         <span class="hidden sm:inline">Ignore whitespace</span>
         <span class="sm:hidden">WS</span>
       </label>
 
-      <div class="w-px h-5 bg-surface-border dark:bg-surface-dark-border" />
+      <div class="w-px h-5 bg-surface-border" />
 
       <button type="button" class="toolbar-btn" title="Swap left and right" @click="swap">
         <ArrowLeftRight :size="15" />
@@ -217,7 +217,7 @@ const rightStats = computed(() => {
 
       <!-- Diff navigation -->
       <template v-if="showDiff">
-        <div class="w-px h-5 bg-surface-border dark:bg-surface-dark-border" />
+        <div class="w-px h-5 bg-surface-border" />
         <div class="flex items-center gap-1">
           <button type="button" class="toolbar-btn" title="Previous diff" @click="goToPrevDiff" :disabled="totalDiffs === 0">
             <ChevronUp :size="15" />
@@ -225,12 +225,12 @@ const rightStats = computed(() => {
           <button type="button" class="toolbar-btn" title="Next diff" @click="goToNextDiff" :disabled="totalDiffs === 0">
             <ChevronDown :size="15" />
           </button>
-          <span v-if="totalDiffs > 0" class="text-xs font-medium text-gray-500 dark:text-gray-400 tabular-nums min-w-[4rem] text-center">
+          <span v-if="totalDiffs > 0" class="text-xs font-medium text-content-muted tabular-nums min-w-[4rem] text-center">
             {{ currentDiffIndex + 1 }}/{{ totalDiffs }}
           </span>
         </div>
 
-        <div class="w-px h-5 bg-surface-border dark:bg-surface-dark-border" />
+        <div class="w-px h-5 bg-surface-border" />
         <UiCopyButton :text="generateDiffText()" label="Copy diff" />
       </template>
 
@@ -256,33 +256,33 @@ const rightStats = computed(() => {
     </Transition>
 
     <!-- Main content -->
-    <div class="flex-1 min-h-0 flex flex-col border border-t-0 border-surface-border rounded-b-xl overflow-hidden dark:border-surface-dark-border" :class="{ 'border-t border-t-surface-border dark:border-t-surface-dark-border': !jsonError }">
+    <div class="flex-1 min-h-0 flex flex-col border border-t-0 border-surface-border rounded-b-xl overflow-hidden" :class="{ 'border-t border-t-surface-border': !jsonError }">
 
       <!-- Input panes -->
-      <div :class="showDiff ? 'h-2/5 shrink-0' : 'flex-1 min-h-0'" class="flex border-b border-surface-border dark:border-surface-dark-border">
+      <div :class="showDiff ? 'h-2/5 shrink-0' : 'flex-1 min-h-0'" class="flex border-b border-surface-border">
         <!-- Left input (A) -->
         <div
-          class="relative flex-1 min-w-0 border-r border-surface-border dark:border-surface-dark-border"
+          class="relative flex-1 min-w-0 border-r border-surface-border"
           :class="isDraggingLeft ? 'ring-2 ring-inset ring-brand-500/50' : ''"
           @dragenter="onDragEnterLeft" @dragleave="onDragLeaveLeft" @dragover="onDragOver" @drop="onDropLeft"
         >
-          <div class="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-3 py-1 bg-surface-secondary/90 dark:bg-surface-dark-secondary/90 backdrop-blur-sm border-b border-surface-border dark:border-surface-dark-border">
-            <span class="text-xs font-semibold text-gray-600 dark:text-gray-300">A</span>
+          <div class="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-3 py-1 bg-surface-secondary/90 backdrop-blur-sm border-b border-surface-border">
+            <span class="text-xs font-semibold text-content-secondary">A</span>
             <UiCopyButton :text="leftInput" />
           </div>
           <pre ref="leftHighlight" class="absolute inset-0 pt-8 pb-3 px-3 font-mono text-sm leading-[1.625rem] whitespace-pre overflow-hidden pointer-events-none m-0" aria-hidden="true"><code v-html="highlightedLeftInput" /></pre>
           <textarea
             ref="leftTextarea"
             v-model="leftInput"
-            class="relative w-full h-full pt-8 pb-3 px-3 font-mono text-sm leading-[1.625rem] bg-transparent resize-none focus:outline-none placeholder-gray-500 dark:placeholder-gray-600"
-            :class="mode === 'json' && leftInput ? 'text-transparent caret-gray-900 dark:caret-gray-100' : 'text-gray-900 dark:text-gray-100'"
+            class="relative w-full h-full pt-8 pb-3 px-3 font-mono text-sm leading-[1.625rem] bg-transparent resize-none focus:outline-none placeholder-placeholder"
+            :class="mode === 'json' && leftInput ? 'text-transparent caret-caret' : 'text-content'"
             :placeholder="mode === 'json' ? 'Paste JSON here or drop a file...' : 'Paste text here or drop a file...'"
             spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off"
             @scroll="syncLeftHighlight"
           />
           <Transition enter-active-class="transition-opacity duration-150" enter-from-class="opacity-0" leave-active-class="transition-opacity duration-100" leave-to-class="opacity-0">
-            <div v-if="isDraggingLeft" class="absolute inset-0 flex items-center justify-center bg-brand-50/80 dark:bg-brand-900/30 backdrop-blur-sm pointer-events-none">
-              <div class="flex flex-col items-center gap-2 text-brand-600 dark:text-brand-400">
+            <div v-if="isDraggingLeft" class="absolute inset-0 flex items-center justify-center bg-brand-50/80 backdrop-blur-sm pointer-events-none">
+              <div class="flex flex-col items-center gap-2 text-brand-accent">
                 <FileText :size="28" />
                 <span class="text-sm font-medium">Drop file here</span>
               </div>
@@ -296,23 +296,23 @@ const rightStats = computed(() => {
           :class="isDraggingRight ? 'ring-2 ring-inset ring-brand-500/50' : ''"
           @dragenter="onDragEnterRight" @dragleave="onDragLeaveRight" @dragover="onDragOver" @drop="onDropRight"
         >
-          <div class="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-3 py-1 bg-surface-secondary/90 dark:bg-surface-dark-secondary/90 backdrop-blur-sm border-b border-surface-border dark:border-surface-dark-border">
-            <span class="text-xs font-semibold text-gray-600 dark:text-gray-300">B</span>
+          <div class="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-3 py-1 bg-surface-secondary/90 backdrop-blur-sm border-b border-surface-border">
+            <span class="text-xs font-semibold text-content-secondary">B</span>
             <UiCopyButton :text="rightInput" />
           </div>
           <pre ref="rightHighlight" class="absolute inset-0 pt-8 pb-3 px-3 font-mono text-sm leading-[1.625rem] whitespace-pre overflow-hidden pointer-events-none m-0" aria-hidden="true"><code v-html="highlightedRightInput" /></pre>
           <textarea
             ref="rightTextarea"
             v-model="rightInput"
-            class="relative w-full h-full pt-8 pb-3 px-3 font-mono text-sm leading-[1.625rem] bg-transparent resize-none focus:outline-none placeholder-gray-500 dark:placeholder-gray-600"
-            :class="mode === 'json' && rightInput ? 'text-transparent caret-gray-900 dark:caret-gray-100' : 'text-gray-900 dark:text-gray-100'"
+            class="relative w-full h-full pt-8 pb-3 px-3 font-mono text-sm leading-[1.625rem] bg-transparent resize-none focus:outline-none placeholder-placeholder"
+            :class="mode === 'json' && rightInput ? 'text-transparent caret-caret' : 'text-content'"
             :placeholder="mode === 'json' ? 'Paste JSON here or drop a file...' : 'Paste text here or drop a file...'"
             spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" wrap="off"
             @scroll="syncRightHighlight"
           />
           <Transition enter-active-class="transition-opacity duration-150" enter-from-class="opacity-0" leave-active-class="transition-opacity duration-100" leave-to-class="opacity-0">
-            <div v-if="isDraggingRight" class="absolute inset-0 flex items-center justify-center bg-brand-50/80 dark:bg-brand-900/30 backdrop-blur-sm pointer-events-none">
-              <div class="flex flex-col items-center gap-2 text-brand-600 dark:text-brand-400">
+            <div v-if="isDraggingRight" class="absolute inset-0 flex items-center justify-center bg-brand-50/80 backdrop-blur-sm pointer-events-none">
+              <div class="flex flex-col items-center gap-2 text-brand-accent">
                 <FileText :size="28" />
                 <span class="text-sm font-medium">Drop file here</span>
               </div>
@@ -324,15 +324,15 @@ const rightStats = computed(() => {
       <!-- Diff output -->
       <div v-if="showDiff" class="flex-1 min-h-0 flex">
         <!-- Left diff -->
-        <div ref="leftDiffPane" class="flex-1 min-w-0 overflow-auto font-mono text-sm leading-[1.625rem] border-r border-surface-border dark:border-surface-dark-border" @scroll="onLeftScroll">
+        <div ref="leftDiffPane" class="flex-1 min-w-0 overflow-auto font-mono text-sm leading-[1.625rem] border-r border-surface-border" @scroll="onLeftScroll">
           <div class="min-w-fit">
             <div v-for="(line, idx) in diffResult.left" :key="idx" class="flex h-[1.625rem] whitespace-pre" :class="[lineClass(line), idx === currentDiffRow ? 'diff-line-current' : '']">
-              <span class="shrink-0 w-10 pr-2 text-right text-xs leading-[1.625rem] text-gray-500 select-none bg-surface-secondary/50 dark:bg-surface-dark-secondary/50">{{ line.lineNumber ?? '' }}</span>
+              <span class="shrink-0 w-10 pr-2 text-right text-xs leading-[1.625rem] text-gray-500 select-none bg-surface-secondary/50">{{ line.lineNumber ?? '' }}</span>
               <span class="shrink-0 w-5 flex items-center justify-center text-xs select-none" aria-hidden="true">
                 <Minus v-if="lineIcon(line, 'left') === 'minus'" :size="12" class="text-red-600" />
               </span>
               <span v-if="line.content" class="flex-1 px-1" v-html="highlightLine(line.content)" />
-              <span v-else class="flex-1 px-1 text-gray-400 dark:text-gray-600 italic line-through" v-html="highlightLine(getOppositeContent(idx, 'left'))" />
+              <span v-else class="flex-1 px-1 text-content-faint italic line-through" v-html="highlightLine(getOppositeContent(idx, 'left'))" />
             </div>
           </div>
         </div>
@@ -340,12 +340,12 @@ const rightStats = computed(() => {
         <div ref="rightDiffPane" class="flex-1 min-w-0 overflow-auto font-mono text-sm leading-[1.625rem]" @scroll="onRightScroll">
           <div class="min-w-fit">
             <div v-for="(line, idx) in diffResult.right" :key="idx" class="flex h-[1.625rem] whitespace-pre" :class="[lineClass(line), idx === currentDiffRow ? 'diff-line-current' : '']">
-              <span class="shrink-0 w-10 pr-2 text-right text-xs leading-[1.625rem] text-gray-500 select-none bg-surface-secondary/50 dark:bg-surface-dark-secondary/50">{{ line.lineNumber ?? '' }}</span>
+              <span class="shrink-0 w-10 pr-2 text-right text-xs leading-[1.625rem] text-gray-500 select-none bg-surface-secondary/50">{{ line.lineNumber ?? '' }}</span>
               <span class="shrink-0 w-5 flex items-center justify-center text-xs select-none" aria-hidden="true">
                 <Plus v-if="lineIcon(line, 'right') === 'plus'" :size="12" class="text-green-600" />
               </span>
               <span v-if="line.content" class="flex-1 px-1" v-html="highlightLine(line.content)" />
-              <span v-else class="flex-1 px-1 text-gray-400 dark:text-gray-600 italic line-through" v-html="highlightLine(getOppositeContent(idx, 'right'))" />
+              <span v-else class="flex-1 px-1 text-content-faint italic line-through" v-html="highlightLine(getOppositeContent(idx, 'right'))" />
             </div>
           </div>
         </div>
@@ -353,11 +353,11 @@ const rightStats = computed(() => {
     </div>
 
     <!-- Status bar -->
-    <div class="flex items-center justify-between px-3 py-1 text-[11px] font-mono text-gray-500 bg-surface-secondary border border-t-0 border-surface-border rounded-b-xl dark:bg-surface-dark-secondary dark:border-surface-dark-border">
+    <div class="flex items-center justify-between px-3 py-1 text-[11px] font-mono text-content-muted bg-surface-secondary border border-t-0 border-surface-border rounded-b-xl">
       <span v-if="leftStats">A: {{ leftStats.lines }} lines &middot; {{ leftStats.size }}</span>
-      <span v-else class="text-gray-400 dark:text-gray-600">A: empty</span>
+      <span v-else class="text-content-faint">A: empty</span>
       <span v-if="rightStats">B: {{ rightStats.lines }} lines &middot; {{ rightStats.size }}</span>
-      <span v-else class="text-gray-400 dark:text-gray-600">B: empty</span>
+      <span v-else class="text-content-faint">B: empty</span>
     </div>
   </div>
 </template>
@@ -365,22 +365,19 @@ const rightStats = computed(() => {
 <style scoped>
 .toolbar-btn {
   @apply inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium rounded-lg
-         text-gray-600 hover:bg-gray-100 hover:text-gray-900
-         dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200
+         text-content-tertiary hover:bg-surface-secondary hover:text-content
          transition-colors duration-150
          disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent;
 }
 
 .toolbar-mode-btn {
   @apply inline-flex items-center gap-1.5 px-2.5 py-1.5 text-sm font-medium
-         text-gray-600 hover:bg-gray-100 hover:text-gray-900
-         dark:text-gray-400 dark:hover:bg-surface-dark-secondary dark:hover:text-gray-200
+         text-content-tertiary hover:bg-surface-secondary hover:text-content
          transition-colors duration-150;
 }
 
 .toolbar-mode-btn-active {
-  @apply bg-brand-50 text-brand-700 hover:bg-brand-100
-         dark:bg-brand-900/20 dark:text-brand-300 dark:hover:bg-brand-900/30;
+  @apply bg-brand-50 text-brand-accent hover:bg-brand-100;
 }
 
 .diff-line-added { @apply bg-green-100 dark:bg-green-900/25; }

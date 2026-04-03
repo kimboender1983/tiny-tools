@@ -64,7 +64,7 @@ async function uploadFile(e: Event) {
 
 <template>
   <div>
-    <label v-if="label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+    <label v-if="label" class="block text-sm font-medium text-content-secondary mb-1">
       {{ label }}
     </label>
 
@@ -73,7 +73,7 @@ async function uploadFile(e: Event) {
       <img
         :src="modelValue"
         :alt="label || 'Selected image'"
-        class="w-full h-32 object-cover rounded-lg border border-surface-border dark:border-surface-dark-border"
+        class="w-full h-32 object-cover rounded-lg border border-surface-border"
       />
       <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
         <button
@@ -96,7 +96,7 @@ async function uploadFile(e: Event) {
     <button
       v-else
       type="button"
-      class="w-full h-24 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-surface-border dark:border-surface-dark-border text-gray-500 dark:text-gray-400 hover:border-brand-300 hover:text-brand-500 dark:hover:border-brand-700 dark:hover:text-brand-400 transition-colors"
+      class="w-full h-24 flex flex-col items-center justify-center gap-1.5 rounded-lg border-2 border-dashed border-surface-border text-content-muted hover:border-brand-300 hover:text-brand-500 dark:hover:border-brand-700 dark:hover:text-brand-400 transition-colors"
       @click="openPicker"
     >
       <ImageIcon :size="20" />
@@ -116,10 +116,10 @@ async function uploadFile(e: Event) {
           class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
           @click.self="open = false"
         >
-          <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+          <div class="bg-surface border border-surface-border rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
             <!-- Header -->
-            <div class="flex items-center justify-between px-4 py-3 border-b border-surface-border dark:border-surface-dark-border">
-              <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Select Image</h3>
+            <div class="flex items-center justify-between px-4 py-3 border-b border-surface-border">
+              <h3 class="text-sm font-semibold text-content">Select Image</h3>
               <button
                 type="button"
                 class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
@@ -130,7 +130,7 @@ async function uploadFile(e: Event) {
             </div>
 
             <!-- Upload -->
-            <div class="px-4 py-3 border-b border-surface-border dark:border-surface-dark-border">
+            <div class="px-4 py-3 border-b border-surface-border">
               <label class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 cursor-pointer transition-colors">
                 <Upload v-if="!uploading" :size="14" />
                 <Loader2 v-else :size="14" class="animate-spin" />

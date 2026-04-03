@@ -99,15 +99,15 @@ onMounted(loadAnalytics);
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">Affiliate Analytics</h1>
-      <div class="flex gap-1 border border-surface-border dark:border-surface-dark-border rounded-lg p-0.5">
+      <h1 class="text-2xl font-bold text-content">Affiliate Analytics</h1>
+      <div class="flex gap-1 border border-surface-border rounded-lg p-0.5">
         <button
           v-for="opt in dayOptions"
           :key="opt.value"
           class="px-3 py-1 text-sm rounded-md transition-colors"
           :class="days === opt.value
             ? 'bg-brand-500 text-white'
-            : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'"
+            : 'text-content-tertiary hover:text-content'"
           @click="setDays(opt.value)"
         >
           {{ opt.label }}
@@ -119,45 +119,45 @@ onMounted(loadAnalytics);
       {{ error }}
     </div>
 
-    <div v-if="loading" class="text-sm text-gray-500 dark:text-gray-400">Loading analytics...</div>
+    <div v-if="loading" class="text-sm text-content-muted">Loading analytics...</div>
 
     <template v-else-if="analytics">
       <!-- Total clicks -->
-      <div class="mb-6 bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5">
-        <p class="text-sm text-gray-500 dark:text-gray-400">Total Clicks (last {{ days }} days)</p>
-        <p class="text-3xl font-bold text-gray-900 dark:text-gray-50 mt-1">{{ analytics.totalClicks.toLocaleString() }}</p>
+      <div class="mb-6 bg-surface border border-surface-border rounded-xl p-5">
+        <p class="text-sm text-content-muted">Total Clicks (last {{ days }} days)</p>
+        <p class="text-3xl font-bold text-content mt-1">{{ analytics.totalClicks.toLocaleString() }}</p>
       </div>
 
       <!-- Chart -->
       <div
         v-if="chartData && chartData.labels.length > 0"
-        class="mb-6 bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl p-5"
+        class="mb-6 bg-surface border border-surface-border rounded-xl p-5"
       >
-        <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-50 mb-4">Clicks Over Time</h2>
+        <h2 class="text-sm font-semibold text-content mb-4">Clicks Over Time</h2>
         <div class="h-64">
           <Line :data="chartData" :options="chartOptions" />
         </div>
       </div>
 
       <!-- Per-affiliate table -->
-      <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl overflow-hidden">
-        <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-50 px-5 pt-5 mb-3">Per Affiliate</h2>
-        <div v-if="analytics.perAffiliate.length === 0" class="px-5 pb-5 text-sm text-gray-500 dark:text-gray-400">
+      <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
+        <h2 class="text-sm font-semibold text-content px-5 pt-5 mb-3">Per Affiliate</h2>
+        <div v-if="analytics.perAffiliate.length === 0" class="px-5 pb-5 text-sm text-content-muted">
           No clicks recorded yet.
         </div>
         <table v-else class="w-full text-sm">
           <thead>
-            <tr class="border-b border-surface-border dark:border-surface-dark-border text-left">
-              <th class="px-5 py-3 font-medium text-gray-500 dark:text-gray-400">Affiliate</th>
-              <th class="px-5 py-3 font-medium text-gray-500 dark:text-gray-400">Slug</th>
-              <th class="px-5 py-3 font-medium text-gray-500 dark:text-gray-400 text-right">Clicks</th>
+            <tr class="border-b border-surface-border text-left">
+              <th class="px-5 py-3 font-medium text-content-muted">Affiliate</th>
+              <th class="px-5 py-3 font-medium text-content-muted">Slug</th>
+              <th class="px-5 py-3 font-medium text-content-muted text-right">Clicks</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-surface-border dark:divide-surface-dark-border">
+          <tbody class="divide-y divide-surface-border">
             <tr v-for="aff in analytics.perAffiliate" :key="aff.affiliateId">
-              <td class="px-5 py-3 font-medium text-gray-900 dark:text-gray-100">{{ aff.name }}</td>
-              <td class="px-5 py-3 text-gray-500 dark:text-gray-400 font-mono text-xs">{{ aff.slug }}</td>
-              <td class="px-5 py-3 text-right font-semibold text-gray-900 dark:text-gray-100">{{ aff.totalClicks.toLocaleString() }}</td>
+              <td class="px-5 py-3 font-medium text-content">{{ aff.name }}</td>
+              <td class="px-5 py-3 text-content-muted font-mono text-xs">{{ aff.slug }}</td>
+              <td class="px-5 py-3 text-right font-semibold text-content">{{ aff.totalClicks.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>

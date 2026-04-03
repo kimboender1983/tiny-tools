@@ -9,8 +9,8 @@ export const useAppStore = defineStore('app', () => {
   // own SSR state via the color-mode module.
   const colorMode = useColorMode();
   const theme = computed({
-    get: () => colorMode.preference as 'light' | 'dark' | 'system',
-    set: (value: 'light' | 'dark' | 'system') => {
+    get: () => colorMode.preference as 'light' | 'dark' | 'vibrant' | 'system',
+    set: (value: 'light' | 'dark' | 'vibrant' | 'system') => {
       colorMode.preference = value;
     },
   });

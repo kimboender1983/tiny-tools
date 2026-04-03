@@ -371,7 +371,7 @@ useHead({
     <!-- Back link -->
     <NuxtLink
       to="/blog"
-      class="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-brand-500 transition-colors mb-8"
+      class="inline-flex items-center gap-1.5 text-sm text-content-muted hover:text-brand-500 transition-colors mb-8"
     >
       <ArrowLeft :size="16" />
       Back to blog
@@ -385,7 +385,7 @@ useHead({
           <!-- Category badge -->
           <div v-if="post!.category" class="mb-3">
             <span
-              class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-600 dark:bg-brand-900/20 dark:text-brand-400"
+              class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-accent"
             >
               <component :is="getCategoryIcon(post!.category)" v-if="getCategoryIcon(post!.category)" :size="12" />
               {{ getCategoryName(post!.category) }}
@@ -393,14 +393,14 @@ useHead({
           </div>
 
           <h1
-            class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-50"
+            class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-content"
           >
             {{ post!.title }}
           </h1>
 
           <!-- Author & meta -->
           <div
-            class="mt-6 flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400"
+            class="mt-6 flex flex-wrap items-center gap-4 text-sm text-content-muted"
           >
             <!-- Author -->
             <div class="flex items-center gap-2">
@@ -412,11 +412,11 @@ useHead({
               />
               <div
                 v-else
-                class="w-8 h-8 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center text-brand-600 dark:text-brand-400 font-medium text-sm"
+                class="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-accent font-medium text-sm"
               >
                 {{ (post!.author?.name || 'T')[0].toUpperCase() }}
               </div>
-              <span class="font-medium text-gray-700 dark:text-gray-300">
+              <span class="font-medium text-content-secondary">
                 {{ post!.author?.name || 'Pickbox' }}
               </span>
             </div>
@@ -459,18 +459,18 @@ useHead({
 
         <!-- FAQ Section -->
         <div v-if="post.faq && post.faq.length > 0" class="mt-12">
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Frequently Asked Questions</h2>
+          <h2 class="text-2xl font-bold text-content mb-6">Frequently Asked Questions</h2>
           <div class="space-y-3">
             <details
               v-for="(item, idx) in post.faq"
               :key="idx"
-              class="group rounded-xl border border-surface-border dark:border-surface-dark-border bg-surface dark:bg-surface-dark overflow-hidden"
+              class="group rounded-xl border border-surface-border bg-surface overflow-hidden"
             >
-              <summary class="flex items-center justify-between px-5 py-4 cursor-pointer select-none text-gray-900 dark:text-gray-100 font-medium hover:bg-gray-50 dark:hover:bg-surface-dark-secondary transition-colors [&::-webkit-details-marker]:hidden list-none">
+              <summary class="flex items-center justify-between px-5 py-4 cursor-pointer select-none text-content font-medium hover:bg-surface-secondary transition-colors [&::-webkit-details-marker]:hidden list-none">
                 {{ item.question }}
                 <span class="shrink-0 ml-3 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none">+</span>
               </summary>
-              <div class="px-5 pb-4 text-gray-600 dark:text-gray-400 leading-relaxed border-t border-surface-border dark:border-surface-dark-border pt-3">
+              <div class="px-5 pb-4 text-content-tertiary leading-relaxed border-t border-surface-border pt-3">
                 {{ item.answer }}
               </div>
             </details>
@@ -479,19 +479,19 @@ useHead({
 
         <!-- Tool CTA -->
         <div
-          class="mt-12 p-6 rounded-xl border border-brand-200 dark:border-brand-800 bg-brand-50/50 dark:bg-brand-900/10"
+          class="mt-12 p-6 rounded-xl border border-brand-200 bg-brand-50/50"
         >
           <p
-            class="text-sm font-medium text-brand-600 dark:text-brand-400 mb-1"
+            class="text-sm font-medium text-brand-accent mb-1"
           >
             Try it yourself
           </p>
           <h3
-            class="text-lg font-semibold text-gray-900 dark:text-gray-50 mb-2"
+            class="text-lg font-semibold text-content mb-2"
           >
             {{ suggestedTool.name }}
           </h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          <p class="text-sm text-content-tertiary mb-4">
             {{ suggestedTool.description }}
           </p>
           <NuxtLink
@@ -509,10 +509,10 @@ useHead({
         <div class="sticky top-24">
           <div
             v-if="tableOfContents.length > 0"
-            class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5"
+            class="rounded-xl border border-surface-border bg-surface p-5"
           >
             <h2
-              class="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-gray-50 mb-4"
+              class="flex items-center gap-2 text-sm font-semibold text-content mb-4"
             >
               <List :size="16" />
               Table of Contents
@@ -526,7 +526,7 @@ useHead({
                 >
                   <a
                     :href="`#${item.id}`"
-                    class="block text-sm text-gray-500 dark:text-gray-400 hover:text-brand-500 dark:hover:text-brand-400 transition-colors leading-snug"
+                    class="block text-sm text-content-muted hover:text-brand-accent transition-colors leading-snug"
                   >
                     {{ item.text }}
                   </a>
@@ -539,9 +539,9 @@ useHead({
     </div>
 
     <!-- Related posts -->
-    <section v-if="relatedPosts.length > 0" class="mt-16 pt-12 border-t border-gray-200 dark:border-gray-700">
+    <section v-if="relatedPosts.length > 0" class="mt-16 pt-12 border-t border-surface-border">
       <h2
-        class="text-2xl font-bold text-gray-900 dark:text-gray-50 mb-8"
+        class="text-2xl font-bold text-content mb-8"
       >
         Related Posts
       </h2>
@@ -552,10 +552,10 @@ useHead({
           v-for="related in relatedPosts"
           :key="related._id"
           :to="blogPostUrl(related)"
-          class="group flex flex-col rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden transition-shadow hover:shadow-lg"
+          class="group flex flex-col rounded-xl border border-surface-border bg-surface overflow-hidden transition-shadow hover:shadow-lg"
         >
           <div
-            class="aspect-video bg-gray-100 dark:bg-gray-700 overflow-hidden"
+            class="aspect-video bg-surface-secondary overflow-hidden"
           >
             <img
               v-if="related.coverImage"
@@ -570,18 +570,18 @@ useHead({
             >
               <BookOpen
                 :size="32"
-                class="text-gray-300 dark:text-gray-500"
+                class="text-content-faint"
               />
             </div>
           </div>
           <div class="p-4">
             <h3
-              class="font-semibold text-gray-900 dark:text-gray-50 group-hover:text-brand-500 transition-colors line-clamp-2"
+              class="font-semibold text-content group-hover:text-brand-500 transition-colors line-clamp-2"
             >
               {{ related.title }}
             </h3>
             <p
-              class="mt-1.5 text-sm text-gray-600 dark:text-gray-400 line-clamp-2"
+              class="mt-1.5 text-sm text-content-tertiary line-clamp-2"
             >
               {{ related.excerpt }}
             </p>

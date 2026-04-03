@@ -1,164 +1,88 @@
 <template>
   <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-    <!-- ===================== LIGHT MODE ===================== -->
-    <div class="dark:hidden">
-      <!-- Large gradient blob — top right -->
-      <svg class="shape absolute top-[5%] right-[5%] w-[280px] h-[280px] animate-float-slow" viewBox="0 0 280 280">
-        <defs>
-          <radialGradient id="blob-lg-light">
-            <stop offset="0%" stop-color="#60A5FA" />
-            <stop offset="100%" stop-color="#93C5FD" />
-          </radialGradient>
-          <filter id="blur-lg-light" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="35" />
-          </filter>
-        </defs>
-        <circle cx="140" cy="140" r="100" fill="url(#blob-lg-light)" filter="url(#blur-lg-light)" opacity="0.5" />
-      </svg>
+    <!-- Large gradient blob — top right -->
+    <svg class="shape absolute top-[5%] right-[5%] w-[280px] h-[280px] animate-float-slow" viewBox="0 0 280 280">
+      <defs>
+        <radialGradient id="blob-lg">
+          <stop offset="0%" class="blob-start" />
+          <stop offset="100%" class="blob-end" />
+        </radialGradient>
+        <filter id="blur-lg" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="35" />
+        </filter>
+      </defs>
+      <circle cx="140" cy="140" r="100" fill="url(#blob-lg)" filter="url(#blur-lg)" class="blob-circle" />
+    </svg>
 
-      <!-- Small gradient blob — bottom left -->
-      <svg class="shape absolute bottom-[8%] left-[6%] w-[180px] h-[180px] animate-float-slow-reverse" viewBox="0 0 180 180">
-        <defs>
-          <radialGradient id="blob-sm-light">
-            <stop offset="0%" stop-color="#60A5FA" />
-            <stop offset="100%" stop-color="#BFDBFE" />
-          </radialGradient>
-          <filter id="blur-sm-light" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="25" />
-          </filter>
-        </defs>
-        <circle cx="90" cy="90" r="60" fill="url(#blob-sm-light)" filter="url(#blur-sm-light)" opacity="0.45" />
-      </svg>
+    <!-- Small gradient blob — bottom left -->
+    <svg class="shape absolute bottom-[8%] left-[6%] w-[180px] h-[180px] animate-float-slow-reverse" viewBox="0 0 180 180">
+      <defs>
+        <radialGradient id="blob-sm">
+          <stop offset="0%" class="blob-start" />
+          <stop offset="100%" class="blob-end" />
+        </radialGradient>
+        <filter id="blur-sm" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="25" />
+        </filter>
+      </defs>
+      <circle cx="90" cy="90" r="60" fill="url(#blob-sm)" filter="url(#blur-sm)" class="blob-circle-sm" />
+    </svg>
 
-      <!-- Hexagon outline — top left area -->
-      <svg class="shape absolute top-[15%] left-[12%] w-[90px] h-[90px] animate-float-gentle" viewBox="0 0 100 100">
-        <polygon
-          points="50,5 93,27.5 93,72.5 50,95 7,72.5 7,27.5"
-          fill="none"
-          stroke="#60A5FA"
-          stroke-width="1.5"
-          opacity="0.4"
-        />
-      </svg>
+    <!-- Hexagon outline — top left area -->
+    <svg class="shape absolute top-[15%] left-[12%] w-[90px] h-[90px] animate-float-gentle" viewBox="0 0 100 100">
+      <polygon
+        points="50,5 93,27.5 93,72.5 50,95 7,72.5 7,27.5"
+        fill="none"
+        class="hero-shape"
+        stroke-width="1.5"
+      />
+    </svg>
 
-      <!-- Rounded square outline — right mid -->
-      <svg class="shape absolute top-[42%] right-[10%] w-[60px] h-[60px] animate-float-gentle-reverse" viewBox="0 0 70 70">
-        <rect
-          x="5" y="5" width="60" height="60" rx="14"
-          fill="none"
-          stroke="#60A5FA"
-          stroke-width="1.5"
-          opacity="0.35"
-        />
-      </svg>
+    <!-- Rounded square outline — right mid -->
+    <svg class="shape absolute top-[42%] right-[10%] w-[60px] h-[60px] animate-float-gentle-reverse" viewBox="0 0 70 70">
+      <rect
+        x="5" y="5" width="60" height="60" rx="14"
+        fill="none"
+        class="hero-shape"
+        stroke-width="1.5"
+      />
+    </svg>
 
-      <!-- Dot grid 3×3 — bottom right -->
-      <svg class="shape absolute bottom-[18%] right-[16%] w-[52px] h-[52px] animate-float-slow-alt" viewBox="0 0 52 52">
-        <circle cx="6"  cy="6"  r="2.5" fill="#2563EB" opacity="0.3" />
-        <circle cx="26" cy="6"  r="2.5" fill="#2563EB" opacity="0.3" />
-        <circle cx="46" cy="6"  r="2.5" fill="#2563EB" opacity="0.3" />
-        <circle cx="6"  cy="26" r="2.5" fill="#2563EB" opacity="0.3" />
-        <circle cx="26" cy="26" r="2.5" fill="#2563EB" opacity="0.3" />
-        <circle cx="46" cy="26" r="2.5" fill="#2563EB" opacity="0.3" />
-        <circle cx="6"  cy="46" r="2.5" fill="#2563EB" opacity="0.3" />
-        <circle cx="26" cy="46" r="2.5" fill="#2563EB" opacity="0.3" />
-        <circle cx="46" cy="46" r="2.5" fill="#2563EB" opacity="0.3" />
-      </svg>
+    <!-- Dot grid 3×3 — bottom right -->
+    <svg class="shape absolute bottom-[18%] right-[16%] w-[52px] h-[52px] animate-float-slow-alt" viewBox="0 0 52 52">
+      <circle cx="6"  cy="6"  r="2.5" class="hero-dot" />
+      <circle cx="26" cy="6"  r="2.5" class="hero-dot" />
+      <circle cx="46" cy="6"  r="2.5" class="hero-dot" />
+      <circle cx="6"  cy="26" r="2.5" class="hero-dot" />
+      <circle cx="26" cy="26" r="2.5" class="hero-dot" />
+      <circle cx="46" cy="26" r="2.5" class="hero-dot" />
+      <circle cx="6"  cy="46" r="2.5" class="hero-dot" />
+      <circle cx="26" cy="46" r="2.5" class="hero-dot" />
+      <circle cx="46" cy="46" r="2.5" class="hero-dot" />
+    </svg>
 
-      <!-- Small diamond — left mid-low -->
-      <svg class="shape absolute top-[55%] left-[20%] w-[36px] h-[36px] animate-float-gentle-alt" viewBox="0 0 36 36">
-        <rect
-          x="6" y="6" width="24" height="24" rx="4"
-          fill="none"
-          stroke="#60A5FA"
-          stroke-width="1.5"
-          opacity="0.35"
-          transform="rotate(45 18 18)"
-        />
-      </svg>
-    </div>
-
-    <!-- ===================== DARK MODE ===================== -->
-    <div class="hidden dark:block">
-      <!-- Large gradient blob — top right -->
-      <svg class="shape absolute top-[5%] right-[5%] w-[280px] h-[280px] animate-float-slow" viewBox="0 0 280 280">
-        <defs>
-          <radialGradient id="blob-lg-dark">
-            <stop offset="0%" stop-color="#1E40AF" />
-            <stop offset="100%" stop-color="#1E3A8A" />
-          </radialGradient>
-          <filter id="blur-lg-dark" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="35" />
-          </filter>
-        </defs>
-        <circle cx="140" cy="140" r="100" fill="url(#blob-lg-dark)" filter="url(#blur-lg-dark)" opacity="0.5" />
-      </svg>
-
-      <!-- Small gradient blob — bottom left -->
-      <svg class="shape absolute bottom-[8%] left-[6%] w-[180px] h-[180px] animate-float-slow-reverse" viewBox="0 0 180 180">
-        <defs>
-          <radialGradient id="blob-sm-dark">
-            <stop offset="0%" stop-color="#1E40AF" />
-            <stop offset="100%" stop-color="#1E3A8A" />
-          </radialGradient>
-          <filter id="blur-sm-dark" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="25" />
-          </filter>
-        </defs>
-        <circle cx="90" cy="90" r="60" fill="url(#blob-sm-dark)" filter="url(#blur-sm-dark)" opacity="0.45" />
-      </svg>
-
-      <!-- Hexagon outline — top left area -->
-      <svg class="shape absolute top-[15%] left-[12%] w-[90px] h-[90px] animate-float-gentle" viewBox="0 0 100 100">
-        <polygon
-          points="50,5 93,27.5 93,72.5 50,95 7,72.5 7,27.5"
-          fill="none"
-          stroke="#3B82F6"
-          stroke-width="1.5"
-          opacity="0.3"
-        />
-      </svg>
-
-      <!-- Rounded square outline — right mid -->
-      <svg class="shape absolute top-[42%] right-[10%] w-[60px] h-[60px] animate-float-gentle-reverse" viewBox="0 0 70 70">
-        <rect
-          x="5" y="5" width="60" height="60" rx="14"
-          fill="none"
-          stroke="#2563EB"
-          stroke-width="1.5"
-          opacity="0.25"
-        />
-      </svg>
-
-      <!-- Dot grid 3×3 — bottom right -->
-      <svg class="shape absolute bottom-[18%] right-[16%] w-[52px] h-[52px] animate-float-slow-alt" viewBox="0 0 52 52">
-        <circle cx="6"  cy="6"  r="2.5" fill="#3B82F6" opacity="0.3" />
-        <circle cx="26" cy="6"  r="2.5" fill="#3B82F6" opacity="0.3" />
-        <circle cx="46" cy="6"  r="2.5" fill="#3B82F6" opacity="0.3" />
-        <circle cx="6"  cy="26" r="2.5" fill="#3B82F6" opacity="0.3" />
-        <circle cx="26" cy="26" r="2.5" fill="#3B82F6" opacity="0.3" />
-        <circle cx="46" cy="26" r="2.5" fill="#3B82F6" opacity="0.3" />
-        <circle cx="6"  cy="46" r="2.5" fill="#3B82F6" opacity="0.3" />
-        <circle cx="26" cy="46" r="2.5" fill="#3B82F6" opacity="0.3" />
-        <circle cx="46" cy="46" r="2.5" fill="#3B82F6" opacity="0.3" />
-      </svg>
-
-      <!-- Small diamond — left mid-low -->
-      <svg class="shape absolute top-[55%] left-[20%] w-[36px] h-[36px] animate-float-gentle-alt" viewBox="0 0 36 36">
-        <rect
-          x="6" y="6" width="24" height="24" rx="4"
-          fill="none"
-          stroke="#2563EB"
-          stroke-width="1.5"
-          opacity="0.25"
-          transform="rotate(45 18 18)"
-        />
-      </svg>
-    </div>
+    <!-- Small diamond — left mid-low -->
+    <svg class="shape absolute top-[55%] left-[20%] w-[36px] h-[36px] animate-float-gentle-alt" viewBox="0 0 36 36">
+      <rect
+        x="6" y="6" width="24" height="24" rx="4"
+        fill="none"
+        class="hero-shape"
+        stroke-width="1.5"
+        transform="rotate(45 18 18)"
+      />
+    </svg>
   </div>
 </template>
 
 <style scoped>
+/* Theme-driven SVG colours via CSS custom properties */
+.blob-start { stop-color: var(--hero-blob-start); }
+.blob-end { stop-color: var(--hero-blob-end); }
+.blob-circle { opacity: var(--hero-blob-opacity); }
+.blob-circle-sm { opacity: calc(var(--hero-blob-opacity) - 0.05); }
+.hero-shape { stroke: var(--hero-shape); opacity: var(--hero-shape-opacity); }
+.hero-dot { fill: var(--hero-dot); opacity: 0.3; }
+
 /* Floating blobs — more noticeable movement */
 @keyframes float-slow {
   0%, 100% { transform: translate(0, 0) scale(1); }

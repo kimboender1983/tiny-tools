@@ -139,8 +139,8 @@ onMounted(loadMedia);
 <template>
   <div>
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-50">Media</h1>
-      <span v-if="total > 0" class="text-sm text-gray-500 dark:text-gray-400">{{ total }} files</span>
+      <h1 class="text-2xl font-bold text-content">Media</h1>
+      <span v-if="total > 0" class="text-sm text-content-muted">{{ total }} files</span>
     </div>
 
     <div v-if="error" class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">
@@ -151,8 +151,8 @@ onMounted(loadMedia);
     <div
       class="mb-6 border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer"
       :class="isDragOver
-        ? 'border-brand-500 bg-brand-50 dark:bg-brand-900/10'
-        : 'border-gray-300 dark:border-surface-dark-border hover:border-gray-400 dark:hover:border-gray-600'"
+        ? 'border-brand-500 bg-brand-50'
+        : 'border-gray-300 hover:border-gray-400'"
       @dragover="onDragOver"
       @dragleave="onDragLeave"
       @drop.prevent="onDrop"
@@ -169,26 +169,26 @@ onMounted(loadMedia);
       <Upload :size="24" class="mx-auto mb-2 text-gray-500" />
       <p v-if="uploading" class="text-sm text-brand-500 font-medium">Uploading...</p>
       <template v-else>
-        <p class="text-sm text-gray-600 dark:text-gray-400">
+        <p class="text-sm text-content-tertiary">
           Drop files here or click to upload
         </p>
-        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Images, videos, PDFs</p>
+        <p class="text-xs text-content-muted mt-1">Images, videos, PDFs</p>
       </template>
     </div>
 
     <!-- Media grid -->
-    <div v-if="loading" class="text-sm text-gray-500 dark:text-gray-400">Loading...</div>
-    <div v-else-if="media.length === 0" class="text-center py-12 text-sm text-gray-500 dark:text-gray-400">
+    <div v-if="loading" class="text-sm text-content-muted">Loading...</div>
+    <div v-else-if="media.length === 0" class="text-center py-12 text-sm text-content-muted">
       No media uploaded yet.
     </div>
     <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
       <div
         v-for="item in media"
         :key="item._id"
-        class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl overflow-hidden group"
+        class="bg-surface border border-surface-border rounded-xl overflow-hidden group"
       >
         <!-- Thumbnail -->
-        <div class="aspect-square bg-gray-100 dark:bg-surface-dark-secondary relative overflow-hidden">
+        <div class="aspect-square bg-surface-secondary relative overflow-hidden">
           <img
             v-if="isImage(item.mimeType)"
             :src="item.url"
@@ -252,10 +252,10 @@ onMounted(loadMedia);
 
         <!-- Info -->
         <div class="p-2.5">
-          <p class="text-xs font-medium text-gray-900 dark:text-gray-100 truncate" :title="item.filename">
+          <p class="text-xs font-medium text-content truncate" :title="item.filename">
             {{ item.filename }}
           </p>
-          <div class="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
+          <div class="flex items-center gap-2 mt-1 text-xs text-content-muted">
             <span>{{ formatSize(item.size) }}</span>
             <span v-if="item.width && item.height">{{ item.width }}x{{ item.height }}</span>
           </div>
@@ -268,7 +268,7 @@ onMounted(loadMedia);
                   v-model="editingAltText"
                   type="text"
                   placeholder="Alt text"
-                  class="flex-1 min-w-0 px-1.5 py-0.5 rounded border border-gray-300 bg-white text-gray-900 text-xs focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                  class="flex-1 min-w-0 px-1.5 py-0.5 rounded border border-gray-300 bg-white text-gray-900 text-xs focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none"
                   @keyup.enter="saveAlt(item._id)"
                   @keyup.escape="cancelEditAlt"
                 />
@@ -282,7 +282,7 @@ onMounted(loadMedia);
             </template>
             <button
               v-else
-              class="text-xs text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 truncate block w-full text-left"
+              class="text-xs text-content-muted hover:text-content-secondary truncate block w-full text-left"
               @click="startEditAlt(item)"
             >
               {{ item.alt || 'Add alt text...' }}

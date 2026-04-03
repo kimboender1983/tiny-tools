@@ -52,20 +52,20 @@ function onPointerUp() {
     >
       <div
         class="w-px h-full transition-colors duration-150"
-        :class="isDragging ? 'bg-brand-500' : 'bg-surface-border dark:bg-surface-dark-border group-hover:bg-brand-400'"
+        :class="isDragging ? 'bg-brand-500' : 'bg-surface-border group-hover:bg-brand-400'"
       />
       <div
         class="absolute top-1/2 -translate-y-1/2 w-3 h-8 rounded-full border transition-colors duration-150 flex items-center justify-center"
-        :class="isDragging ? 'bg-brand-500 border-brand-500' : 'bg-surface border-surface-border dark:bg-surface-dark dark:border-surface-dark-border group-hover:border-brand-400'"
+        :class="isDragging ? 'bg-brand-500 border-brand-500' : 'bg-surface border-surface-border group-hover:border-brand-400'"
       >
         <div class="flex gap-px">
           <div
             class="w-0.5 h-3 rounded-full"
-            :class="isDragging ? 'bg-white' : 'bg-gray-300 dark:bg-gray-600'"
+            :class="isDragging ? 'bg-white' : 'bg-content-faint'"
           />
           <div
             class="w-0.5 h-3 rounded-full"
-            :class="isDragging ? 'bg-white' : 'bg-gray-300 dark:bg-gray-600'"
+            :class="isDragging ? 'bg-white' : 'bg-content-faint'"
           />
         </div>
       </div>

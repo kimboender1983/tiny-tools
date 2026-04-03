@@ -154,13 +154,13 @@ async function onUploadImg(files: File[], callback: (urls: string[]) => void) {
           class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
           @click.self="galleryOpen = false"
         >
-          <div class="bg-surface dark:bg-surface-dark border border-surface-border dark:border-surface-dark-border rounded-xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col">
+          <div class="bg-surface border border-surface-border rounded-xl shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col">
             <!-- Header -->
-            <div class="flex items-center justify-between px-5 py-3 border-b border-surface-border dark:border-surface-dark-border">
-              <h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Insert Image</h3>
+            <div class="flex items-center justify-between px-5 py-3 border-b border-surface-border">
+              <h3 class="text-sm font-semibold text-content">Insert Image</h3>
               <button
                 type="button"
-                class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+                class="p-1 text-content-muted hover:text-content-secondary transition-colors"
                 @click="galleryOpen = false"
               >
                 <X :size="18" />
@@ -168,7 +168,7 @@ async function onUploadImg(files: File[], callback: (urls: string[]) => void) {
             </div>
 
             <!-- Upload bar -->
-            <div class="px-5 py-3 border-b border-surface-border dark:border-surface-dark-border">
+            <div class="px-5 py-3 border-b border-surface-border">
               <label class="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 cursor-pointer transition-colors">
                 <Upload v-if="!galleryUploading" :size="14" />
                 <Loader2 v-else :size="14" class="animate-spin" />
@@ -185,7 +185,7 @@ async function onUploadImg(files: File[], callback: (urls: string[]) => void) {
                   <Loader2 :size="24" class="animate-spin text-gray-400" />
                 </div>
 
-                <div v-else-if="mediaItems.length === 0" class="flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500">
+                <div v-else-if="mediaItems.length === 0" class="flex flex-col items-center justify-center py-12 text-content-faint">
                   <ImageIcon :size="32" />
                   <p class="text-sm mt-2">No images yet. Upload one above.</p>
                 </div>
@@ -198,7 +198,7 @@ async function onUploadImg(files: File[], callback: (urls: string[]) => void) {
                     class="relative group aspect-square rounded-lg overflow-hidden border-2 transition-colors"
                     :class="selectedMedia?._id === item._id
                       ? 'border-brand-500'
-                      : 'border-transparent hover:border-brand-300 dark:hover:border-brand-700'"
+                      : 'border-transparent hover:border-brand-300'"
                     @click="selectMedia(item)"
                   >
                     <img
@@ -222,32 +222,32 @@ async function onUploadImg(files: File[], callback: (urls: string[]) => void) {
               <!-- Details panel (shown when image selected) -->
               <div
                 v-if="selectedMedia"
-                class="w-64 border-l border-surface-border dark:border-surface-dark-border p-4 space-y-4 overflow-auto shrink-0"
+                class="w-64 border-l border-surface-border p-4 space-y-4 overflow-auto shrink-0"
               >
                 <img
                   :src="selectedMedia.url"
                   :alt="selectedMedia.alt || selectedMedia.filename"
                   class="w-full aspect-video object-cover rounded-lg"
                 />
-                <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ selectedMedia.filename }}</p>
+                <p class="text-xs text-content-muted truncate">{{ selectedMedia.filename }}</p>
 
                 <div>
-                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Alt text</label>
+                  <label class="block text-xs font-medium text-content-secondary mb-1">Alt text</label>
                   <input
                     v-model="insertAlt"
                     type="text"
                     placeholder="Describe the image..."
-                    class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                    class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                   />
                 </div>
 
                 <div>
-                  <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Caption <span class="font-normal text-gray-400">(optional)</span></label>
+                  <label class="block text-xs font-medium text-content-secondary mb-1">Caption <span class="font-normal text-gray-400">(optional)</span></label>
                   <input
                     v-model="insertCaption"
                     type="text"
                     placeholder="Image caption..."
-                    class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
+                    class="w-full px-2.5 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                   />
                 </div>
 

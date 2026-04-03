@@ -17,9 +17,9 @@ const valueColorClass = computed(() => ({
   string: 'text-green-600 dark:text-green-400',
   number: 'text-blue-600 dark:text-blue-400',
   boolean: 'text-purple-600 dark:text-purple-400',
-  null: 'text-gray-500 dark:text-gray-500',
-  object: 'text-gray-600 dark:text-gray-400',
-  array: 'text-gray-600 dark:text-gray-400',
+  null: 'text-content-muted',
+  object: 'text-content-tertiary',
+  array: 'text-content-tertiary',
 })[props.node.type]);
 
 const preview = computed(() => {
@@ -47,20 +47,20 @@ function onToggle(node: TreeNode) {
     <!-- Current node line -->
     <div
       class="flex items-center gap-1 py-0.5 rounded px-1 -mx-1"
-      :class="isExpandable ? 'cursor-pointer hover:bg-gray-100 dark:hover:bg-surface-dark' : ''"
+      :class="isExpandable ? 'cursor-pointer hover:bg-surface-secondary' : ''"
       @click="isExpandable ? onToggle(node) : undefined"
     >
       <!-- Expand/collapse arrow -->
       <template v-if="isExpandable">
-        <ChevronDown v-if="node.expanded" :size="14" class="shrink-0 text-gray-500 dark:text-gray-500" />
-        <ChevronRight v-else :size="14" class="shrink-0 text-gray-500 dark:text-gray-500" />
+        <ChevronDown v-if="node.expanded" :size="14" class="shrink-0 text-content-muted" />
+        <ChevronRight v-else :size="14" class="shrink-0 text-content-muted" />
       </template>
       <span v-else class="w-3.5 shrink-0 inline-block" />
 
       <!-- Key label -->
       <template v-if="!isRoot && node.key">
-        <span class="text-brand-700 dark:text-brand-300">"{{ node.key }}"</span>
-        <span class="text-gray-500 dark:text-gray-500 mx-1">:</span>
+        <span class="text-brand-accent">"{{ node.key }}"</span>
+        <span class="text-content-muted mx-1">:</span>
       </template>
 
       <!-- Value or preview -->
@@ -68,14 +68,14 @@ function onToggle(node: TreeNode) {
         <span :class="valueColorClass">{{ preview }}</span>
       </template>
       <template v-else>
-        <span class="text-gray-500 dark:text-gray-500">{{ node.type === 'object' ? '{' : '[' }}</span>
+        <span class="text-content-muted">{{ node.type === 'object' ? '{' : '[' }}</span>
       </template>
     </div>
 
     <!-- Expanded children -->
     <div
       v-if="isExpandable && node.expanded && node.children"
-      class="pl-5 border-l border-gray-200 dark:border-gray-700 ml-1.5"
+      class="pl-5 border-l border-divider ml-1.5"
     >
       <ToolsJsonTreeNode
         v-for="(child, idx) in node.children"
@@ -83,7 +83,7 @@ function onToggle(node: TreeNode) {
         :node="child"
         @toggle="onToggle"
       />
-      <div class="text-gray-500 dark:text-gray-500 pl-0">
+      <div class="text-content-muted pl-0">
         {{ node.type === 'object' ? '}' : ']' }}
       </div>
     </div>
