@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://tinytools.dev/sitemap.xml
+Sitemap: https://pickbox.dev/sitemap.xml

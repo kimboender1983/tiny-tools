@@ -5,7 +5,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, ArrowRight, Binary, KeyRoun
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'uuid-generator')!;
-const siteUrl = 'https://tinytools.dev';
+const siteUrl = 'https://pickbox.dev';
 const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
@@ -32,17 +32,17 @@ const faqItems = [
 ];
 
 useHead({
-  title: 'UUID Generator — Free Online UUID v4 & v7 Generator | TinyTools',
+  title: 'UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox',
   meta: [
     { name: 'description', content: 'Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500 UUIDs, copy with one click. Free tool running entirely in your browser.' },
     { name: 'keywords', content: tool.keywords.join(', ') },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'UUID Generator — Free Online UUID v4 & v7 Generator | TinyTools' },
+    { property: 'og:title', content: 'UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox' },
     { property: 'og:description', content: 'Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500, copy with one click.' },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'UUID Generator — Free Online UUID v4 & v7 Generator | TinyTools' },
+    { name: 'twitter:title', content: 'UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox' },
     { name: 'twitter:description', content: 'Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500, copy with one click.' },
   ],
   link: [

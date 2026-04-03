@@ -23,7 +23,7 @@ const footerSections = computed(() =>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-8" :class="`lg:grid-cols-${footerSections.length + 1}`">
         <div>
           <div class="font-bold text-lg mb-3">
-            <span class="text-brand-500">Tiny</span><span>Tools</span>
+            <span class="text-brand-500">Pick</span><span>box</span>
           </div>
           <p class="text-sm text-gray-600 dark:text-gray-400">
             Free, fast developer tools that run entirely in your browser. Your data never leaves your device.
@@ -46,7 +46,7 @@ const footerSections = computed(() =>
       </div>
 
       <div class="mt-8 pt-8 border-t border-surface-border dark:border-surface-dark-border flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-500 dark:text-gray-500">
-        <span>&copy; {{ new Date().getFullYear() }} TinyTools. All rights reserved.</span>
+        <span>&copy; {{ new Date().getFullYear() }} Pickbox. All rights reserved.</span>
         <button
           class="inline-flex items-center gap-1.5 text-sm text-gray-400 transition-colors hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
           @click="openCookieSettings"

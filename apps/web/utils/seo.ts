@@ -16,9 +16,9 @@ interface BreadcrumbItem {
 
 export function generateToolMeta(
   tool: IToolMeta,
-  siteUrl: string = 'https://tinytools.dev',
+  siteUrl: string = 'https://pickbox.dev',
 ): HeadMeta {
-  const title = `${tool.name} - Free Online Tool | TinyTools`;
+  const title = `${tool.name} - Free Online Tool | Pickbox`;
   const description = tool.description;
   const url = `${siteUrl}/${tool.slug}`;
 
@@ -33,7 +33,7 @@ export function generateToolMeta(
       { property: 'og:title', content: title },
       { property: 'og:description', content: description },
       { property: 'og:url', content: url },
-      { property: 'og:site_name', content: 'TinyTools' },
+      { property: 'og:site_name', content: 'Pickbox' },
 
       // Twitter Card
       { name: 'twitter:card', content: 'summary_large_image' },
@@ -157,8 +157,8 @@ export function generateJsonLd(
         author,
         publisher: {
           '@type': 'Organization',
-          name: 'TinyTools',
-          url: 'https://tinytools.dev',
+          name: 'Pickbox',
+          url: 'https://pickbox.dev',
         },
       };
     }

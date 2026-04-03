@@ -5,7 +5,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, Braces, KeyRound, ArrowRigh
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'json-diff')!;
-const siteUrl = 'https://tinytools.dev';
+const siteUrl = 'https://pickbox.dev';
 const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
@@ -28,17 +28,17 @@ const faqItems = [
 ];
 
 useHead({
-  title: 'JSON Diff — Free Online JSON & Text Comparison Tool | TinyTools',
+  title: 'JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox',
   meta: [
     { name: 'description', content: 'Compare two JSON objects side by side and instantly spot differences. Free online JSON diff tool with deep comparison, color-coded output, and zero uploads.' },
     { name: 'keywords', content: tool.keywords.join(', ') },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'JSON Diff — Free Online JSON & Text Comparison Tool | TinyTools' },
+    { property: 'og:title', content: 'JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox' },
     { property: 'og:description', content: 'Compare two JSON objects side by side and instantly spot differences. Free diff tool with color-coded output.' },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'JSON Diff — Free Online JSON & Text Comparison Tool | TinyTools' },
+    { name: 'twitter:title', content: 'JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox' },
     { name: 'twitter:description', content: 'Compare two JSON objects side by side and instantly spot differences. Free diff tool with color-coded output.' },
   ],
   link: [

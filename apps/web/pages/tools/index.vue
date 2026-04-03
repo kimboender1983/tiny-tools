@@ -4,10 +4,10 @@ import { TOOLS, TOOL_CATEGORIES } from '@tiny-tools/shared';
 const siteUrl = useRuntimeConfig().public.siteUrl as string;
 
 useHead({
-  title: 'Free Developer Tools | TinyTools',
+  title: 'Free Developer Tools | Pickbox',
   meta: [
     { name: 'description', content: 'Free, fast developer tools that run entirely in your browser. JSON formatter, JSON diff, JWT decoder, image compressor and more.' },
-    { property: 'og:title', content: 'Free Developer Tools | TinyTools' },
+    { property: 'og:title', content: 'Free Developer Tools | Pickbox' },
     { property: 'og:description', content: 'Free, fast developer tools that run entirely in your browser.' },
     { property: 'og:url', content: `${siteUrl}/tools` },
   ],

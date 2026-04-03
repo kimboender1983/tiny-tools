@@ -5,7 +5,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, ArrowRight, KeyRound, Brace
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'base64-encode-decode')!;
-const siteUrl = 'https://tinytools.dev';
+const siteUrl = 'https://pickbox.dev';
 const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
@@ -32,17 +32,17 @@ const faqItems = [
 ];
 
 useHead({
-  title: 'Base64 Encoder/Decoder — Free Online Base64 Tool | TinyTools',
+  title: 'Base64 Encoder/Decoder — Free Online Base64 Tool | Pickbox',
   meta: [
     { name: 'description', content: 'Encode and decode Base64 strings instantly in your browser. Supports text, files, and URL-safe Base64. Free tool with zero data uploads.' },
     { name: 'keywords', content: tool.keywords.join(', ') },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'Base64 Encoder/Decoder — Free Online Base64 Tool | TinyTools' },
+    { property: 'og:title', content: 'Base64 Encoder/Decoder — Free Online Base64 Tool | Pickbox' },
     { property: 'og:description', content: 'Encode and decode Base64 strings instantly in your browser. Supports text, files, and URL-safe Base64.' },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Base64 Encoder/Decoder — Free Online Base64 Tool | TinyTools' },
+    { name: 'twitter:title', content: 'Base64 Encoder/Decoder — Free Online Base64 Tool | Pickbox' },
     { name: 'twitter:description', content: 'Encode and decode Base64 strings instantly in your browser. Supports text, files, and URL-safe Base64.' },
   ],
   link: [

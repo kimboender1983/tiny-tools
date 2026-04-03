@@ -307,7 +307,7 @@ function formatDate(date: Date | string | undefined): string {
 
 // SEO
 const p = post.value!;
-const pageTitle = p.seo?.metaTitle || `${p.title} | TinyTools Blog`;
+const pageTitle = p.seo?.metaTitle || `${p.title} | Pickbox Blog`;
 const pageDescription = p.seo?.metaDescription || p.excerpt;
 const canonicalUrl = p.seo?.canonicalUrl || `${siteUrl}/blog/${getCategorySlug(p.category)}/${p.slug}`;
 const ogImage = p.seo?.ogImage || p.coverImage;
@@ -323,7 +323,7 @@ useHead({
       content: p.seo?.ogDescription || pageDescription,
     },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     ...(ogImage ? [{ property: 'og:image', content: ogImage }] : []),
     { name: 'twitter:card', content: p.seo?.twitterCard || 'summary_large_image' },
     { name: 'twitter:title', content: p.seo?.ogTitle || pageTitle },
@@ -356,7 +356,7 @@ useHead({
             ? new Date(p.publishedAt).toISOString()
             : new Date(p.createdAt).toISOString(),
           dateModified: new Date(p.updatedAt).toISOString(),
-          authorName: typeof p.author === 'object' ? (p.author?.name || 'TinyTools') : 'TinyTools',
+          authorName: typeof p.author === 'object' ? (p.author?.name || 'Pickbox') : 'Pickbox',
           authorImage: typeof p.author === 'object' ? p.author?.avatar : undefined,
           section: getCategoryName(p.category) || undefined,
         }),
@@ -417,7 +417,7 @@ useHead({
                 {{ (post!.author?.name || 'T')[0].toUpperCase() }}
               </div>
               <span class="font-medium text-gray-700 dark:text-gray-300">
-                {{ post!.author?.name || 'TinyTools' }}
+                {{ post!.author?.name || 'Pickbox' }}
               </span>
             </div>
 

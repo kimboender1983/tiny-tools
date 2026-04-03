@@ -5,7 +5,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, Braces, GitCompare, KeyRoun
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'image-compressor')!;
-const siteUrl = 'https://tinytools.dev';
+const siteUrl = 'https://pickbox.dev';
 const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
@@ -32,17 +32,17 @@ const faqItems = [
 ];
 
 useHead({
-  title: 'Image Compressor — Free Online Bulk Image Compression Tool | TinyTools',
+  title: 'Image Compressor — Free Online Bulk Image Compression Tool | Pickbox',
   meta: [
     { name: 'description', content: 'Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk image compressor with quality preview and format conversion.' },
     { name: 'keywords', content: tool.keywords.join(', ') },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'Image Compressor — Free Online Bulk Image Compression Tool | TinyTools' },
+    { property: 'og:title', content: 'Image Compressor — Free Online Bulk Image Compression Tool | Pickbox' },
     { property: 'og:description', content: 'Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk compressor with quality preview.' },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Image Compressor — Free Online Bulk Image Compression Tool | TinyTools' },
+    { name: 'twitter:title', content: 'Image Compressor — Free Online Bulk Image Compression Tool | Pickbox' },
     { name: 'twitter:description', content: 'Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk compressor with quality preview.' },
   ],
   link: [

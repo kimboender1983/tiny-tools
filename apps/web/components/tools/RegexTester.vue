@@ -79,13 +79,13 @@ const examples = [
     label: 'Email',
     pattern: '[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}',
     flags: 'gi',
-    testString: 'Contact us at hello@example.com or support@tinytools.dev for help.',
+    testString: 'Contact us at hello@example.com or support@pickbox.dev for help.',
   },
   {
     label: 'URL',
     pattern: 'https?:\\/\\/[\\w.-]+(?:\\.[a-zA-Z]{2,})(?:\\/[^\\s]*)?',
     flags: 'gi',
-    testString: 'Visit https://tinytools.dev or http://example.com/path?q=1 for more info.',
+    testString: 'Visit https://pickbox.dev or http://example.com/path?q=1 for more info.',
   },
   {
     label: 'Date (YYYY-MM-DD)',

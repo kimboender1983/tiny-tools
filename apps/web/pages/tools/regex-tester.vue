@@ -5,7 +5,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, ArrowRight, Braces, Fingerp
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'regex-tester')!;
-const siteUrl = 'https://tinytools.dev';
+const siteUrl = 'https://pickbox.dev';
 const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
@@ -32,17 +32,17 @@ const faqItems = [
 ];
 
 useHead({
-  title: 'Regex Tester — Free Online Regular Expression Tester | TinyTools',
+  title: 'Regex Tester — Free Online Regular Expression Tester | Pickbox',
   meta: [
     { name: 'description', content: 'Test and debug regular expressions with live matching, capture group highlighting, and replacement preview. Free regex tester running entirely in your browser.' },
     { name: 'keywords', content: tool.keywords.join(', ') },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'Regex Tester — Free Online Regular Expression Tester | TinyTools' },
+    { property: 'og:title', content: 'Regex Tester — Free Online Regular Expression Tester | Pickbox' },
     { property: 'og:description', content: 'Test regex patterns with live matching, capture groups, and replacement preview. Free, browser-based.' },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Regex Tester — Free Online Regular Expression Tester | TinyTools' },
+    { name: 'twitter:title', content: 'Regex Tester — Free Online Regular Expression Tester | Pickbox' },
     { name: 'twitter:description', content: 'Test regex patterns with live matching, capture groups, and replacement preview. Free, browser-based.' },
   ],
   link: [

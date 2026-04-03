@@ -28,7 +28,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      siteUrl: 'https://tinytools.dev',
+      siteUrl: 'https://pickbox.dev',
       apiUrl: 'http://localhost:3001',
       adsenseId: '',
     },

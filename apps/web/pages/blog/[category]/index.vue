@@ -82,8 +82,8 @@ function formatDate(date: Date | string | undefined): string {
 
 const title = computed(() =>
   category.value
-    ? `${category.value.name} — Blog | TinyTools`
-    : `${categorySlug} — Blog | TinyTools`,
+    ? `${category.value.name} — Blog | Pickbox`
+    : `${categorySlug} — Blog | Pickbox`,
 );
 
 useHead({

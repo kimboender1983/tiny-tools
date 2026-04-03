@@ -5,7 +5,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, Braces, ArrowRight } from '
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'jwt-decoder')!;
-const siteUrl = 'https://tinytools.dev';
+const siteUrl = 'https://pickbox.dev';
 const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
@@ -32,17 +32,17 @@ const faqItems = [
 ];
 
 useHead({
-  title: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | TinyTools',
+  title: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox',
   meta: [
     { name: 'description', content: 'Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration. Free JWT decoder with zero data uploads.' },
     { name: 'keywords', content: tool.keywords.join(', ') },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | TinyTools' },
+    { property: 'og:title', content: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox' },
     { property: 'og:description', content: 'Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration.' },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | TinyTools' },
+    { name: 'twitter:title', content: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox' },
     { name: 'twitter:description', content: 'Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration.' },
   ],
   link: [

@@ -14,7 +14,7 @@ interface SitemapData {
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
-  const siteUrl = (config.public.siteUrl as string) || 'https://tinytools.dev';
+  const siteUrl = (config.public.siteUrl as string) || 'https://pickbox.dev';
   const apiUrl = (config.public.apiUrl as string) || 'http://localhost:3001';
   const now = new Date().toISOString();
 

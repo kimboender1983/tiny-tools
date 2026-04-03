@@ -5,7 +5,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, ArrowRight, Regex, Fingerpr
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'unix-timestamp')!;
-const siteUrl = 'https://tinytools.dev';
+const siteUrl = 'https://pickbox.dev';
 const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
@@ -32,17 +32,17 @@ const faqItems = [
 ];
 
 useHead({
-  title: 'Unix Timestamp Converter — Free Epoch Time Converter | TinyTools',
+  title: 'Unix Timestamp Converter — Free Epoch Time Converter | Pickbox',
   meta: [
     { name: 'description', content: 'Convert between Unix timestamps and human-readable dates instantly. Supports seconds and milliseconds, shows UTC and local time, relative time, and more.' },
     { name: 'keywords', content: tool.keywords.join(', ') },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'Unix Timestamp Converter — Free Epoch Time Converter | TinyTools' },
+    { property: 'og:title', content: 'Unix Timestamp Converter — Free Epoch Time Converter | Pickbox' },
     { property: 'og:description', content: 'Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds.' },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Unix Timestamp Converter — Free Epoch Time Converter | TinyTools' },
+    { name: 'twitter:title', content: 'Unix Timestamp Converter — Free Epoch Time Converter | Pickbox' },
     { name: 'twitter:description', content: 'Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds.' },
   ],
   link: [

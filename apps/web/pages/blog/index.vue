@@ -62,7 +62,7 @@ function formatDate(date: Date | string | undefined): string {
 }
 
 // SEO
-const title = 'Developer Blog — Web Development Tips & Tutorials | TinyTools';
+const title = 'Developer Blog — Web Development Tips & Tutorials | Pickbox';
 const description =
   'Practical web development tips, tutorials, and guides. Learn about JavaScript, TypeScript, developer tools, and modern web technologies.';
 const canonicalUrl = `${siteUrl}/blog`;
@@ -75,7 +75,7 @@ useHead({
     { property: 'og:title', content: title },
     { property: 'og:description', content: description },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
     { name: 'twitter:title', content: title },
     { name: 'twitter:description', content: description },
@@ -92,7 +92,7 @@ useHead({
         url: canonicalUrl,
         publisher: {
           '@type': 'Organization',
-          name: 'TinyTools',
+          name: 'Pickbox',
           url: siteUrl,
         },
       }),

@@ -98,7 +98,7 @@ async function save() {
               v-model="form.url"
               type="url"
               class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none dark:bg-surface-dark-secondary dark:border-surface-dark-border dark:text-gray-100"
-              placeholder="https://vercel.com/?ref=tinytools"
+              placeholder="https://vercel.com/?ref=pickbox"
             />
           </div>
 

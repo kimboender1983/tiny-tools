@@ -5,7 +5,7 @@ import { ExternalLink, ChevronRight, BookOpen, Code, GitCompare, ArrowRight } fr
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'json-formatter')!;
-const siteUrl = 'https://tinytools.dev';
+const siteUrl = 'https://pickbox.dev';
 const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
 const faqItems = [
@@ -15,7 +15,7 @@ const faqItems = [
   },
   {
     question: 'Is it safe to paste sensitive JSON data into an online formatter?',
-    answer: 'With TinyTools, yes. Our JSON formatter runs entirely in your browser using JavaScript. Your data is never sent to a server, stored, or logged. Everything is processed client-side, so your API responses, configuration files, and tokens stay on your device.',
+    answer: 'With Pickbox, yes. Our JSON formatter runs entirely in your browser using JavaScript. Your data is never sent to a server, stored, or logged. Everything is processed client-side, so your API responses, configuration files, and tokens stay on your device.',
   },
   {
     question: 'What is the difference between JSON.stringify and a JSON formatter?',
@@ -32,17 +32,17 @@ const faqItems = [
 ];
 
 useHead({
-  title: 'JSON Formatter — Free Online JSON Beautifier & Validator | TinyTools',
+  title: 'JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox',
   meta: [
     { name: 'description', content: 'Format, beautify, and validate JSON instantly in your browser. Free JSON formatter with syntax highlighting, error detection, and zero data uploads.' },
     { name: 'keywords', content: tool.keywords.join(', ') },
     { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'JSON Formatter — Free Online JSON Beautifier & Validator | TinyTools' },
+    { property: 'og:title', content: 'JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox' },
     { property: 'og:description', content: 'Format, beautify, and validate JSON instantly in your browser. Free tool with syntax highlighting and error detection.' },
     { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'TinyTools' },
+    { property: 'og:site_name', content: 'Pickbox' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'JSON Formatter — Free Online JSON Beautifier & Validator | TinyTools' },
+    { name: 'twitter:title', content: 'JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox' },
     { name: 'twitter:description', content: 'Format, beautify, and validate JSON instantly in your browser. Free tool with syntax highlighting and error detection.' },
   ],
   link: [

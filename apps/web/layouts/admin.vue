@@ -23,7 +23,7 @@ const navItems = [
     <aside class="w-64 bg-surface border-r border-surface-border dark:bg-surface-dark dark:border-surface-dark-border flex flex-col">
       <div class="p-4 border-b border-surface-border dark:border-surface-dark-border">
         <NuxtLink to="/admin" class="text-lg font-bold text-brand-500">
-          TinyTools Admin
+          Pickbox Admin
         </NuxtLink>
       </div>
       <nav class="flex-1 p-3 space-y-1">
