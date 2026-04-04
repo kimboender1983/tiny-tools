@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { Menu, X, Sun, Moon, Palette, PartyPopper, Circle } from 'lucide-vue-next';
+import { Menu, X, Sun, Moon, Palette, PartyPopper, Circle, ChevronDown, Check } from 'lucide-vue-next';
 import { TOOLS } from '@tiny-tools/shared';
 
 const colorMode = useColorMode();
 const mobileMenuOpen = ref(false);
+const themeMenuOpen = ref(false);
 const { data: nav } = useNavigation();
 const headerItems = computed(() =>
   nav.value.header.length > 0
@@ -11,35 +12,57 @@ const headerItems = computed(() =>
     : TOOLS.map(t => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` }))
 );
 
-const MODES = ['light', 'dark', 'vibrant', 'party', 'grayscale'] as const;
+const MAIN_MODES = ['light', 'dark', 'grayscale'] as const;
+
+const ALL_THEMES = [
+  { id: 'light', label: 'Light', icon: Sun },
+  { id: 'dark', label: 'Dark', icon: Moon },
+  { id: 'grayscale', label: 'Grayscale', icon: Circle },
+  { id: 'vibrant', label: 'Vibrant', icon: Palette },
+  { id: 'party', label: 'Party', icon: PartyPopper },
+] as const;
 
 function toggleTheme() {
-  const current = MODES.indexOf(colorMode.value as typeof MODES[number]);
-  colorMode.preference = MODES[(current + 1) % MODES.length];
+  const idx = MAIN_MODES.indexOf(colorMode.value as typeof MAIN_MODES[number]);
+  if (idx >= 0) {
+    colorMode.preference = MAIN_MODES[(idx + 1) % MAIN_MODES.length];
+  } else {
+    colorMode.preference = 'light';
+  }
+}
+
+function selectTheme(id: string) {
+  colorMode.preference = id;
+  themeMenuOpen.value = false;
 }
 
 const themeIcon = computed(() => {
-  switch (colorMode.value) {
-    case 'dark': return Moon;
-    case 'vibrant': return Palette;
-    case 'party': return PartyPopper;
-    case 'grayscale': return Circle;
-    default: return Sun;
-  }
+  return ALL_THEMES.find(t => t.id === colorMode.value)?.icon ?? Sun;
 });
 
 const themeLabel = computed(() => {
-  switch (colorMode.value) {
-    case 'dark': return 'Switch to vibrant mode';
-    case 'vibrant': return 'Switch to party mode';
-    case 'party': return 'Switch to grayscale mode';
-    case 'grayscale': return 'Switch to light mode';
-    default: return 'Switch to dark mode';
+  const current = ALL_THEMES.find(t => t.id === colorMode.value);
+  return current ? `Current: ${current.label}` : 'Switch theme';
+});
+
+function onClickOutside(e: MouseEvent) {
+  const target = e.target as HTMLElement;
+  if (!target.closest('[data-theme-menu]')) {
+    themeMenuOpen.value = false;
+  }
+}
+
+watch(themeMenuOpen, (open) => {
+  if (open) {
+    document.addEventListener('click', onClickOutside, { capture: true });
+  } else {
+    document.removeEventListener('click', onClickOutside, { capture: true });
   }
 });
 
 watch(() => useRoute().path, () => {
   mobileMenuOpen.value = false;
+  themeMenuOpen.value = false;
 });
 </script>
 
@@ -64,13 +87,56 @@ watch(() => useRoute().path, () => {
 
       <div class="flex items-center gap-2">
         <ClientOnly>
-          <button
-            @click="toggleTheme"
-            class="p-2 rounded-lg text-content-secondary hover:bg-surface-secondary hover:text-content transition-colors"
-            :aria-label="themeLabel"
-          >
-            <component :is="themeIcon" :size="18" />
-          </button>
+          <div class="relative" data-theme-menu>
+            <div class="flex items-center">
+              <button
+                @click="toggleTheme"
+                class="p-2 rounded-l-lg text-content-secondary hover:bg-surface-secondary hover:text-content transition-colors"
+                :aria-label="themeLabel"
+                :title="themeLabel"
+              >
+                <component :is="themeIcon" :size="18" />
+              </button>
+              <button
+                @click.stop="themeMenuOpen = !themeMenuOpen"
+                class="p-2 -ml-1 rounded-r-lg text-content-faint hover:bg-surface-secondary hover:text-content transition-colors"
+                aria-label="All themes"
+                title="All themes"
+              >
+                <ChevronDown :size="12" class="transition-transform duration-150" :class="themeMenuOpen ? 'rotate-180' : ''" />
+              </button>
+            </div>
+
+            <Transition
+              enter-active-class="transition-all duration-150 ease-out"
+              enter-from-class="opacity-0 scale-95 -translate-y-1"
+              enter-to-class="opacity-100 scale-100 translate-y-0"
+              leave-active-class="transition-all duration-100 ease-in"
+              leave-from-class="opacity-100 scale-100 translate-y-0"
+              leave-to-class="opacity-0 scale-95 -translate-y-1"
+            >
+              <div
+                v-if="themeMenuOpen"
+                class="absolute right-0 top-full mt-2 w-44 rounded-xl border border-surface-border bg-surface shadow-lg overflow-hidden z-50"
+              >
+                <div class="py-1">
+                  <button
+                    v-for="theme in ALL_THEMES"
+                    :key="theme.id"
+                    @click="selectTheme(theme.id)"
+                    class="w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors"
+                    :class="colorMode.value === theme.id
+                      ? 'bg-brand-50 text-brand-accent font-medium'
+                      : 'text-content-secondary hover:bg-surface-secondary hover:text-content'"
+                  >
+                    <component :is="theme.icon" :size="16" />
+                    <span class="flex-1 text-left">{{ theme.label }}</span>
+                    <Check v-if="colorMode.value === theme.id" :size="14" class="text-brand-500" />
+                  </button>
+                </div>
+              </div>
+            </Transition>
+          </div>
           <template #fallback>
             <div class="p-2 w-[34px] h-[34px]" />
           </template>
