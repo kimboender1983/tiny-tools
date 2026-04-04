@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Menu, X, Sun, Moon, Palette } from 'lucide-vue-next';
+import { Menu, X, Sun, Moon, Palette, PartyPopper, Circle } from 'lucide-vue-next';
 import { TOOLS } from '@tiny-tools/shared';
 
 const colorMode = useColorMode();
@@ -11,7 +11,7 @@ const headerItems = computed(() =>
     : TOOLS.map(t => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` }))
 );
 
-const MODES = ['light', 'dark', 'vibrant'] as const;
+const MODES = ['light', 'dark', 'vibrant', 'party', 'grayscale'] as const;
 
 function toggleTheme() {
   const current = MODES.indexOf(colorMode.value as typeof MODES[number]);
@@ -22,6 +22,8 @@ const themeIcon = computed(() => {
   switch (colorMode.value) {
     case 'dark': return Moon;
     case 'vibrant': return Palette;
+    case 'party': return PartyPopper;
+    case 'grayscale': return Circle;
     default: return Sun;
   }
 });
@@ -29,7 +31,9 @@ const themeIcon = computed(() => {
 const themeLabel = computed(() => {
   switch (colorMode.value) {
     case 'dark': return 'Switch to vibrant mode';
-    case 'vibrant': return 'Switch to light mode';
+    case 'vibrant': return 'Switch to party mode';
+    case 'party': return 'Switch to grayscale mode';
+    case 'grayscale': return 'Switch to light mode';
     default: return 'Switch to dark mode';
   }
 });
