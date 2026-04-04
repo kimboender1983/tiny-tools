@@ -33,8 +33,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-8" :class="`lg:grid-cols-${footerSections.length + 1}`">
         <div>
-          <div class="font-bold text-lg mb-3">
-            <span class="text-brand-500">Pick</span><span>box</span>
+          <div class="mb-3 text-content">
+            <UiLogo :height="24" />
           </div>
           <p class="text-sm text-content-tertiary">
             Free, fast developer tools that run entirely in your browser. Your data never leaves your device.
