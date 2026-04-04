@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import type { IBlogPost, ICategory } from "@tiny-tools/shared";
-    import { Plus, Search, Star, Trash2 } from "lucide-vue-next";
+    import { Home, Plus, Search, Star, Trash2 } from "lucide-vue-next";
 
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
@@ -107,6 +107,16 @@
             if (post) post.featured = !post.featured;
         } catch (e: unknown) {
             error.value = e instanceof Error ? e.message : "Failed to toggle featured.";
+        }
+    }
+
+    async function toggleFeaturedHomepage(id: string) {
+        try {
+            await cms.blogPosts.toggleFeaturedHomepage(id);
+            const post = posts.value.find((p) => p._id === id);
+            if (post) post.featuredHomepage = !post.featuredHomepage;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to toggle homepage featured.";
         }
     }
 
@@ -224,6 +234,14 @@
                   @click="toggleFeatured(post._id)"
                 >
                   <Star :size="16" :fill="post.featured ? 'currentColor' : 'none'" />
+                </button>
+                <button
+                  class="p-1 transition-colors"
+                  :class="post.featuredHomepage ? 'text-brand-500 hover:text-brand-600' : 'text-gray-400 hover:text-brand-500'"
+                  :title="post.featuredHomepage ? 'Remove from homepage' : 'Feature on homepage'"
+                  @click="toggleFeaturedHomepage(post._id)"
+                >
+                  <Home :size="16" :fill="post.featuredHomepage ? 'currentColor' : 'none'" />
                 </button>
                 <button
                   class="p-1 text-gray-500 hover:text-red-500 transition-colors"

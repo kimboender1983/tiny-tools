@@ -50,6 +50,11 @@ export class BlogPostsController {
         return this.blogPostsService.toggleFeatured(id);
     }
 
+    @Patch(":id/featured-homepage")
+    toggleFeaturedHomepage(@Param("id") id: string) {
+        return this.blogPostsService.toggleFeaturedHomepage(id);
+    }
+
     @Delete(":id")
     @HttpCode(HttpStatus.NO_CONTENT)
     async delete(@Param("id") id: string) {

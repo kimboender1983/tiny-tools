@@ -123,6 +123,7 @@ export class PublicContentController {
         @Query("category") category?: string,
         @Query("tag") tag?: string,
         @Query("featured") featured?: string,
+        @Query("featuredHomepage") featuredHomepage?: string,
         @Query("sortBy") sortBy = "publishedAt",
         @Query("sortOrder") sortOrder: "asc" | "desc" = "desc",
     ) {
@@ -130,6 +131,7 @@ export class PublicContentController {
         if (category) filter.category = category;
         if (tag) filter.tags = tag;
         if (featured === "true") filter.featured = true;
+        if (featuredHomepage === "true") filter.featuredHomepage = true;
 
         const sort: SortOrder = sortOrder === "asc" ? 1 : -1;
 

@@ -47,6 +47,9 @@ export class BlogPost {
     @Prop({ default: false })
     featured!: boolean;
 
+    @Prop({ default: false })
+    featuredHomepage!: boolean;
+
     @Prop()
     readingTime?: number;
 
@@ -67,3 +70,4 @@ BlogPostSchema.index({ status: 1 });
 BlogPostSchema.index({ category: 1 });
 BlogPostSchema.index({ tags: 1 });
 BlogPostSchema.index({ featured: 1, status: 1 });
+BlogPostSchema.index({ featuredHomepage: 1, status: 1 });

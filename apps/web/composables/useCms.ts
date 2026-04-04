@@ -40,6 +40,8 @@ export function useCms() {
         delete: (id: string) => api.delete<void>(`/cms/blog-posts/${id}`, AUTH),
         toggleFeatured: (id: string) =>
             api.patch<IBlogPost>(`/cms/blog-posts/${id}/featured`, {}, AUTH),
+        toggleFeaturedHomepage: (id: string) =>
+            api.patch<IBlogPost>(`/cms/blog-posts/${id}/featured-homepage`, {}, AUTH),
     };
 
     const categories = {

@@ -156,6 +156,22 @@ export class BlogPostsService {
         return updated;
     }
 
+    async toggleFeaturedHomepage(idOrSlug: string): Promise<BlogPostDocument> {
+        const id = await this.resolveId(idOrSlug);
+        const post = await this.findById(id);
+        const updated = await this.blogPostModel
+            .findByIdAndUpdate(
+                id,
+                { $set: { featuredHomepage: !post.featuredHomepage } },
+                { new: true },
+            )
+            .exec();
+        if (!updated) {
+            throw new NotFoundException(`Blog post with id "${id}" not found`);
+        }
+        return updated;
+    }
+
     async delete(idOrSlug: string): Promise<void> {
         const id = await this.resolveId(idOrSlug);
         const result = await this.blogPostModel.findByIdAndDelete(id).exec();

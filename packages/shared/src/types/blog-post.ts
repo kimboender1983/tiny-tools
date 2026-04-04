@@ -19,6 +19,7 @@ export interface IBlogPost {
     author?: string | IAuthor;
     faq?: IFaqItem[];
     featured?: boolean;
+    featuredHomepage?: boolean;
     readingTime?: number;
     relatedPosts?: string[];
     publishedAt?: Date;

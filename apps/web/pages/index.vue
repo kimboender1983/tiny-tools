@@ -56,6 +56,9 @@
         />
       </div>
     </section>
+
+    <!-- Featured blog posts -->
+    <UiHomeFeaturedBlog />
   </div>
 </template>
 
