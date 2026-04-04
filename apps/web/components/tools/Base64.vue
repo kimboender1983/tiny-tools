@@ -1,95 +1,98 @@
 <script setup lang="ts">
-import {
-  AlertTriangle,
-  ArrowRightLeft,
-  Eraser,
-  Upload,
-  Download,
-  Zap,
-  Lock,
-  Unlock,
-  Image as ImageIcon,
-} from 'lucide-vue-next';
+    import {
+        AlertTriangle,
+        ArrowRightLeft,
+        Download,
+        Eraser,
+        Image as ImageIcon,
+        Lock,
+        Unlock,
+        Upload,
+        Zap,
+    } from "lucide-vue-next";
 
-const {
-  input,
-  output,
-  mode,
-  error,
-  urlSafe,
-  imagePreview,
-  sourceImagePreview,
-  sourceFileName,
-  dataUri,
-  inputBytes,
-  outputBytes,
-  clear,
-  swap,
-  loadSample,
-  handleFile,
-} = useBase64();
+    const {
+        input,
+        output,
+        mode,
+        error,
+        urlSafe,
+        imagePreview,
+        sourceImagePreview,
+        sourceFileName,
+        dataUri,
+        inputBytes,
+        outputBytes,
+        clear,
+        swap,
+        loadSample,
+        handleFile,
+    } = useBase64();
 
-// File drop
-const isDragging = ref(false);
-let dragCounter = 0;
+    // File drop
+    const isDragging = ref(false);
+    let dragCounter = 0;
 
-function onDragEnter(e: DragEvent) {
-  e.preventDefault();
-  dragCounter++;
-  isDragging.value = true;
-}
+    function onDragEnter(e: DragEvent) {
+        e.preventDefault();
+        dragCounter++;
+        isDragging.value = true;
+    }
 
-function onDragLeave() {
-  dragCounter--;
-  if (dragCounter <= 0) {
-    dragCounter = 0;
-    isDragging.value = false;
-  }
-}
+    function onDragLeave() {
+        dragCounter--;
+        if (dragCounter <= 0) {
+            dragCounter = 0;
+            isDragging.value = false;
+        }
+    }
 
-function onDrop(e: DragEvent) {
-  e.preventDefault();
-  dragCounter = 0;
-  isDragging.value = false;
-  const file = e.dataTransfer?.files[0];
-  if (file) handleFile(file);
-}
+    function onDrop(e: DragEvent) {
+        e.preventDefault();
+        dragCounter = 0;
+        isDragging.value = false;
+        const file = e.dataTransfer?.files[0];
+        if (file) handleFile(file);
+    }
 
-function onFileInput(e: Event) {
-  const target = e.target as HTMLInputElement;
-  const file = target.files?.[0];
-  if (file) handleFile(file);
-  target.value = '';
-}
+    function onFileInput(e: Event) {
+        const target = e.target as HTMLInputElement;
+        const file = target.files?.[0];
+        if (file) handleFile(file);
+        target.value = "";
+    }
 
-function downloadOutput() {
-  if (!output.value) return;
-  const blob = new Blob([output.value], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = mode.value === 'encode' ? 'encoded.b64' : 'decoded.txt';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
+    function downloadOutput() {
+        if (!output.value) return;
+        const blob = new Blob([output.value], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = mode.value === "encode" ? "encoded.b64" : "decoded.txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+    function formatBytes(bytes: number): string {
+        if (bytes === 0) return "0 B";
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
 
-const examples = [
-  { label: 'Hello World', text: 'Hello, World!' },
-  { label: 'JSON Object', text: '{"user":"alice","role":"admin","active":true}' },
-  { label: 'HTML Snippet', text: '<h1>Hello</h1><p>This is <strong>HTML</strong> encoded in Base64.</p>' },
-  { label: 'Encoded String', decode: 'SGVsbG8sIFdvcmxkIQ==' },
-];
+    const examples = [
+        { label: "Hello World", text: "Hello, World!" },
+        { label: "JSON Object", text: '{"user":"alice","role":"admin","active":true}' },
+        {
+            label: "HTML Snippet",
+            text: "<h1>Hello</h1><p>This is <strong>HTML</strong> encoded in Base64.</p>",
+        },
+        { label: "Encoded String", decode: "SGVsbG8sIFdvcmxkIQ==" },
+    ];
 
-const fileInputRef = ref<HTMLInputElement | null>(null);
+    const fileInputRef = ref<HTMLInputElement | null>(null);
 </script>
 
 <template>

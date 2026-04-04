@@ -1,88 +1,109 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import { generateJsonLd } from '~/utils/seo';
+    import { TOOLS } from "@tiny-tools/shared";
+    import { generateJsonLd } from "~/utils/seo";
 
-const appStore = useAppStore();
-const tool = TOOLS.find((t) => t.slug === 'image-compressor')!;
-const siteUrl = 'https://pickbox.dev';
-const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
+    const appStore = useAppStore();
+    const tool = TOOLS.find((t) => t.slug === "image-compressor");
+    if (!tool) throw new Error("Tool not found: image-compressor");
+    const siteUrl = "https://pickbox.dev";
+    const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
-const faqItems = [
-  {
-    question: 'How does browser-based image compression work?',
-    answer: 'Our tool uses the Canvas API and modern browser codecs to re-encode your images at a lower quality setting or in a more efficient format. The image is drawn onto an HTML canvas element, and then exported using the toBlob() method with the target format and quality parameter. The entire process runs in your browser — no files are uploaded to a server.',
-  },
-  {
-    question: 'What is the difference between lossy and lossless compression?',
-    answer: 'Lossy compression reduces file size by permanently discarding some image data that is less perceptible to the human eye. JPEG and WebP lossy are examples. Lossless compression reduces file size without losing any data by finding more efficient ways to encode the same information. PNG and WebP lossless are examples. Lossy compression achieves much smaller files but introduces slight quality degradation.',
-  },
-  {
-    question: 'Will compressing my images reduce their quality?',
-    answer: 'It depends on the compression type and settings. With lossy compression (JPEG, WebP lossy), there is always some quality loss, but at quality settings of 70-85%, the difference is imperceptible for most use cases. With lossless compression (PNG optimization), the output is pixel-identical to the input. Our tool lets you preview the result and compare quality before downloading.',
-  },
-  {
-    question: 'What image formats does this tool support?',
-    answer: 'You can upload JPEG, PNG, WebP, GIF, and BMP images. The tool can output JPEG, PNG, and WebP formats depending on your browser support. We recommend WebP for most web use cases as it typically produces the smallest files at equivalent quality levels.',
-  },
-  {
-    question: 'Can I compress multiple images at once?',
-    answer: 'Yes. Our bulk compression feature lets you drag and drop or select multiple images simultaneously. Each image is processed independently with the same quality settings, and you can download all compressed images at once as a ZIP archive or individually.',
-  },
-];
+    const faqItems = [
+        {
+            question: "How does browser-based image compression work?",
+            answer: "Our tool uses the Canvas API and modern browser codecs to re-encode your images at a lower quality setting or in a more efficient format. The image is drawn onto an HTML canvas element, and then exported using the toBlob() method with the target format and quality parameter. The entire process runs in your browser — no files are uploaded to a server.",
+        },
+        {
+            question: "What is the difference between lossy and lossless compression?",
+            answer: "Lossy compression reduces file size by permanently discarding some image data that is less perceptible to the human eye. JPEG and WebP lossy are examples. Lossless compression reduces file size without losing any data by finding more efficient ways to encode the same information. PNG and WebP lossless are examples. Lossy compression achieves much smaller files but introduces slight quality degradation.",
+        },
+        {
+            question: "Will compressing my images reduce their quality?",
+            answer: "It depends on the compression type and settings. With lossy compression (JPEG, WebP lossy), there is always some quality loss, but at quality settings of 70-85%, the difference is imperceptible for most use cases. With lossless compression (PNG optimization), the output is pixel-identical to the input. Our tool lets you preview the result and compare quality before downloading.",
+        },
+        {
+            question: "What image formats does this tool support?",
+            answer: "You can upload JPEG, PNG, WebP, GIF, and BMP images. The tool can output JPEG, PNG, and WebP formats depending on your browser support. We recommend WebP for most web use cases as it typically produces the smallest files at equivalent quality levels.",
+        },
+        {
+            question: "Can I compress multiple images at once?",
+            answer: "Yes. Our bulk compression feature lets you drag and drop or select multiple images simultaneously. Each image is processed independently with the same quality settings, and you can download all compressed images at once as a ZIP archive or individually.",
+        },
+    ];
 
-const navLinks = [
-  { id: 'lossy-vs-lossless', label: 'Lossy vs Lossless' },
-  { id: 'format-comparison', label: 'WebP vs PNG vs JPEG' },
-  { id: 'when-to-use', label: 'When to Use Each' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'built-with', label: 'Built With' },
-  { id: 'related-tools', label: 'Related Tools' },
-];
+    const navLinks = [
+        { id: "lossy-vs-lossless", label: "Lossy vs Lossless" },
+        { id: "format-comparison", label: "WebP vs PNG vs JPEG" },
+        { id: "when-to-use", label: "When to Use Each" },
+        { id: "faq", label: "FAQ" },
+        { id: "built-with", label: "Built With" },
+        { id: "related-tools", label: "Related Tools" },
+    ];
 
-useHead({
-  title: 'Image Compressor — Free Online Bulk Image Compression Tool | Pickbox',
-  meta: [
-    { name: 'description', content: 'Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk image compressor with quality preview and format conversion.' },
-    { name: 'keywords', content: tool.keywords.join(', ') },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'Image Compressor — Free Online Bulk Image Compression Tool | Pickbox' },
-    { property: 'og:description', content: 'Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk compressor with quality preview.' },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Image Compressor — Free Online Bulk Image Compression Tool | Pickbox' },
-    { name: 'twitter:description', content: 'Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk compressor with quality preview.' },
-  ],
-  link: [
-    { rel: 'canonical', href: canonicalUrl },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('SoftwareApplication', {
-        name: tool.name,
-        description: tool.description,
-        url: canonicalUrl,
-        category: tool.category,
-      })),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('BreadcrumbList', [
-        { name: 'Home', url: siteUrl },
-        { name: 'Image Compressor', url: canonicalUrl },
-      ])),
-    },
-  ],
-});
+    useHead({
+        title: "Image Compressor — Free Online Bulk Image Compression Tool | Pickbox",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk image compressor with quality preview and format conversion.",
+            },
+            { name: "keywords", content: tool.keywords.join(", ") },
+            { property: "og:type", content: "website" },
+            {
+                property: "og:title",
+                content: "Image Compressor — Free Online Bulk Image Compression Tool | Pickbox",
+            },
+            {
+                property: "og:description",
+                content:
+                    "Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk compressor with quality preview.",
+            },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            { name: "twitter:card", content: "summary_large_image" },
+            {
+                name: "twitter:title",
+                content: "Image Compressor — Free Online Bulk Image Compression Tool | Pickbox",
+            },
+            {
+                name: "twitter:description",
+                content:
+                    "Compress JPEG, PNG, and WebP images in your browser with zero uploads. Free bulk compressor with quality preview.",
+            },
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("SoftwareApplication", {
+                        name: tool.name,
+                        description: tool.description,
+                        url: canonicalUrl,
+                        category: tool.category,
+                    }),
+                ),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(generateJsonLd("FAQPage", faqItems)),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("BreadcrumbList", [
+                        { name: "Home", url: siteUrl },
+                        { name: "Image Compressor", url: canonicalUrl },
+                    ]),
+                ),
+            },
+        ],
+    });
 
-onMounted(() => {
-  appStore.addRecentTool(tool.slug);
-});
+    onMounted(() => {
+        appStore.addRecentTool(tool.slug);
+    });
 </script>
 
 <template>

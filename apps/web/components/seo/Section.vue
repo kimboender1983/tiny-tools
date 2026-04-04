@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { BookOpen, Code } from 'lucide-vue-next';
+    import { BookOpen, Code } from "lucide-vue-next";
 
-defineProps<{
-  id: string;
-  title: string;
-  icon?: 'book' | 'code';
-}>();
+    defineProps<{
+        id: string;
+        title: string;
+        icon?: "book" | "code";
+    }>();
 </script>
 
 <template>

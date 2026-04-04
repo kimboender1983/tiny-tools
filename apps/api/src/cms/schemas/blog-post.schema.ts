@@ -1,63 +1,63 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { SeoFields, SeoFieldsSchema } from './seo-fields.schema';
-import { FaqItem, FaqItemSchema } from './page.schema';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
+import { FaqItem, FaqItemSchema } from "./page.schema";
+import { SeoFields, SeoFieldsSchema } from "./seo-fields.schema";
 
 export type BlogPostDocument = HydratedDocument<BlogPost>;
 
 @Schema({ timestamps: true })
 export class BlogPost {
-  @Prop({ required: true, trim: true })
-  title!: string;
+    @Prop({ required: true, trim: true })
+    title!: string;
 
-  @Prop({ required: true, unique: true, lowercase: true, trim: true })
-  slug!: string;
+    @Prop({ required: true, unique: true, lowercase: true, trim: true })
+    slug!: string;
 
-  @Prop({ required: true })
-  content!: string;
+    @Prop({ required: true })
+    content!: string;
 
-  @Prop({ required: true })
-  excerpt!: string;
+    @Prop({ required: true })
+    excerpt!: string;
 
-  @Prop()
-  coverImage?: string;
+    @Prop()
+    coverImage?: string;
 
-  @Prop()
-  category?: string;
+    @Prop()
+    category?: string;
 
-  @Prop({ type: [String] })
-  tags?: string[];
+    @Prop({ type: [String] })
+    tags?: string[];
 
-  @Prop({
-    required: true,
-    enum: ['draft', 'published', 'archived'],
-    default: 'draft',
-  })
-  status!: string;
+    @Prop({
+        required: true,
+        enum: ["draft", "published", "archived"],
+        default: "draft",
+    })
+    status!: string;
 
-  @Prop({ type: SeoFieldsSchema, default: () => ({}) })
-  seo!: SeoFields;
+    @Prop({ type: SeoFieldsSchema, default: () => ({}) })
+    seo!: SeoFields;
 
-  @Prop({ default: undefined })
-  author?: string;
+    @Prop({ default: undefined })
+    author?: string;
 
-  @Prop({ type: [FaqItemSchema] })
-  faq?: FaqItem[];
+    @Prop({ type: [FaqItemSchema] })
+    faq?: FaqItem[];
 
-  @Prop({ default: false })
-  featured!: boolean;
+    @Prop({ default: false })
+    featured!: boolean;
 
-  @Prop()
-  readingTime?: number;
+    @Prop()
+    readingTime?: number;
 
-  @Prop({ type: [String] })
-  relatedPosts?: string[];
+    @Prop({ type: [String] })
+    relatedPosts?: string[];
 
-  @Prop()
-  publishedAt?: Date;
+    @Prop()
+    publishedAt?: Date;
 
-  createdAt!: Date;
-  updatedAt!: Date;
+    createdAt!: Date;
+    updatedAt!: Date;
 }
 
 export const BlogPostSchema = SchemaFactory.createForClass(BlogPost);

@@ -1,104 +1,102 @@
 <script setup lang="ts">
-import type { IBlogPost, ICategory } from '@tiny-tools/shared';
-import { Calendar, Clock, BookOpen, ChevronRight } from 'lucide-vue-next';
-import * as lucideIcons from 'lucide-vue-next';
+    import type { IBlogPost, ICategory } from "@tiny-tools/shared";
+    import * as lucideIcons from "lucide-vue-next";
+    import { BookOpen, Calendar, ChevronRight, Clock } from "lucide-vue-next";
 
-interface PaginatedBlogResponse {
-  items: IBlogPost[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
+    interface PaginatedBlogResponse {
+        items: IBlogPost[];
+        total: number;
+        page: number;
+        pageSize: number;
+    }
 
-function getCategoryName(cat: string | ICategory | undefined): string {
-  if (!cat) return '';
-  return typeof cat === 'object' ? cat.name : cat;
-}
+    function getCategoryName(cat: string | ICategory | undefined): string {
+        if (!cat) return "";
+        return typeof cat === "object" ? cat.name : cat;
+    }
 
-function getCategorySlug(cat: string | ICategory | undefined): string {
-  if (!cat) return 'uncategorized';
-  return typeof cat === 'object' ? cat.slug : cat;
-}
+    function getCategorySlug(cat: string | ICategory | undefined): string {
+        if (!cat) return "uncategorized";
+        return typeof cat === "object" ? cat.slug : cat;
+    }
 
-function getCategoryIcon(cat: string | ICategory | undefined) {
-  if (!cat || typeof cat !== 'object' || !cat.icon) return null;
-  return (lucideIcons as Record<string, unknown>)[cat.icon] ?? null;
-}
+    function getCategoryIcon(cat: string | ICategory | undefined) {
+        if (!cat || typeof cat !== "object" || !cat.icon) return null;
+        return (lucideIcons as Record<string, unknown>)[cat.icon] ?? null;
+    }
 
-function getIconByName(name: string | undefined) {
-  if (!name) return null;
-  return (lucideIcons as Record<string, unknown>)[name] ?? null;
-}
+    function getIconByName(name: string | undefined) {
+        if (!name) return null;
+        return (lucideIcons as Record<string, unknown>)[name] ?? null;
+    }
 
-function blogPostUrl(post: IBlogPost): string {
-  return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
-}
+    function blogPostUrl(post: IBlogPost): string {
+        return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
+    }
 
-const config = useRuntimeConfig();
-const api = useApi();
-const siteUrl = config.public.siteUrl as string;
+    const config = useRuntimeConfig();
+    const api = useApi();
+    const siteUrl = config.public.siteUrl as string;
 
-// Fetch featured posts + categories in parallel
-const [{ data: featuredData }, { data: categories }] = await Promise.all([
-  useAsyncData('blog-featured', () =>
-    api.get<PaginatedBlogResponse>('/content/blog', {
-      params: { featured: 'true', limit: 6 },
-    }),
-  ),
-  useAsyncData('blog-categories', () =>
-    api.get<ICategory[]>('/content/categories'),
-  ),
-]);
+    // Fetch featured posts + categories in parallel
+    const [{ data: featuredData }, { data: categories }] = await Promise.all([
+        useAsyncData("blog-featured", () =>
+            api.get<PaginatedBlogResponse>("/content/blog", {
+                params: { featured: "true", limit: 6 },
+            }),
+        ),
+        useAsyncData("blog-categories", () => api.get<ICategory[]>("/content/categories")),
+    ]);
 
-const featuredPosts = computed(() => featuredData.value?.items ?? []);
+    const featuredPosts = computed(() => featuredData.value?.items ?? []);
 
-function formatDate(date: Date | string | undefined): string {
-  if (!date) return '';
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
+    function formatDate(date: Date | string | undefined): string {
+        if (!date) return "";
+        return new Date(date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
+    }
 
-// SEO
-const title = 'Developer Blog — Web Development Tips & Tutorials | Pickbox';
-const description =
-  'Practical web development tips, tutorials, and guides. Learn about JavaScript, TypeScript, developer tools, and modern web technologies.';
-const canonicalUrl = `${siteUrl}/blog`;
+    // SEO
+    const title = "Developer Blog — Web Development Tips & Tutorials | Pickbox";
+    const description =
+        "Practical web development tips, tutorials, and guides. Learn about JavaScript, TypeScript, developer tools, and modern web technologies.";
+    const canonicalUrl = `${siteUrl}/blog`;
 
-useHead({
-  title,
-  meta: [
-    { name: 'description', content: description },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: title },
-    { property: 'og:description', content: description },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: title },
-    { name: 'twitter:description', content: description },
-  ],
-  link: [{ rel: 'canonical', href: canonicalUrl }],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'WebPage',
-        name: title,
-        description,
-        url: canonicalUrl,
-        publisher: {
-          '@type': 'Organization',
-          name: 'Pickbox',
-          url: siteUrl,
-        },
-      }),
-    },
-  ],
-});
+    useHead({
+        title,
+        meta: [
+            { name: "description", content: description },
+            { property: "og:type", content: "website" },
+            { property: "og:title", content: title },
+            { property: "og:description", content: description },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            { name: "twitter:card", content: "summary_large_image" },
+            { name: "twitter:title", content: title },
+            { name: "twitter:description", content: description },
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "WebPage",
+                    name: title,
+                    description,
+                    url: canonicalUrl,
+                    publisher: {
+                        "@type": "Organization",
+                        name: "Pickbox",
+                        url: siteUrl,
+                    },
+                }),
+            },
+        ],
+    });
 </script>
 
 <template>

@@ -1,91 +1,112 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import { generateJsonLd } from '~/utils/seo';
-import { ExternalLink } from 'lucide-vue-next';
+    import { TOOLS } from "@tiny-tools/shared";
+    import { ExternalLink } from "lucide-vue-next";
+    import { generateJsonLd } from "~/utils/seo";
 
-const appStore = useAppStore();
-const tool = TOOLS.find((t) => t.slug === 'jwt-decoder')!;
-const siteUrl = 'https://pickbox.dev';
-const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
+    const appStore = useAppStore();
+    const tool = TOOLS.find((t) => t.slug === "jwt-decoder");
+    if (!tool) throw new Error("Tool not found: jwt-decoder");
+    const siteUrl = "https://pickbox.dev";
+    const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
-const faqItems = [
-  {
-    question: 'What is a JWT token?',
-    answer: 'A JSON Web Token (JWT) is a compact, URL-safe token format defined by RFC 7519. It is used to securely transmit claims between two parties — typically a client and a server. JWTs are widely used for authentication, authorization, and information exchange in web applications and APIs.',
-  },
-  {
-    question: 'Is it safe to decode a JWT in the browser?',
-    answer: 'Decoding a JWT simply means base64-decoding its header and payload — it does not require a secret key. This is safe because the payload of a JWT is not encrypted; it is only signed. Our decoder runs entirely in your browser and never transmits your token to any server. However, you should never share your JWTs publicly, as they may contain sensitive claims.',
-  },
-  {
-    question: 'What is the difference between decoding and verifying a JWT?',
-    answer: 'Decoding a JWT extracts the header and payload by base64-decoding the token segments. This reveals the claims but does not confirm authenticity. Verifying a JWT checks the cryptographic signature against a secret key (HMAC) or public key (RSA/ECDSA) to confirm that the token was issued by a trusted party and has not been tampered with. Our tool decodes tokens for inspection; signature verification requires server-side code with access to the signing key.',
-  },
-  {
-    question: 'Why does my JWT have three parts separated by dots?',
-    answer: 'A JWT consists of three base64url-encoded segments separated by periods: the header (specifying the algorithm and token type), the payload (containing claims like user ID, roles, and expiration), and the signature (a cryptographic hash that ensures the token has not been modified). Each part serves a distinct purpose in the token lifecycle.',
-  },
-  {
-    question: 'How do I check if a JWT has expired?',
-    answer: 'The payload of a JWT typically contains an "exp" (expiration) claim, which is a Unix timestamp indicating when the token becomes invalid. Our decoder automatically detects and highlights the expiration time, converting it to a human-readable date so you can instantly see whether the token is still valid or has expired.',
-  },
-];
+    const faqItems = [
+        {
+            question: "What is a JWT token?",
+            answer: "A JSON Web Token (JWT) is a compact, URL-safe token format defined by RFC 7519. It is used to securely transmit claims between two parties — typically a client and a server. JWTs are widely used for authentication, authorization, and information exchange in web applications and APIs.",
+        },
+        {
+            question: "Is it safe to decode a JWT in the browser?",
+            answer: "Decoding a JWT simply means base64-decoding its header and payload — it does not require a secret key. This is safe because the payload of a JWT is not encrypted; it is only signed. Our decoder runs entirely in your browser and never transmits your token to any server. However, you should never share your JWTs publicly, as they may contain sensitive claims.",
+        },
+        {
+            question: "What is the difference between decoding and verifying a JWT?",
+            answer: "Decoding a JWT extracts the header and payload by base64-decoding the token segments. This reveals the claims but does not confirm authenticity. Verifying a JWT checks the cryptographic signature against a secret key (HMAC) or public key (RSA/ECDSA) to confirm that the token was issued by a trusted party and has not been tampered with. Our tool decodes tokens for inspection; signature verification requires server-side code with access to the signing key.",
+        },
+        {
+            question: "Why does my JWT have three parts separated by dots?",
+            answer: "A JWT consists of three base64url-encoded segments separated by periods: the header (specifying the algorithm and token type), the payload (containing claims like user ID, roles, and expiration), and the signature (a cryptographic hash that ensures the token has not been modified). Each part serves a distinct purpose in the token lifecycle.",
+        },
+        {
+            question: "How do I check if a JWT has expired?",
+            answer: 'The payload of a JWT typically contains an "exp" (expiration) claim, which is a Unix timestamp indicating when the token becomes invalid. Our decoder automatically detects and highlights the expiration time, converting it to a human-readable date so you can instantly see whether the token is still valid or has expired.',
+        },
+    ];
 
-const navLinks = [
-  { id: 'how-jwt-works', label: 'How JWTs Work' },
-  { id: 'parts-of-jwt', label: 'Parts of a JWT' },
-  { id: 'algorithms', label: 'Algorithms' },
-  { id: 'security-practices', label: 'Security Practices' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'built-with', label: 'Built With' },
-  { id: 'jwt-libraries', label: 'Libraries' },
-  { id: 'related-tools', label: 'Related Tools' },
-];
+    const navLinks = [
+        { id: "how-jwt-works", label: "How JWTs Work" },
+        { id: "parts-of-jwt", label: "Parts of a JWT" },
+        { id: "algorithms", label: "Algorithms" },
+        { id: "security-practices", label: "Security Practices" },
+        { id: "faq", label: "FAQ" },
+        { id: "built-with", label: "Built With" },
+        { id: "jwt-libraries", label: "Libraries" },
+        { id: "related-tools", label: "Related Tools" },
+    ];
 
-useHead({
-  title: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox',
-  meta: [
-    { name: 'description', content: 'Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration. Free JWT decoder with zero data uploads.' },
-    { name: 'keywords', content: tool.keywords.join(', ') },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox' },
-    { property: 'og:description', content: 'Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration.' },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox' },
-    { name: 'twitter:description', content: 'Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration.' },
-  ],
-  link: [
-    { rel: 'canonical', href: canonicalUrl },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('SoftwareApplication', {
-        name: tool.name,
-        description: tool.description,
-        url: canonicalUrl,
-        category: tool.category,
-      })),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('BreadcrumbList', [
-        { name: 'Home', url: siteUrl },
-        { name: 'JWT Decoder', url: canonicalUrl },
-      ])),
-    },
-  ],
-});
+    useHead({
+        title: "JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration. Free JWT decoder with zero data uploads.",
+            },
+            { name: "keywords", content: tool.keywords.join(", ") },
+            { property: "og:type", content: "website" },
+            {
+                property: "og:title",
+                content: "JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox",
+            },
+            {
+                property: "og:description",
+                content:
+                    "Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration.",
+            },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            { name: "twitter:card", content: "summary_large_image" },
+            {
+                name: "twitter:title",
+                content: "JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox",
+            },
+            {
+                name: "twitter:description",
+                content:
+                    "Decode and inspect JWT tokens instantly in your browser. View header, payload, claims, and expiration.",
+            },
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("SoftwareApplication", {
+                        name: tool.name,
+                        description: tool.description,
+                        url: canonicalUrl,
+                        category: tool.category,
+                    }),
+                ),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(generateJsonLd("FAQPage", faqItems)),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("BreadcrumbList", [
+                        { name: "Home", url: siteUrl },
+                        { name: "JWT Decoder", url: canonicalUrl },
+                    ]),
+                ),
+            },
+        ],
+    });
 
-onMounted(() => {
-  appStore.addRecentTool(tool.slug);
-});
+    onMounted(() => {
+        appStore.addRecentTool(tool.slug);
+    });
 </script>
 
 <template>

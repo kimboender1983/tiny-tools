@@ -1,89 +1,110 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import { generateJsonLd } from '~/utils/seo';
+    import { TOOLS } from "@tiny-tools/shared";
+    import { generateJsonLd } from "~/utils/seo";
 
-const appStore = useAppStore();
-const tool = TOOLS.find((t) => t.slug === 'unix-timestamp')!;
-const siteUrl = 'https://pickbox.dev';
-const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
+    const appStore = useAppStore();
+    const tool = TOOLS.find((t) => t.slug === "unix-timestamp");
+    if (!tool) throw new Error("Tool not found: unix-timestamp");
+    const siteUrl = "https://pickbox.dev";
+    const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
-const faqItems = [
-  {
-    question: 'What is a Unix timestamp?',
-    answer: 'A Unix timestamp (also called Epoch time or POSIX time) is the number of seconds that have elapsed since January 1, 1970 00:00:00 UTC — a moment known as the Unix Epoch. It provides a single, timezone-independent number that uniquely identifies a point in time, making it ideal for storing and comparing dates across systems.',
-  },
-  {
-    question: 'What is the difference between seconds and milliseconds?',
-    answer: 'A Unix timestamp in seconds is a 10-digit number (e.g. 1712188800). JavaScript, Java, and many APIs use milliseconds — a 13-digit number (e.g. 1712188800000) that is simply the seconds value multiplied by 1000. Our tool detects and converts both formats.',
-  },
-  {
-    question: 'What is the Year 2038 problem?',
-    answer: 'Many older systems store Unix timestamps as a signed 32-bit integer, which overflows on January 19, 2038 at 03:14:07 UTC. After that moment, the timestamp wraps to a negative number, potentially breaking date calculations. 64-bit systems and modern languages (JavaScript uses 64-bit floats) are not affected. Most critical infrastructure has been or is being migrated to 64-bit timestamps.',
-  },
-  {
-    question: 'Why do APIs use Unix timestamps instead of date strings?',
-    answer: 'Unix timestamps are timezone-neutral, language-agnostic, compact (a single integer), and trivially sortable and comparable. Date strings require parsing, timezone handling, and format negotiation between systems. Timestamps eliminate an entire class of internationalization and parsing bugs.',
-  },
-  {
-    question: 'How does this converter handle timezones?',
-    answer: 'Unix timestamps are always in UTC by definition. When converting to a human-readable date, our tool shows both UTC and your local timezone (detected from your browser). When converting a date string to a timestamp, the string is parsed by your browser\'s Date engine, which applies local timezone if no timezone is specified in the input.',
-  },
-];
+    const faqItems = [
+        {
+            question: "What is a Unix timestamp?",
+            answer: "A Unix timestamp (also called Epoch time or POSIX time) is the number of seconds that have elapsed since January 1, 1970 00:00:00 UTC — a moment known as the Unix Epoch. It provides a single, timezone-independent number that uniquely identifies a point in time, making it ideal for storing and comparing dates across systems.",
+        },
+        {
+            question: "What is the difference between seconds and milliseconds?",
+            answer: "A Unix timestamp in seconds is a 10-digit number (e.g. 1712188800). JavaScript, Java, and many APIs use milliseconds — a 13-digit number (e.g. 1712188800000) that is simply the seconds value multiplied by 1000. Our tool detects and converts both formats.",
+        },
+        {
+            question: "What is the Year 2038 problem?",
+            answer: "Many older systems store Unix timestamps as a signed 32-bit integer, which overflows on January 19, 2038 at 03:14:07 UTC. After that moment, the timestamp wraps to a negative number, potentially breaking date calculations. 64-bit systems and modern languages (JavaScript uses 64-bit floats) are not affected. Most critical infrastructure has been or is being migrated to 64-bit timestamps.",
+        },
+        {
+            question: "Why do APIs use Unix timestamps instead of date strings?",
+            answer: "Unix timestamps are timezone-neutral, language-agnostic, compact (a single integer), and trivially sortable and comparable. Date strings require parsing, timezone handling, and format negotiation between systems. Timestamps eliminate an entire class of internationalization and parsing bugs.",
+        },
+        {
+            question: "How does this converter handle timezones?",
+            answer: "Unix timestamps are always in UTC by definition. When converting to a human-readable date, our tool shows both UTC and your local timezone (detected from your browser). When converting a date string to a timestamp, the string is parsed by your browser's Date engine, which applies local timezone if no timezone is specified in the input.",
+        },
+    ];
 
-const navLinks = [
-  { id: 'what-is-unix', label: 'What is Unix Time' },
-  { id: 'how-it-works', label: 'How It Works' },
-  { id: 'common-timestamps', label: 'Notable Timestamps' },
-  { id: 'languages', label: 'By Language' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'built-with', label: 'Built With' },
-  { id: 'related-tools', label: 'Related Tools' },
-];
+    const navLinks = [
+        { id: "what-is-unix", label: "What is Unix Time" },
+        { id: "how-it-works", label: "How It Works" },
+        { id: "common-timestamps", label: "Notable Timestamps" },
+        { id: "languages", label: "By Language" },
+        { id: "faq", label: "FAQ" },
+        { id: "built-with", label: "Built With" },
+        { id: "related-tools", label: "Related Tools" },
+    ];
 
-useHead({
-  title: 'Unix Timestamp Converter — Free Epoch Time Converter | Pickbox',
-  meta: [
-    { name: 'description', content: 'Convert between Unix timestamps and human-readable dates instantly. Supports seconds and milliseconds, shows UTC and local time, relative time, and more.' },
-    { name: 'keywords', content: tool.keywords.join(', ') },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'Unix Timestamp Converter — Free Epoch Time Converter | Pickbox' },
-    { property: 'og:description', content: 'Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds.' },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Unix Timestamp Converter — Free Epoch Time Converter | Pickbox' },
-    { name: 'twitter:description', content: 'Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds.' },
-  ],
-  link: [
-    { rel: 'canonical', href: canonicalUrl },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('SoftwareApplication', {
-        name: tool.name,
-        description: tool.description,
-        url: canonicalUrl,
-        category: tool.category,
-      })),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('BreadcrumbList', [
-        { name: 'Home', url: siteUrl },
-        { name: 'Unix Timestamp Converter', url: canonicalUrl },
-      ])),
-    },
-  ],
-});
+    useHead({
+        title: "Unix Timestamp Converter — Free Epoch Time Converter | Pickbox",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Convert between Unix timestamps and human-readable dates instantly. Supports seconds and milliseconds, shows UTC and local time, relative time, and more.",
+            },
+            { name: "keywords", content: tool.keywords.join(", ") },
+            { property: "og:type", content: "website" },
+            {
+                property: "og:title",
+                content: "Unix Timestamp Converter — Free Epoch Time Converter | Pickbox",
+            },
+            {
+                property: "og:description",
+                content:
+                    "Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds.",
+            },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            { name: "twitter:card", content: "summary_large_image" },
+            {
+                name: "twitter:title",
+                content: "Unix Timestamp Converter — Free Epoch Time Converter | Pickbox",
+            },
+            {
+                name: "twitter:description",
+                content:
+                    "Convert between Unix timestamps and human-readable dates. Supports seconds and milliseconds.",
+            },
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("SoftwareApplication", {
+                        name: tool.name,
+                        description: tool.description,
+                        url: canonicalUrl,
+                        category: tool.category,
+                    }),
+                ),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(generateJsonLd("FAQPage", faqItems)),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("BreadcrumbList", [
+                        { name: "Home", url: siteUrl },
+                        { name: "Unix Timestamp Converter", url: canonicalUrl },
+                    ]),
+                ),
+            },
+        ],
+    });
 
-onMounted(() => {
-  appStore.addRecentTool(tool.slug);
-});
+    onMounted(() => {
+        appStore.addRecentTool(tool.slug);
+    });
 </script>
 
 <template>

@@ -1,96 +1,100 @@
 <script setup lang="ts">
-import { Plus, Trash2, Search } from 'lucide-vue-next';
-import type { IPage, ICategory } from '@tiny-tools/shared';
+    import type { ICategory, IPage } from "@tiny-tools/shared";
+    import { Plus, Search, Trash2 } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
-const pages = ref<IPage[]>([]);
-const total = ref(0);
-const currentPage = ref(1);
-const search = ref('');
-const statusFilter = ref<string>('');
-const deleteConfirmId = ref<string | null>(null);
-const categories = ref<ICategory[]>([]);
+    const loading = ref(true);
+    const error = ref("");
+    const pages = ref<IPage[]>([]);
+    const total = ref(0);
+    const currentPage = ref(1);
+    const search = ref("");
+    const statusFilter = ref<string>("");
+    const deleteConfirmId = ref<string | null>(null);
+    const categories = ref<ICategory[]>([]);
 
-const categoryMap = computed(() => {
-  const map = new Map<string, string>();
-  for (const cat of categories.value) {
-    map.set(cat._id, cat.name);
-  }
-  return map;
-});
+    const categoryMap = computed(() => {
+        const map = new Map<string, string>();
+        for (const cat of categories.value) {
+            map.set(cat._id, cat.name);
+        }
+        return map;
+    });
 
-const tabs = [
-  { label: 'All', value: '' },
-  { label: 'Published', value: 'published' },
-  { label: 'Draft', value: 'draft' },
-  { label: 'Archived', value: 'archived' },
-];
+    const tabs = [
+        { label: "All", value: "" },
+        { label: "Published", value: "published" },
+        { label: "Draft", value: "draft" },
+        { label: "Archived", value: "archived" },
+    ];
 
-async function loadPages() {
-  loading.value = true;
-  error.value = '';
+    async function loadPages() {
+        loading.value = true;
+        error.value = "";
 
-  try {
-    const [res, catsRes] = await Promise.all([
-      cms.pages.list({
-        page: currentPage.value,
-        pageSize: 20,
-        status: statusFilter.value || undefined,
-        search: search.value || undefined,
-      }),
-      categories.value.length === 0 ? cms.categories.list({ pageSize: 100 }) : null,
-    ]);
-    pages.value = res.items;
-    total.value = res.total;
-    if (catsRes) categories.value = catsRes.items;
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load pages.';
-  } finally {
-    loading.value = false;
-  }
-}
+        try {
+            const [res, catsRes] = await Promise.all([
+                cms.pages.list({
+                    page: currentPage.value,
+                    pageSize: 20,
+                    status: statusFilter.value || undefined,
+                    search: search.value || undefined,
+                }),
+                categories.value.length === 0 ? cms.categories.list({ pageSize: 100 }) : null,
+            ]);
+            pages.value = res.items;
+            total.value = res.total;
+            if (catsRes) categories.value = catsRes.items;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load pages.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-function setFilter(value: string) {
-  statusFilter.value = value;
-  currentPage.value = 1;
-  loadPages();
-}
+    function setFilter(value: string) {
+        statusFilter.value = value;
+        currentPage.value = 1;
+        loadPages();
+    }
 
-let searchTimeout: ReturnType<typeof setTimeout>;
-function onSearch() {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    currentPage.value = 1;
-    loadPages();
-  }, 300);
-}
+    let searchTimeout: ReturnType<typeof setTimeout>;
+    function onSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            currentPage.value = 1;
+            loadPages();
+        }, 300);
+    }
 
-async function deletePage(id: string) {
-  try {
-    await cms.pages.delete(id);
-    deleteConfirmId.value = null;
-    await loadPages();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to delete page.';
-  }
-}
+    async function deletePage(id: string) {
+        try {
+            await cms.pages.delete(id);
+            deleteConfirmId.value = null;
+            await loadPages();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to delete page.";
+        }
+    }
 
-function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
+    function formatDate(date: Date | string): string {
+        return new Date(date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+        });
+    }
 
-const statusClasses: Record<string, string> = {
-  published: 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400',
-  draft: 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400',
-  archived: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-};
+    const statusClasses: Record<string, string> = {
+        published: "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400",
+        draft: "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400",
+        archived: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+    };
 
-onMounted(loadPages);
+    onMounted(loadPages);
 </script>
 
 <template>

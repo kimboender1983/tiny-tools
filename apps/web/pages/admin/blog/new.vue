@@ -1,145 +1,156 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-vue-next';
-import type { IBlogPost, BlogPostStatus, ICategory, IFaqItem, IAuthor } from '@tiny-tools/shared';
+    import type {
+        BlogPostStatus,
+        IAuthor,
+        IBlogPost,
+        ICategory,
+        IFaqItem,
+    } from "@tiny-tools/shared";
+    import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
-const router = useRouter();
+    const cms = useCms();
+    const router = useRouter();
 
-const saving = ref(false);
-const error = ref('');
-const categories = ref<ICategory[]>([]);
-const authors = ref<IAuthor[]>([]);
-const seoOpen = ref(false);
+    const saving = ref(false);
+    const error = ref("");
+    const categories = ref<ICategory[]>([]);
+    const authors = ref<IAuthor[]>([]);
+    const seoOpen = ref(false);
 
-const form = reactive({
-  title: '',
-  slug: '',
-  content: '',
-  excerpt: '',
-  status: 'draft' as BlogPostStatus,
-  category: '',
-  tags: '',
-  coverImage: '',
-  author: '',
-  publishedAt: '',
-  seo: {
-    metaTitle: '',
-    metaDescription: '',
-    focusKeyword: '',
-    ogImage: '',
-    noIndex: false,
-  },
-  faq: [] as IFaqItem[],
-});
+    const form = reactive({
+        title: "",
+        slug: "",
+        content: "",
+        excerpt: "",
+        status: "draft" as BlogPostStatus,
+        category: "",
+        tags: "",
+        coverImage: "",
+        author: "",
+        publishedAt: "",
+        seo: {
+            metaTitle: "",
+            metaDescription: "",
+            focusKeyword: "",
+            ogImage: "",
+            noIndex: false,
+        },
+        faq: [] as IFaqItem[],
+    });
 
-const slugManuallyEdited = ref(false);
+    const slugManuallyEdited = ref(false);
 
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
+    function generateSlug(title: string): string {
+        return title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
 
-function onTitleInput() {
-  if (!slugManuallyEdited.value) {
-    form.slug = generateSlug(form.title);
-  }
-}
+    function onTitleInput() {
+        if (!slugManuallyEdited.value) {
+            form.slug = generateSlug(form.title);
+        }
+    }
 
-function onSlugInput() {
-  slugManuallyEdited.value = true;
-}
+    function onSlugInput() {
+        slugManuallyEdited.value = true;
+    }
 
-const readingTime = computed(() => {
-  const words = form.content.trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.ceil(words / 200));
-});
+    const readingTime = computed(() => {
+        const words = form.content.trim().split(/\s+/).filter(Boolean).length;
+        return Math.max(1, Math.ceil(words / 200));
+    });
 
-function addFaq() {
-  form.faq.push({ question: '', answer: '' });
-}
+    function addFaq() {
+        form.faq.push({ question: "", answer: "" });
+    }
 
-function removeFaq(index: number) {
-  form.faq.splice(index, 1);
-}
+    function removeFaq(index: number) {
+        form.faq.splice(index, 1);
+    }
 
-function validate(publish: boolean): string | null {
-  if (!form.title.trim()) return 'Title is required.';
-  if (!form.content.trim()) return 'Content is required.';
-  if (!form.excerpt.trim()) return 'Excerpt is required.';
-  if (publish) {
-    if (!form.seo.metaTitle.trim()) return 'SEO meta title is required for publishing.';
-    if (!form.seo.metaDescription.trim()) return 'SEO meta description is required for publishing.';
-  }
-  return null;
-}
+    function validate(publish: boolean): string | null {
+        if (!form.title.trim()) return "Title is required.";
+        if (!form.content.trim()) return "Content is required.";
+        if (!form.excerpt.trim()) return "Excerpt is required.";
+        if (publish) {
+            if (!form.seo.metaTitle.trim()) return "SEO meta title is required for publishing.";
+            if (!form.seo.metaDescription.trim())
+                return "SEO meta description is required for publishing.";
+        }
+        return null;
+    }
 
-async function save(publish: boolean) {
-  const validationError = validate(publish);
-  if (validationError) {
-    error.value = validationError;
-    return;
-  }
+    async function save(publish: boolean) {
+        const validationError = validate(publish);
+        if (validationError) {
+            error.value = validationError;
+            return;
+        }
 
-  saving.value = true;
-  error.value = '';
+        saving.value = true;
+        error.value = "";
 
-  try {
-    const tags = form.tags
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
+        try {
+            const tags = form.tags
+                .split(",")
+                .map((t) => t.trim())
+                .filter(Boolean);
 
-    const data: Partial<IBlogPost> = {
-      title: form.title,
-      slug: form.slug || undefined,
-      content: form.content,
-      excerpt: form.excerpt,
-      status: publish ? 'published' : form.status,
-      category: form.category || undefined,
-      tags: tags.length > 0 ? tags : undefined,
-      coverImage: form.coverImage || undefined,
-      author: form.author || undefined,
-      readingTime: readingTime.value,
-      publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
-      seo: (form.seo.metaTitle || form.seo.metaDescription) ? {
-        metaTitle: form.seo.metaTitle || undefined,
-        metaDescription: form.seo.metaDescription || undefined,
-        focusKeyword: form.seo.focusKeyword || undefined,
-        ogImage: form.seo.ogImage || undefined,
-        noIndex: form.seo.noIndex,
-      } : undefined,
-      faq: form.faq.filter(f => f.question.trim() && f.answer.trim()).length > 0
-        ? form.faq.filter(f => f.question.trim() && f.answer.trim())
-        : undefined,
-    };
+            const data: Partial<IBlogPost> = {
+                title: form.title,
+                slug: form.slug || undefined,
+                content: form.content,
+                excerpt: form.excerpt,
+                status: publish ? "published" : form.status,
+                category: form.category || undefined,
+                tags: tags.length > 0 ? tags : undefined,
+                coverImage: form.coverImage || undefined,
+                author: form.author || undefined,
+                readingTime: readingTime.value,
+                publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
+                seo:
+                    form.seo.metaTitle || form.seo.metaDescription
+                        ? {
+                              metaTitle: form.seo.metaTitle || undefined,
+                              metaDescription: form.seo.metaDescription || undefined,
+                              focusKeyword: form.seo.focusKeyword || undefined,
+                              ogImage: form.seo.ogImage || undefined,
+                              noIndex: form.seo.noIndex,
+                          }
+                        : undefined,
+                faq:
+                    form.faq.filter((f) => f.question.trim() && f.answer.trim()).length > 0
+                        ? form.faq.filter((f) => f.question.trim() && f.answer.trim())
+                        : undefined,
+            };
 
-    const created = await cms.blogPosts.create(data);
-    await router.push(`/admin/blog/${created._id}`);
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to save post.';
-  } finally {
-    saving.value = false;
-  }
-}
+            const created = await cms.blogPosts.create(data);
+            await router.push(`/admin/blog/${created._id}`);
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to save post.";
+        } finally {
+            saving.value = false;
+        }
+    }
 
-async function loadFormData() {
-  try {
-    const [catsRes, authorsRes] = await Promise.all([
-      cms.categories.list({ pageSize: 100 }),
-      cms.authors.list(),
-    ]);
-    categories.value = catsRes.items;
-    authors.value = authorsRes;
-  } catch {
-    // Non-critical
-  }
-}
+    async function loadFormData() {
+        try {
+            const [catsRes, authorsRes] = await Promise.all([
+                cms.categories.list({ pageSize: 100 }),
+                cms.authors.list(),
+            ]);
+            categories.value = catsRes.items;
+            authors.value = authorsRes;
+        } catch {
+            // Non-critical
+        }
+    }
 
-onMounted(loadFormData);
+    onMounted(loadFormData);
 </script>
 
 <template>

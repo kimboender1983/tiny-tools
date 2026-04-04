@@ -1,142 +1,149 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-vue-next';
-import type { IPage, IFaqItem, PageStatus, PageTemplate, ICategory } from '@tiny-tools/shared';
+    import type { ICategory, IFaqItem, IPage, PageStatus, PageTemplate } from "@tiny-tools/shared";
+    import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
-const router = useRouter();
+    const cms = useCms();
+    const router = useRouter();
 
-const saving = ref(false);
-const error = ref('');
-const categories = ref<ICategory[]>([]);
-const allPages = ref<IPage[]>([]);
-const seoOpen = ref(false);
+    const saving = ref(false);
+    const error = ref("");
+    const categories = ref<ICategory[]>([]);
+    const allPages = ref<IPage[]>([]);
+    const seoOpen = ref(false);
 
-const form = reactive({
-  title: '',
-  slug: '',
-  content: '',
-  excerpt: '',
-  status: 'draft' as PageStatus,
-  template: 'static' as PageTemplate,
-  category: '',
-  publishedAt: '',
-  seo: {
-    metaTitle: '',
-    metaDescription: '',
-    focusKeyword: '',
-    ogImage: '',
-    noIndex: false,
-  },
-  showInHeader: false,
-  showInFooter: false,
-  navLabel: '',
-  footerGroup: '',
-  footerGroupOrder: 0,
-  faq: [] as IFaqItem[],
-  relatedPages: [] as string[],
-});
+    const form = reactive({
+        title: "",
+        slug: "",
+        content: "",
+        excerpt: "",
+        status: "draft" as PageStatus,
+        template: "static" as PageTemplate,
+        category: "",
+        publishedAt: "",
+        seo: {
+            metaTitle: "",
+            metaDescription: "",
+            focusKeyword: "",
+            ogImage: "",
+            noIndex: false,
+        },
+        showInHeader: false,
+        showInFooter: false,
+        navLabel: "",
+        footerGroup: "",
+        footerGroupOrder: 0,
+        faq: [] as IFaqItem[],
+        relatedPages: [] as string[],
+    });
 
-const slugManuallyEdited = ref(false);
+    const slugManuallyEdited = ref(false);
 
-function generateSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
+    function generateSlug(title: string): string {
+        return title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
 
-function onTitleInput() {
-  if (!slugManuallyEdited.value) {
-    form.slug = generateSlug(form.title);
-  }
-}
+    function onTitleInput() {
+        if (!slugManuallyEdited.value) {
+            form.slug = generateSlug(form.title);
+        }
+    }
 
-function onSlugInput() {
-  slugManuallyEdited.value = true;
-}
+    function onSlugInput() {
+        slugManuallyEdited.value = true;
+    }
 
-const existingFooterGroups = computed(() => {
-  const groups = new Set<string>();
-  for (const p of allPages.value) {
-    if (p.footerGroup) groups.add(p.footerGroup);
-  }
-  return [...groups].sort();
-});
+    const existingFooterGroups = computed(() => {
+        const groups = new Set<string>();
+        for (const p of allPages.value) {
+            if (p.footerGroup) groups.add(p.footerGroup);
+        }
+        return [...groups].sort();
+    });
 
-function addFaq() {
-  form.faq.push({ question: '', answer: '' });
-}
+    function addFaq() {
+        form.faq.push({ question: "", answer: "" });
+    }
 
-function removeFaq(index: number) {
-  form.faq.splice(index, 1);
-}
+    function removeFaq(index: number) {
+        form.faq.splice(index, 1);
+    }
 
-function toggleRelatedPage(id: string) {
-  const idx = form.relatedPages.indexOf(id);
-  if (idx >= 0) {
-    form.relatedPages.splice(idx, 1);
-  } else {
-    form.relatedPages.push(id);
-  }
-}
+    function toggleRelatedPage(id: string) {
+        const idx = form.relatedPages.indexOf(id);
+        if (idx >= 0) {
+            form.relatedPages.splice(idx, 1);
+        } else {
+            form.relatedPages.push(id);
+        }
+    }
 
-async function save(publish: boolean) {
-  saving.value = true;
-  error.value = '';
+    async function save(publish: boolean) {
+        saving.value = true;
+        error.value = "";
 
-  try {
-    const data: Partial<IPage> = {
-      title: form.title,
-      slug: form.slug,
-      content: form.content,
-      excerpt: form.excerpt || undefined,
-      status: publish ? 'published' : form.status,
-      template: form.template,
-      navPlacement: form.showInHeader && form.showInFooter ? 'both'
-        : form.showInHeader ? 'header'
-        : form.showInFooter ? 'footer'
-        : 'none',
-      navLabel: form.navLabel || undefined,
-      footerGroup: form.footerGroup || undefined,
-      footerGroupOrder: form.footerGroup ? form.footerGroupOrder : undefined,
-      category: form.category || undefined,
-      publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
-      seo: {
-        metaTitle: form.seo.metaTitle,
-        metaDescription: form.seo.metaDescription,
-        focusKeyword: form.seo.focusKeyword || undefined,
-        ogImage: form.seo.ogImage || undefined,
-        noIndex: form.seo.noIndex,
-      },
-      faq: form.faq.length > 0 ? form.faq.filter(f => f.question && f.answer) : undefined,
-      relatedPages: form.relatedPages.length > 0 ? form.relatedPages : undefined,
-    };
+        try {
+            const data: Partial<IPage> = {
+                title: form.title,
+                slug: form.slug,
+                content: form.content,
+                excerpt: form.excerpt || undefined,
+                status: publish ? "published" : form.status,
+                template: form.template,
+                navPlacement:
+                    form.showInHeader && form.showInFooter
+                        ? "both"
+                        : form.showInHeader
+                          ? "header"
+                          : form.showInFooter
+                            ? "footer"
+                            : "none",
+                navLabel: form.navLabel || undefined,
+                footerGroup: form.footerGroup || undefined,
+                footerGroupOrder: form.footerGroup ? form.footerGroupOrder : undefined,
+                category: form.category || undefined,
+                publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
+                seo: {
+                    metaTitle: form.seo.metaTitle,
+                    metaDescription: form.seo.metaDescription,
+                    focusKeyword: form.seo.focusKeyword || undefined,
+                    ogImage: form.seo.ogImage || undefined,
+                    noIndex: form.seo.noIndex,
+                },
+                faq:
+                    form.faq.length > 0
+                        ? form.faq.filter((f) => f.question && f.answer)
+                        : undefined,
+                relatedPages: form.relatedPages.length > 0 ? form.relatedPages : undefined,
+            };
 
-    const created = await cms.pages.create(data);
-    await router.push(`/admin/pages/${created._id}`);
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to save page.';
-  } finally {
-    saving.value = false;
-  }
-}
+            const created = await cms.pages.create(data);
+            await router.push(`/admin/pages/${created._id}`);
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to save page.";
+        } finally {
+            saving.value = false;
+        }
+    }
 
-async function loadFormData() {
-  try {
-    const [catsRes, pagesRes] = await Promise.all([
-      cms.categories.list({ pageSize: 100 }),
-      cms.pages.list({ pageSize: 100 }),
-    ]);
-    categories.value = catsRes.items;
-    allPages.value = pagesRes.items;
-  } catch {
-    // Non-critical — form still works without these
-  }
-}
+    async function loadFormData() {
+        try {
+            const [catsRes, pagesRes] = await Promise.all([
+                cms.categories.list({ pageSize: 100 }),
+                cms.pages.list({ pageSize: 100 }),
+            ]);
+            categories.value = catsRes.items;
+            allPages.value = pagesRes.items;
+        } catch {
+            // Non-critical — form still works without these
+        }
+    }
 
-onMounted(loadFormData);
+    onMounted(loadFormData);
 </script>
 
 <template>

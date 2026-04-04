@@ -1,99 +1,101 @@
 <script setup lang="ts">
-import { Line } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Filler,
-} from 'chart.js';
+    import {
+        CategoryScale,
+        Chart as ChartJS,
+        Filler,
+        LinearScale,
+        LineElement,
+        PointElement,
+        Title,
+        Tooltip,
+    } from "chart.js";
+    import { Line } from "vue-chartjs";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler);
+    ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Filler);
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
-const days = ref(30);
-const analytics = ref<{
-  totalClicks: number;
-  perAffiliate: { affiliateId: string; name: string; slug: string; totalClicks: number }[];
-  dailyClicks: { date: string; count: number }[];
-} | null>(null);
+    const loading = ref(true);
+    const error = ref("");
+    const days = ref(30);
+    const analytics = ref<{
+        totalClicks: number;
+        perAffiliate: { affiliateId: string; name: string; slug: string; totalClicks: number }[];
+        dailyClicks: { date: string; count: number }[];
+    } | null>(null);
 
-const dayOptions = [
-  { label: '7 days', value: 7 },
-  { label: '30 days', value: 30 },
-  { label: '90 days', value: 90 },
-];
+    const dayOptions = [
+        { label: "7 days", value: 7 },
+        { label: "30 days", value: 30 },
+        { label: "90 days", value: 90 },
+    ];
 
-async function loadAnalytics() {
-  loading.value = true;
-  error.value = '';
+    async function loadAnalytics() {
+        loading.value = true;
+        error.value = "";
 
-  try {
-    analytics.value = (await cms.affiliates.getOverviewAnalytics(days.value)) as typeof analytics.value;
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load analytics.';
-  } finally {
-    loading.value = false;
-  }
-}
+        try {
+            analytics.value = (await cms.affiliates.getOverviewAnalytics(
+                days.value,
+            )) as typeof analytics.value;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load analytics.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-function setDays(d: number) {
-  days.value = d;
-  loadAnalytics();
-}
+    function setDays(d: number) {
+        days.value = d;
+        loadAnalytics();
+    }
 
-const chartData = computed(() => {
-  if (!analytics.value?.dailyClicks) return null;
+    const chartData = computed(() => {
+        if (!analytics.value?.dailyClicks) return null;
 
-  const labels = analytics.value.dailyClicks.map((d) => {
-    const date = new Date(d.date);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  });
+        const labels = analytics.value.dailyClicks.map((d) => {
+            const date = new Date(d.date);
+            return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        });
 
-  return {
-    labels,
-    datasets: [
-      {
-        label: 'Clicks',
-        data: analytics.value.dailyClicks.map((d) => d.count),
-        borderColor: '#3b82f6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 2,
-        pointHoverRadius: 5,
-      },
-    ],
-  };
-});
+        return {
+            labels,
+            datasets: [
+                {
+                    label: "Clicks",
+                    data: analytics.value.dailyClicks.map((d) => d.count),
+                    borderColor: "#3b82f6",
+                    backgroundColor: "rgba(59, 130, 246, 0.1)",
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 2,
+                    pointHoverRadius: 5,
+                },
+            ],
+        };
+    });
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    title: { display: false },
-    tooltip: {
-      mode: 'index' as const,
-      intersect: false,
-    },
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      ticks: { precision: 0 },
-    },
-  },
-};
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            title: { display: false },
+            tooltip: {
+                mode: "index" as const,
+                intersect: false,
+            },
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { precision: 0 },
+            },
+        },
+    };
 
-onMounted(loadAnalytics);
+    onMounted(loadAnalytics);
 </script>
 
 <template>

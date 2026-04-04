@@ -1,7 +1,7 @@
 <script setup lang="ts">
-defineProps<{
-  items: { question: string; answer: string }[];
-}>();
+    defineProps<{
+        items: { question: string; answer: string }[];
+    }>();
 </script>
 
 <template>

@@ -1,322 +1,337 @@
 <script setup lang="ts">
-import {
-  Braces,
-  Download,
-  Eraser,
-  Minimize2,
-  AlertTriangle,
-  WrapText,
-  TreePine,
-  Wrench,
-  ArrowUpToLine,
-  ArrowDownToLine,
-  ArrowDownAZ,
-  Link,
-  Unlink,
-} from 'lucide-vue-next';
-import type { TreeNode } from '~/composables/useJsonFormatter';
+    import {
+        AlertTriangle,
+        ArrowDownAZ,
+        ArrowDownToLine,
+        ArrowUpToLine,
+        Braces,
+        Download,
+        Eraser,
+        Link,
+        Minimize2,
+        TreePine,
+        Unlink,
+        WrapText,
+        Wrench,
+    } from "lucide-vue-next";
+    import type { TreeNode } from "~/composables/useJsonFormatter";
 
-const {
-  input,
-  indentStyle,
-  minifyMode,
-  showTreeView,
-  formattedOutput,
-  error,
-  isValid,
-  treeData,
-  format,
-  minify,
-  clear,
-  tryFix,
-  sortKeys,
-} = useJsonFormatter();
+    const {
+        input,
+        indentStyle,
+        minifyMode,
+        showTreeView,
+        formattedOutput,
+        error,
+        isValid,
+        treeData,
+        format,
+        minify,
+        clear,
+        tryFix,
+        sortKeys,
+    } = useJsonFormatter();
 
-// --- Stats ---
-function formatSize(str: string): string {
-  const bytes = new Blob([str]).size;
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-const inputStats = computed(() => {
-  if (!input.value) return null;
-  const lines = input.value.split('\n').length;
-  return { lines, size: formatSize(input.value) };
-});
-
-const outputStats = computed(() => {
-  if (!formattedOutput.value) return null;
-  const lines = formattedOutput.value.split('\n').length;
-  return { lines, size: formatSize(formattedOutput.value) };
-});
-
-// --- Line numbers ---
-const inputLines = computed(() => {
-  const text = input.value || '';
-  return Math.max(text.split('\n').length, 1);
-});
-
-const outputLines = computed(() => {
-  const text = formattedOutput.value || '';
-  return Math.max(text.split('\n').length, 1);
-});
-
-// --- Syntax highlighting ---
-function escapeHtml(str: string): string {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function highlightJson(json: string): string {
-  if (!json) return '';
-
-  // Process line by line, token by token — escape HTML inside tokens, then wrap with spans
-  // This avoids the problem of regexes breaking on HTML entities inside strings
-  const result: string[] = [];
-
-  // Match JSON tokens: strings, numbers, booleans, null, and everything else
-  const tokenRegex = /("(?:[^"\\]|\\.)*")|(-?\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b)|\b(true|false)\b|\b(null)\b|([^"tfn\d-]+)/g;
-
-  let match: RegExpExecArray | null;
-  let lastIndex = 0;
-
-  while ((match = tokenRegex.exec(json)) !== null) {
-    const [full, str, num, bool, nul] = match;
-
-    if (str) {
-      // Check if this string is a key (followed by colon)
-      const after = json.slice(match.index + full.length);
-      const isKey = /^\s*:/.test(after);
-      const cls = isKey ? 'json-key' : 'json-string';
-      result.push(`<span class="${cls}">${escapeHtml(str)}</span>`);
-    } else if (num) {
-      result.push(`<span class="json-number">${escapeHtml(num)}</span>`);
-    } else if (bool) {
-      result.push(`<span class="json-boolean">${escapeHtml(bool)}</span>`);
-    } else if (nul) {
-      result.push(`<span class="json-null">${escapeHtml(nul)}</span>`);
-    } else {
-      // Structural chars: { } [ ] : , whitespace
-      result.push(escapeHtml(full));
+    // --- Stats ---
+    function formatSize(str: string): string {
+        const bytes = new Blob([str]).size;
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     }
 
-    lastIndex = match.index + full.length;
-  }
+    const inputStats = computed(() => {
+        if (!input.value) return null;
+        const lines = input.value.split("\n").length;
+        return { lines, size: formatSize(input.value) };
+    });
 
-  // Append any remaining text
-  if (lastIndex < json.length) {
-    result.push(escapeHtml(json.slice(lastIndex)));
-  }
+    const outputStats = computed(() => {
+        if (!formattedOutput.value) return null;
+        const lines = formattedOutput.value.split("\n").length;
+        return { lines, size: formatSize(formattedOutput.value) };
+    });
 
-  return result.join('');
-}
+    // --- Line numbers ---
+    const inputLines = computed(() => {
+        const text = input.value || "";
+        return Math.max(text.split("\n").length, 1);
+    });
 
-const highlightedOutput = computed(() => highlightJson(formattedOutput.value));
+    const outputLines = computed(() => {
+        const text = formattedOutput.value || "";
+        return Math.max(text.split("\n").length, 1);
+    });
 
-// --- File drop ---
-const isDragging = ref(false);
-let dragCounter = 0;
-
-function onDragEnter(e: DragEvent) {
-  e.preventDefault();
-  dragCounter++;
-  isDragging.value = true;
-}
-
-function onDragLeave(e: DragEvent) {
-  e.preventDefault();
-  dragCounter--;
-  if (dragCounter === 0) isDragging.value = false;
-}
-
-function onDragOver(e: DragEvent) {
-  e.preventDefault();
-}
-
-function onDrop(e: DragEvent) {
-  e.preventDefault();
-  dragCounter = 0;
-  isDragging.value = false;
-  const files = e.dataTransfer?.files;
-  if (!files?.length) return;
-  const file = files[0];
-  if (!file.name.endsWith('.json') && file.type !== 'application/json') return;
-  readFile(file);
-}
-
-function readFile(file: File) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    if (typeof reader.result === 'string') {
-      input.value = reader.result;
+    // --- Syntax highlighting ---
+    function escapeHtml(str: string): string {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
-  };
-  reader.readAsText(file);
-}
 
-// --- Download ---
-function downloadOutput() {
-  if (!formattedOutput.value) return;
-  const blob = new Blob([formattedOutput.value], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = minifyMode.value ? 'output.min.json' : 'output.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
+    function highlightJson(json: string): string {
+        if (!json) return "";
 
-// --- Keyboard shortcut ---
-function onKeydown(e: KeyboardEvent) {
-  if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'c') {
-    e.preventDefault();
-    if (formattedOutput.value) {
-      navigator.clipboard.writeText(formattedOutput.value);
+        // Process line by line, token by token — escape HTML inside tokens, then wrap with spans
+        // This avoids the problem of regexes breaking on HTML entities inside strings
+        const result: string[] = [];
+
+        // Match JSON tokens: strings, numbers, booleans, null, and everything else
+        const tokenRegex =
+            /("(?:[^"\\]|\\.)*")|(-?\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b)|\b(true|false)\b|\b(null)\b|([^"tfn\d-]+)/g;
+
+        let lastIndex = 0;
+        let match: RegExpExecArray | null = tokenRegex.exec(json);
+
+        while (match !== null) {
+            const [full, str, num, bool, nul] = match;
+
+            if (str) {
+                // Check if this string is a key (followed by colon)
+                const after = json.slice(match.index + full.length);
+                const isKey = /^\s*:/.test(after);
+                const cls = isKey ? "json-key" : "json-string";
+                result.push(`<span class="${cls}">${escapeHtml(str)}</span>`);
+            } else if (num) {
+                result.push(`<span class="json-number">${escapeHtml(num)}</span>`);
+            } else if (bool) {
+                result.push(`<span class="json-boolean">${escapeHtml(bool)}</span>`);
+            } else if (nul) {
+                result.push(`<span class="json-null">${escapeHtml(nul)}</span>`);
+            } else {
+                // Structural chars: { } [ ] : , whitespace
+                result.push(escapeHtml(full));
+            }
+
+            lastIndex = match.index + full.length;
+            match = tokenRegex.exec(json);
+        }
+
+        // Append any remaining text
+        if (lastIndex < json.length) {
+            result.push(escapeHtml(json.slice(lastIndex)));
+        }
+
+        return result.join("");
     }
-  }
-}
 
-onMounted(() => {
-  window.addEventListener('keydown', onKeydown);
-});
+    const highlightedOutput = computed(() => highlightJson(formattedOutput.value));
 
-onUnmounted(() => {
-  window.removeEventListener('keydown', onKeydown);
-});
+    // --- File drop ---
+    const isDragging = ref(false);
+    let dragCounter = 0;
 
-// --- Textarea sync scroll ---
-const inputTextarea = ref<HTMLTextAreaElement | null>(null);
-const inputGutter = ref<HTMLElement | null>(null);
-const inputHighlight = ref<HTMLElement | null>(null);
-const outputPre = ref<HTMLElement | null>(null);
-const outputGutter = ref<HTMLElement | null>(null);
-const treeContainer = ref<HTMLElement | null>(null);
+    function onDragEnter(e: DragEvent) {
+        e.preventDefault();
+        dragCounter++;
+        isDragging.value = true;
+    }
 
-// Get whichever output element is currently scrollable
-const activeOutputEl = computed(() => treeContainer.value ?? outputPre.value);
+    function onDragLeave(e: DragEvent) {
+        e.preventDefault();
+        dragCounter--;
+        if (dragCounter === 0) isDragging.value = false;
+    }
 
-// Highlighted version of the input for the backdrop
-const highlightedInput = computed(() => highlightJson(input.value));
+    function onDragOver(e: DragEvent) {
+        e.preventDefault();
+    }
 
-const scrollLock = ref(false);
-let scrollSyncSource: 'input' | 'output' | null = null;
+    function onDrop(e: DragEvent) {
+        e.preventDefault();
+        dragCounter = 0;
+        isDragging.value = false;
+        const files = e.dataTransfer?.files;
+        if (!files?.length) return;
+        const file = files[0];
+        if (!file.name.endsWith(".json") && file.type !== "application/json") return;
+        readFile(file);
+    }
 
-function syncScrollTo(target: HTMLElement | null, gutter: HTMLElement | null, scrollTop: number) {
-  if (target) target.scrollTop = scrollTop;
-  if (gutter) gutter.scrollTop = scrollTop;
-}
+    function readFile(file: File) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (typeof reader.result === "string") {
+                input.value = reader.result;
+            }
+        };
+        reader.readAsText(file);
+    }
 
-function syncInputScroll() {
-  if (!inputTextarea.value) return;
-  const st = inputTextarea.value.scrollTop;
+    // --- Download ---
+    function downloadOutput() {
+        if (!formattedOutput.value) return;
+        const blob = new Blob([formattedOutput.value], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = minifyMode.value ? "output.min.json" : "output.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 
-  // Always sync gutter and highlight backdrop
-  if (inputGutter.value) inputGutter.value.scrollTop = st;
-  if (inputHighlight.value) {
-    inputHighlight.value.scrollTop = st;
-    inputHighlight.value.scrollLeft = inputTextarea.value.scrollLeft;
-  }
+    // --- Keyboard shortcut ---
+    function onKeydown(e: KeyboardEvent) {
+        if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "c") {
+            e.preventDefault();
+            if (formattedOutput.value) {
+                navigator.clipboard.writeText(formattedOutput.value);
+            }
+        }
+    }
 
-  // Scroll lock: sync output to match input
-  const outEl = activeOutputEl.value;
-  if (scrollLock.value && scrollSyncSource !== 'output' && outEl) {
-    scrollSyncSource = 'input';
-    const inputMax = inputTextarea.value.scrollHeight - inputTextarea.value.clientHeight;
-    const pct = inputMax > 0 ? st / inputMax : 0;
-    const outputMax = outEl.scrollHeight - outEl.clientHeight;
-    outEl.scrollTop = pct * outputMax;
-    if (outputGutter.value) outputGutter.value.scrollTop = outEl.scrollTop;
-    requestAnimationFrame(() => { scrollSyncSource = null; });
-  }
-}
+    onMounted(() => {
+        window.addEventListener("keydown", onKeydown);
+    });
 
-function syncOutputScroll() {
-  const outEl = activeOutputEl.value;
-  if (!outEl) return;
-  const st = outEl.scrollTop;
+    onUnmounted(() => {
+        window.removeEventListener("keydown", onKeydown);
+    });
 
-  // Always sync gutter (only relevant for pre view, not tree)
-  if (outputGutter.value) outputGutter.value.scrollTop = st;
+    // --- Textarea sync scroll ---
+    const inputTextarea = ref<HTMLTextAreaElement | null>(null);
+    const inputGutter = ref<HTMLElement | null>(null);
+    const inputHighlight = ref<HTMLElement | null>(null);
+    const outputPre = ref<HTMLElement | null>(null);
+    const outputGutter = ref<HTMLElement | null>(null);
+    const treeContainer = ref<HTMLElement | null>(null);
 
-  // Scroll lock: sync input to match output
-  if (scrollLock.value && scrollSyncSource !== 'input' && inputTextarea.value) {
-    scrollSyncSource = 'output';
-    const outputMax = outEl.scrollHeight - outEl.clientHeight;
-    const pct = outputMax > 0 ? st / outputMax : 0;
-    const inputMax = inputTextarea.value.scrollHeight - inputTextarea.value.clientHeight;
-    const inputSt = pct * inputMax;
-    inputTextarea.value.scrollTop = inputSt;
-    if (inputGutter.value) inputGutter.value.scrollTop = inputSt;
-    if (inputHighlight.value) inputHighlight.value.scrollTop = inputSt;
-    requestAnimationFrame(() => { scrollSyncSource = null; });
-  }
-}
+    // Get whichever output element is currently scrollable
+    const activeOutputEl = computed(() => treeContainer.value ?? outputPre.value);
 
-// --- Tree view toggle ---
-function toggleNode(node: TreeNode) {
-  node.expanded = !node.expanded;
-}
+    // Highlighted version of the input for the backdrop
+    const highlightedInput = computed(() => highlightJson(input.value));
 
-function setAllExpanded(node: TreeNode | null, expanded: boolean) {
-  if (!node) return;
-  node.expanded = expanded;
-  node.children?.forEach(c => setAllExpanded(c, expanded));
-}
+    const scrollLock = ref(false);
+    let scrollSyncSource: "input" | "output" | null = null;
 
-// --- Scroll to top/bottom ---
-function scrollInputToTop() {
-  if (inputTextarea.value) {
-    inputTextarea.value.scrollTop = 0;
-    syncInputScroll();
-  }
-}
+    function syncScrollTo(
+        target: HTMLElement | null,
+        gutter: HTMLElement | null,
+        scrollTop: number,
+    ) {
+        if (target) target.scrollTop = scrollTop;
+        if (gutter) gutter.scrollTop = scrollTop;
+    }
 
-function scrollInputToBottom() {
-  if (inputTextarea.value) {
-    inputTextarea.value.scrollTop = inputTextarea.value.scrollHeight;
-    syncInputScroll();
-  }
-}
+    function syncInputScroll() {
+        if (!inputTextarea.value) return;
+        const st = inputTextarea.value.scrollTop;
 
-function scrollOutputToTop() {
-  const outEl = activeOutputEl.value;
-  if (outEl) {
-    outEl.scrollTop = 0;
-    syncOutputScroll();
-  }
-}
+        // Always sync gutter and highlight backdrop
+        if (inputGutter.value) inputGutter.value.scrollTop = st;
+        if (inputHighlight.value) {
+            inputHighlight.value.scrollTop = st;
+            inputHighlight.value.scrollLeft = inputTextarea.value.scrollLeft;
+        }
 
-function scrollOutputToBottom() {
-  const outEl = activeOutputEl.value;
-  if (outEl) {
-    outEl.scrollTop = outEl.scrollHeight;
-    syncOutputScroll();
-  }
-}
+        // Scroll lock: sync output to match input
+        const outEl = activeOutputEl.value;
+        if (scrollLock.value && scrollSyncSource !== "output" && outEl) {
+            scrollSyncSource = "input";
+            const inputMax = inputTextarea.value.scrollHeight - inputTextarea.value.clientHeight;
+            const pct = inputMax > 0 ? st / inputMax : 0;
+            const outputMax = outEl.scrollHeight - outEl.clientHeight;
+            outEl.scrollTop = pct * outputMax;
+            if (outputGutter.value) outputGutter.value.scrollTop = outEl.scrollTop;
+            requestAnimationFrame(() => {
+                scrollSyncSource = null;
+            });
+        }
+    }
 
-// Track scroll position for showing scroll buttons
-const inputScrollTop = ref(0);
-const outputScrollTop = ref(0);
-const inputAtBottom = ref(false);
-const outputAtBottom = ref(false);
+    function syncOutputScroll() {
+        const outEl = activeOutputEl.value;
+        if (!outEl) return;
+        const st = outEl.scrollTop;
 
-function onInputScroll() {
-  if (!inputTextarea.value) return;
-  inputScrollTop.value = inputTextarea.value.scrollTop;
-  inputAtBottom.value = inputTextarea.value.scrollTop + inputTextarea.value.clientHeight >= inputTextarea.value.scrollHeight - 10;
-  syncInputScroll();
-}
+        // Always sync gutter (only relevant for pre view, not tree)
+        if (outputGutter.value) outputGutter.value.scrollTop = st;
 
-function onOutputScroll() {
-  if (!outputPre.value) return;
-  outputScrollTop.value = outputPre.value.scrollTop;
-  outputAtBottom.value = outputPre.value.scrollTop + outputPre.value.clientHeight >= outputPre.value.scrollHeight - 10;
-  syncOutputScroll();
-}
+        // Scroll lock: sync input to match output
+        if (scrollLock.value && scrollSyncSource !== "input" && inputTextarea.value) {
+            scrollSyncSource = "output";
+            const outputMax = outEl.scrollHeight - outEl.clientHeight;
+            const pct = outputMax > 0 ? st / outputMax : 0;
+            const inputMax = inputTextarea.value.scrollHeight - inputTextarea.value.clientHeight;
+            const inputSt = pct * inputMax;
+            inputTextarea.value.scrollTop = inputSt;
+            if (inputGutter.value) inputGutter.value.scrollTop = inputSt;
+            if (inputHighlight.value) inputHighlight.value.scrollTop = inputSt;
+            requestAnimationFrame(() => {
+                scrollSyncSource = null;
+            });
+        }
+    }
 
+    // --- Tree view toggle ---
+    function toggleNode(node: TreeNode) {
+        node.expanded = !node.expanded;
+    }
+
+    function setAllExpanded(node: TreeNode | null, expanded: boolean) {
+        if (!node) return;
+        node.expanded = expanded;
+        node.children?.forEach((c) => {
+            setAllExpanded(c, expanded);
+        });
+    }
+
+    // --- Scroll to top/bottom ---
+    function scrollInputToTop() {
+        if (inputTextarea.value) {
+            inputTextarea.value.scrollTop = 0;
+            syncInputScroll();
+        }
+    }
+
+    function scrollInputToBottom() {
+        if (inputTextarea.value) {
+            inputTextarea.value.scrollTop = inputTextarea.value.scrollHeight;
+            syncInputScroll();
+        }
+    }
+
+    function scrollOutputToTop() {
+        const outEl = activeOutputEl.value;
+        if (outEl) {
+            outEl.scrollTop = 0;
+            syncOutputScroll();
+        }
+    }
+
+    function scrollOutputToBottom() {
+        const outEl = activeOutputEl.value;
+        if (outEl) {
+            outEl.scrollTop = outEl.scrollHeight;
+            syncOutputScroll();
+        }
+    }
+
+    // Track scroll position for showing scroll buttons
+    const inputScrollTop = ref(0);
+    const outputScrollTop = ref(0);
+    const inputAtBottom = ref(false);
+    const outputAtBottom = ref(false);
+
+    function onInputScroll() {
+        if (!inputTextarea.value) return;
+        inputScrollTop.value = inputTextarea.value.scrollTop;
+        inputAtBottom.value =
+            inputTextarea.value.scrollTop + inputTextarea.value.clientHeight >=
+            inputTextarea.value.scrollHeight - 10;
+        syncInputScroll();
+    }
+
+    function onOutputScroll() {
+        if (!outputPre.value) return;
+        outputScrollTop.value = outputPre.value.scrollTop;
+        outputAtBottom.value =
+            outputPre.value.scrollTop + outputPre.value.clientHeight >=
+            outputPre.value.scrollHeight - 10;
+        syncOutputScroll();
+    }
 </script>
 
 <template>

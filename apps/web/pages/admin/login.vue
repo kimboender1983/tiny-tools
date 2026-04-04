@@ -1,32 +1,32 @@
 <script setup lang="ts">
-definePageMeta({ layout: false });
+    definePageMeta({ layout: false });
 
-const { login, isAuthenticated, loading } = useAuth();
+    const { login, isAuthenticated, loading } = useAuth();
 
-const email = ref('');
-const password = ref('');
-const error = ref('');
+    const email = ref("");
+    const password = ref("");
+    const error = ref("");
 
-// Redirect if already authenticated
-if (isAuthenticated.value) {
-  navigateTo('/admin');
-}
+    // Redirect if already authenticated
+    if (isAuthenticated.value) {
+        navigateTo("/admin");
+    }
 
-async function handleSubmit() {
-  error.value = '';
+    async function handleSubmit() {
+        error.value = "";
 
-  if (!email.value || !password.value) {
-    error.value = 'Please fill in both fields.';
-    return;
-  }
+        if (!email.value || !password.value) {
+            error.value = "Please fill in both fields.";
+            return;
+        }
 
-  try {
-    await login(email.value, password.value);
-    await navigateTo('/admin');
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Invalid email or password.';
-  }
-}
+        try {
+            await login(email.value, password.value);
+            await navigateTo("/admin");
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Invalid email or password.";
+        }
+    }
 </script>
 
 <template>

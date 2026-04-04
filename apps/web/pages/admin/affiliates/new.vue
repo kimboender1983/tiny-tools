@@ -1,64 +1,67 @@
 <script setup lang="ts">
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
-const router = useRouter();
+    const cms = useCms();
+    const router = useRouter();
 
-const saving = ref(false);
-const error = ref('');
+    const saving = ref(false);
+    const error = ref("");
 
-const form = reactive({
-  name: '',
-  slug: '',
-  url: '',
-  logo: '',
-  description: '',
-  programInfo: '',
-  status: 'active' as 'active' | 'inactive',
-});
-
-const slugManuallyEdited = ref(false);
-
-function generateSlug(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-}
-
-function onNameInput() {
-  if (!slugManuallyEdited.value) {
-    form.slug = generateSlug(form.name);
-  }
-}
-
-function onSlugInput() {
-  slugManuallyEdited.value = true;
-}
-
-async function save() {
-  if (!form.name.trim() || !form.url.trim()) {
-    error.value = 'Name and URL are required.';
-    return;
-  }
-
-  saving.value = true;
-  error.value = '';
-
-  try {
-    const created = await cms.affiliates.create({
-      name: form.name,
-      slug: form.slug || undefined,
-      url: form.url,
-      logo: form.logo || undefined,
-      description: form.description || undefined,
-      programInfo: form.programInfo || undefined,
-      status: form.status,
+    const form = reactive({
+        name: "",
+        slug: "",
+        url: "",
+        logo: "",
+        description: "",
+        programInfo: "",
+        status: "active" as "active" | "inactive",
     });
-    await router.push(`/admin/affiliates/${created._id}`);
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to create affiliate.';
-  } finally {
-    saving.value = false;
-  }
-}
+
+    const slugManuallyEdited = ref(false);
+
+    function generateSlug(name: string): string {
+        return name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
+
+    function onNameInput() {
+        if (!slugManuallyEdited.value) {
+            form.slug = generateSlug(form.name);
+        }
+    }
+
+    function onSlugInput() {
+        slugManuallyEdited.value = true;
+    }
+
+    async function save() {
+        if (!form.name.trim() || !form.url.trim()) {
+            error.value = "Name and URL are required.";
+            return;
+        }
+
+        saving.value = true;
+        error.value = "";
+
+        try {
+            const created = await cms.affiliates.create({
+                name: form.name,
+                slug: form.slug || undefined,
+                url: form.url,
+                logo: form.logo || undefined,
+                description: form.description || undefined,
+                programInfo: form.programInfo || undefined,
+                status: form.status,
+            });
+            await router.push(`/admin/affiliates/${created._id}`);
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to create affiliate.";
+        } finally {
+            saving.value = false;
+        }
+    }
 </script>
 
 <template>

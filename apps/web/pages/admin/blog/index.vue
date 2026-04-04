@@ -1,127 +1,133 @@
 <script setup lang="ts">
-import { Plus, Trash2, Search, Star } from 'lucide-vue-next';
-import type { IBlogPost, ICategory } from '@tiny-tools/shared';
+    import type { IBlogPost, ICategory } from "@tiny-tools/shared";
+    import { Plus, Search, Star, Trash2 } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
-const posts = ref<IBlogPost[]>([]);
-const categories = ref<ICategory[]>([]);
-const total = ref(0);
-const currentPage = ref(1);
-const search = ref('');
-const statusFilter = ref<string>('');
-const categoryFilter = ref<string>('');
-const deleteConfirmId = ref<string | null>(null);
+    const loading = ref(true);
+    const error = ref("");
+    const posts = ref<IBlogPost[]>([]);
+    const categories = ref<ICategory[]>([]);
+    const total = ref(0);
+    const currentPage = ref(1);
+    const search = ref("");
+    const statusFilter = ref<string>("");
+    const categoryFilter = ref<string>("");
+    const deleteConfirmId = ref<string | null>(null);
 
-const categoryMap = computed(() => {
-  const map = new Map<string, ICategory>();
-  for (const cat of categories.value) {
-    map.set(cat._id, cat);
-  }
-  return map;
-});
-
-function getCategoryName(post: IBlogPost): string {
-  const cat = post.category;
-  if (!cat) return '';
-  if (typeof cat === 'object') return cat.name;
-  return categoryMap.value.get(cat)?.name ?? '';
-}
-
-const tabs = [
-  { label: 'All', value: '' },
-  { label: 'Published', value: 'published' },
-  { label: 'Draft', value: 'draft' },
-  { label: 'Archived', value: 'archived' },
-];
-
-async function loadPosts() {
-  loading.value = true;
-  error.value = '';
-
-  try {
-    const res = await cms.blogPosts.list({
-      page: currentPage.value,
-      pageSize: 20,
-      status: statusFilter.value || undefined,
-      category: categoryFilter.value || undefined,
-      search: search.value || undefined,
+    const categoryMap = computed(() => {
+        const map = new Map<string, ICategory>();
+        for (const cat of categories.value) {
+            map.set(cat._id, cat);
+        }
+        return map;
     });
-    posts.value = res.items;
-    total.value = res.total;
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load blog posts.';
-  } finally {
-    loading.value = false;
-  }
-}
 
-async function loadCategories() {
-  try {
-    const res = await cms.categories.list({ pageSize: 100 });
-    categories.value = res.items;
-  } catch { /* non-critical */ }
-}
+    function getCategoryName(post: IBlogPost): string {
+        const cat = post.category;
+        if (!cat) return "";
+        if (typeof cat === "object") return cat.name;
+        return categoryMap.value.get(cat)?.name ?? "";
+    }
 
-function setFilter(value: string) {
-  statusFilter.value = value;
-  currentPage.value = 1;
-  loadPosts();
-}
+    const tabs = [
+        { label: "All", value: "" },
+        { label: "Published", value: "published" },
+        { label: "Draft", value: "draft" },
+        { label: "Archived", value: "archived" },
+    ];
 
-function setCategoryFilter(value: string) {
-  categoryFilter.value = value;
-  currentPage.value = 1;
-  loadPosts();
-}
+    async function loadPosts() {
+        loading.value = true;
+        error.value = "";
 
-let searchTimeout: ReturnType<typeof setTimeout>;
-function onSearch() {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    currentPage.value = 1;
-    loadPosts();
-  }, 300);
-}
+        try {
+            const res = await cms.blogPosts.list({
+                page: currentPage.value,
+                pageSize: 20,
+                status: statusFilter.value || undefined,
+                category: categoryFilter.value || undefined,
+                search: search.value || undefined,
+            });
+            posts.value = res.items;
+            total.value = res.total;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load blog posts.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-async function deletePost(id: string) {
-  try {
-    await cms.blogPosts.delete(id);
-    deleteConfirmId.value = null;
-    await loadPosts();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to delete post.';
-  }
-}
+    async function loadCategories() {
+        try {
+            const res = await cms.categories.list({ pageSize: 100 });
+            categories.value = res.items;
+        } catch {
+            /* non-critical */
+        }
+    }
 
-async function toggleFeatured(id: string) {
-  try {
-    await cms.blogPosts.toggleFeatured(id);
-    const post = posts.value.find((p) => p._id === id);
-    if (post) post.featured = !post.featured;
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to toggle featured.';
-  }
-}
+    function setFilter(value: string) {
+        statusFilter.value = value;
+        currentPage.value = 1;
+        loadPosts();
+    }
 
-function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-}
+    function setCategoryFilter(value: string) {
+        categoryFilter.value = value;
+        currentPage.value = 1;
+        loadPosts();
+    }
 
-const statusClasses: Record<string, string> = {
-  published: 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400',
-  draft: 'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400',
-  archived: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-};
+    let searchTimeout: ReturnType<typeof setTimeout>;
+    function onSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            currentPage.value = 1;
+            loadPosts();
+        }, 300);
+    }
 
-onMounted(() => {
-  loadCategories();
-  loadPosts();
-});
+    async function deletePost(id: string) {
+        try {
+            await cms.blogPosts.delete(id);
+            deleteConfirmId.value = null;
+            await loadPosts();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to delete post.";
+        }
+    }
+
+    async function toggleFeatured(id: string) {
+        try {
+            await cms.blogPosts.toggleFeatured(id);
+            const post = posts.value.find((p) => p._id === id);
+            if (post) post.featured = !post.featured;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to toggle featured.";
+        }
+    }
+
+    function formatDate(date: Date | string): string {
+        return new Date(date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+        });
+    }
+
+    const statusClasses: Record<string, string> = {
+        published: "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400",
+        draft: "bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400",
+        archived: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+    };
+
+    onMounted(() => {
+        loadCategories();
+        loadPosts();
+    });
 </script>
 
 <template>

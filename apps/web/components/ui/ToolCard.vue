@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { ArrowRight } from 'lucide-vue-next';
-import * as icons from 'lucide-vue-next';
-import type { IToolMeta } from '@tiny-tools/shared';
+    import type { IToolMeta } from "@tiny-tools/shared";
+    import * as icons from "lucide-vue-next";
+    import { ArrowRight } from "lucide-vue-next";
 
-const props = defineProps<{
-  tool: IToolMeta;
-  index?: number;
-}>();
+    const props = defineProps<{
+        tool: IToolMeta;
+        index?: number;
+    }>();
 
-const iconComponent = computed(() => {
-  const icon = (icons as Record<string, unknown>)[props.tool.icon];
-  return icon ?? null;
-});
+    const iconComponent = computed(() => {
+        const icon = (icons as Record<string, unknown>)[props.tool.icon];
+        return icon ?? null;
+    });
 
-const entranceDelay = computed(() =>
-  props.index != null ? `${props.index * 60}ms` : '0ms',
-);
+    const entranceDelay = computed(() => (props.index != null ? `${props.index * 60}ms` : "0ms"));
 </script>
 
 <template>

@@ -1,88 +1,109 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import { generateJsonLd } from '~/utils/seo';
+    import { TOOLS } from "@tiny-tools/shared";
+    import { generateJsonLd } from "~/utils/seo";
 
-const appStore = useAppStore();
-const tool = TOOLS.find((t) => t.slug === 'json-formatter')!;
-const siteUrl = 'https://pickbox.dev';
-const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
+    const appStore = useAppStore();
+    const tool = TOOLS.find((t) => t.slug === "json-formatter");
+    if (!tool) throw new Error("Tool not found: json-formatter");
+    const siteUrl = "https://pickbox.dev";
+    const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
-const faqItems = [
-  {
-    question: 'What does a JSON formatter do?',
-    answer: 'A JSON formatter takes raw or minified JSON data and restructures it with consistent indentation, line breaks, and spacing. This makes the data far easier to read, debug, and understand. Most formatters also validate the JSON and highlight syntax errors.',
-  },
-  {
-    question: 'Is it safe to paste sensitive JSON data into an online formatter?',
-    answer: 'With Pickbox, yes. Our JSON formatter runs entirely in your browser using JavaScript. Your data is never sent to a server, stored, or logged. Everything is processed client-side, so your API responses, configuration files, and tokens stay on your device.',
-  },
-  {
-    question: 'What is the difference between JSON.stringify and a JSON formatter?',
-    answer: 'JSON.stringify() is a JavaScript method that converts a JavaScript object into a JSON string. A JSON formatter takes an existing JSON string and reformats it for readability. Under the hood, most formatters use JSON.parse() followed by JSON.stringify(value, null, 2) to produce indented output.',
-  },
-  {
-    question: 'Why is my JSON invalid?',
-    answer: 'Common reasons include trailing commas after the last property, single quotes instead of double quotes, unquoted property names, missing commas between items, and comments (JSON does not support comments). Our formatter highlights the exact line and position of the error to help you fix it quickly.',
-  },
-  {
-    question: 'Can I convert JSON to YAML or other formats?',
-    answer: 'Our JSON formatter focuses on formatting and validating JSON. For converting between JSON, YAML, TOML, and other serialization formats, we plan to add dedicated converter tools in the future. In the meantime, you can validate your JSON here before converting it elsewhere.',
-  },
-];
+    const faqItems = [
+        {
+            question: "What does a JSON formatter do?",
+            answer: "A JSON formatter takes raw or minified JSON data and restructures it with consistent indentation, line breaks, and spacing. This makes the data far easier to read, debug, and understand. Most formatters also validate the JSON and highlight syntax errors.",
+        },
+        {
+            question: "Is it safe to paste sensitive JSON data into an online formatter?",
+            answer: "With Pickbox, yes. Our JSON formatter runs entirely in your browser using JavaScript. Your data is never sent to a server, stored, or logged. Everything is processed client-side, so your API responses, configuration files, and tokens stay on your device.",
+        },
+        {
+            question: "What is the difference between JSON.stringify and a JSON formatter?",
+            answer: "JSON.stringify() is a JavaScript method that converts a JavaScript object into a JSON string. A JSON formatter takes an existing JSON string and reformats it for readability. Under the hood, most formatters use JSON.parse() followed by JSON.stringify(value, null, 2) to produce indented output.",
+        },
+        {
+            question: "Why is my JSON invalid?",
+            answer: "Common reasons include trailing commas after the last property, single quotes instead of double quotes, unquoted property names, missing commas between items, and comments (JSON does not support comments). Our formatter highlights the exact line and position of the error to help you fix it quickly.",
+        },
+        {
+            question: "Can I convert JSON to YAML or other formats?",
+            answer: "Our JSON formatter focuses on formatting and validating JSON. For converting between JSON, YAML, TOML, and other serialization formats, we plan to add dedicated converter tools in the future. In the meantime, you can validate your JSON here before converting it elsewhere.",
+        },
+    ];
 
-const navLinks = [
-  { id: 'what-is-json', label: 'What is JSON' },
-  { id: 'common-errors', label: 'Syntax Errors' },
-  { id: 'json-vs-yaml', label: 'JSON vs YAML' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'built-with', label: 'Built With' },
-  { id: 'related-tools', label: 'Related Tools' },
-];
+    const navLinks = [
+        { id: "what-is-json", label: "What is JSON" },
+        { id: "common-errors", label: "Syntax Errors" },
+        { id: "json-vs-yaml", label: "JSON vs YAML" },
+        { id: "faq", label: "FAQ" },
+        { id: "built-with", label: "Built With" },
+        { id: "related-tools", label: "Related Tools" },
+    ];
 
-useHead({
-  title: 'JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox',
-  meta: [
-    { name: 'description', content: 'Format, beautify, and validate JSON instantly in your browser. Free JSON formatter with syntax highlighting, error detection, and zero data uploads.' },
-    { name: 'keywords', content: tool.keywords.join(', ') },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox' },
-    { property: 'og:description', content: 'Format, beautify, and validate JSON instantly in your browser. Free tool with syntax highlighting and error detection.' },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox' },
-    { name: 'twitter:description', content: 'Format, beautify, and validate JSON instantly in your browser. Free tool with syntax highlighting and error detection.' },
-  ],
-  link: [
-    { rel: 'canonical', href: canonicalUrl },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('SoftwareApplication', {
-        name: tool.name,
-        description: tool.description,
-        url: canonicalUrl,
-        category: tool.category,
-      })),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('BreadcrumbList', [
-        { name: 'Home', url: siteUrl },
-        { name: 'JSON Formatter', url: canonicalUrl },
-      ])),
-    },
-  ],
-});
+    useHead({
+        title: "JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Format, beautify, and validate JSON instantly in your browser. Free JSON formatter with syntax highlighting, error detection, and zero data uploads.",
+            },
+            { name: "keywords", content: tool.keywords.join(", ") },
+            { property: "og:type", content: "website" },
+            {
+                property: "og:title",
+                content: "JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox",
+            },
+            {
+                property: "og:description",
+                content:
+                    "Format, beautify, and validate JSON instantly in your browser. Free tool with syntax highlighting and error detection.",
+            },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            { name: "twitter:card", content: "summary_large_image" },
+            {
+                name: "twitter:title",
+                content: "JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox",
+            },
+            {
+                name: "twitter:description",
+                content:
+                    "Format, beautify, and validate JSON instantly in your browser. Free tool with syntax highlighting and error detection.",
+            },
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("SoftwareApplication", {
+                        name: tool.name,
+                        description: tool.description,
+                        url: canonicalUrl,
+                        category: tool.category,
+                    }),
+                ),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(generateJsonLd("FAQPage", faqItems)),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("BreadcrumbList", [
+                        { name: "Home", url: siteUrl },
+                        { name: "JSON Formatter", url: canonicalUrl },
+                    ]),
+                ),
+            },
+        ],
+    });
 
-onMounted(() => {
-  appStore.addRecentTool(tool.slug);
-});
+    onMounted(() => {
+        appStore.addRecentTool(tool.slug);
+    });
 </script>
 
 <template>

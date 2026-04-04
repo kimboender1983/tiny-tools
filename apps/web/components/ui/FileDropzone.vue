@@ -1,92 +1,96 @@
 <script setup lang="ts">
-import { Upload, FileWarning } from 'lucide-vue-next';
+    import { FileWarning, Upload } from "lucide-vue-next";
 
-const props = withDefaults(defineProps<{
-  accept: string;
-  multiple: boolean;
-  maxSize?: number;
-}>(), {
-  multiple: false,
-});
+    const props = withDefaults(
+        defineProps<{
+            accept: string;
+            multiple: boolean;
+            maxSize?: number;
+        }>(),
+        {
+            multiple: false,
+        },
+    );
 
-const emit = defineEmits<{
-  files: [files: File[]];
-}>();
+    const emit = defineEmits<{
+        files: [files: File[]];
+    }>();
 
-const isDragging = ref(false);
-const error = ref('');
-const inputRef = ref<HTMLInputElement | null>(null);
-let dragCounter = 0;
+    const isDragging = ref(false);
+    const error = ref("");
+    const inputRef = ref<HTMLInputElement | null>(null);
+    let dragCounter = 0;
 
-function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function validateAndEmit(fileList: FileList | null) {
-  if (!fileList || fileList.length === 0) return;
-
-  error.value = '';
-  const files = Array.from(fileList);
-
-  if (props.maxSize) {
-    const oversized = files.filter((f) => f.size > props.maxSize!);
-    if (oversized.length > 0) {
-      error.value = `File${oversized.length > 1 ? 's' : ''} exceed${oversized.length === 1 ? 's' : ''} max size of ${formatSize(props.maxSize)}`;
-      return;
+    function formatSize(bytes: number): string {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     }
-  }
 
-  emit('files', props.multiple ? files : [files[0]]);
-}
+    function validateAndEmit(fileList: FileList | null) {
+        if (!fileList || fileList.length === 0) return;
 
-function onDragEnter(e: DragEvent) {
-  e.preventDefault();
-  dragCounter++;
-  isDragging.value = true;
-}
+        error.value = "";
+        const files = Array.from(fileList);
 
-function onDragLeave(e: DragEvent) {
-  e.preventDefault();
-  dragCounter--;
-  if (dragCounter === 0) {
-    isDragging.value = false;
-  }
-}
+        if (props.maxSize) {
+            const maxSize = props.maxSize;
+            const oversized = files.filter((f) => maxSize && f.size > maxSize);
+            if (oversized.length > 0) {
+                error.value = `File${oversized.length > 1 ? "s" : ""} exceed${oversized.length === 1 ? "s" : ""} max size of ${formatSize(props.maxSize)}`;
+                return;
+            }
+        }
 
-function onDragOver(e: DragEvent) {
-  e.preventDefault();
-}
+        emit("files", props.multiple ? files : [files[0]]);
+    }
 
-function onDrop(e: DragEvent) {
-  e.preventDefault();
-  dragCounter = 0;
-  isDragging.value = false;
-  validateAndEmit(e.dataTransfer?.files ?? null);
-}
+    function onDragEnter(e: DragEvent) {
+        e.preventDefault();
+        dragCounter++;
+        isDragging.value = true;
+    }
 
-function onClick() {
-  inputRef.value?.click();
-}
+    function onDragLeave(e: DragEvent) {
+        e.preventDefault();
+        dragCounter--;
+        if (dragCounter === 0) {
+            isDragging.value = false;
+        }
+    }
 
-function onInputChange(e: Event) {
-  const target = e.target as HTMLInputElement;
-  validateAndEmit(target.files);
-  target.value = '';
-}
+    function onDragOver(e: DragEvent) {
+        e.preventDefault();
+    }
 
-const acceptLabel = computed(() => {
-  return props.accept
-    .split(',')
-    .map((s) => s.trim())
-    .map((s) => {
-      if (s.startsWith('.')) return s.toUpperCase().slice(1);
-      if (s.includes('/')) return s.split('/')[1]?.toUpperCase() ?? s;
-      return s;
-    })
-    .join(', ');
-});
+    function onDrop(e: DragEvent) {
+        e.preventDefault();
+        dragCounter = 0;
+        isDragging.value = false;
+        validateAndEmit(e.dataTransfer?.files ?? null);
+    }
+
+    function onClick() {
+        inputRef.value?.click();
+    }
+
+    function onInputChange(e: Event) {
+        const target = e.target as HTMLInputElement;
+        validateAndEmit(target.files);
+        target.value = "";
+    }
+
+    const acceptLabel = computed(() => {
+        return props.accept
+            .split(",")
+            .map((s) => s.trim())
+            .map((s) => {
+                if (s.startsWith(".")) return s.toUpperCase().slice(1);
+                if (s.includes("/")) return s.split("/")[1]?.toUpperCase() ?? s;
+                return s;
+            })
+            .join(", ");
+    });
 </script>
 
 <template>

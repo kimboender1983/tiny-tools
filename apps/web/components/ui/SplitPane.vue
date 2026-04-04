@@ -1,25 +1,25 @@
 <script setup lang="ts">
-const splitRatio = ref(50);
-const isDragging = ref(false);
-const containerRef = ref<HTMLElement | null>(null);
+    const splitRatio = ref(50);
+    const isDragging = ref(false);
+    const containerRef = ref<HTMLElement | null>(null);
 
-function onPointerDown(e: PointerEvent) {
-  e.preventDefault();
-  isDragging.value = true;
-  (e.target as HTMLElement).setPointerCapture(e.pointerId);
-}
+    function onPointerDown(e: PointerEvent) {
+        e.preventDefault();
+        isDragging.value = true;
+        (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    }
 
-function onPointerMove(e: PointerEvent) {
-  if (!isDragging.value || !containerRef.value) return;
-  const rect = containerRef.value.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const percent = (x / rect.width) * 100;
-  splitRatio.value = Math.min(Math.max(percent, 15), 85);
-}
+    function onPointerMove(e: PointerEvent) {
+        if (!isDragging.value || !containerRef.value) return;
+        const rect = containerRef.value.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const percent = (x / rect.width) * 100;
+        splitRatio.value = Math.min(Math.max(percent, 15), 85);
+    }
 
-function onPointerUp() {
-  isDragging.value = false;
-}
+    function onPointerUp() {
+        isDragging.value = false;
+    }
 </script>
 
 <template>

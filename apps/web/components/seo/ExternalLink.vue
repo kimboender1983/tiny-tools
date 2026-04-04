@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ExternalLink } from 'lucide-vue-next';
+    import { ExternalLink } from "lucide-vue-next";
 
-defineProps<{
-  href: string;
-  title: string;
-  description: string;
-}>();
+    defineProps<{
+        href: string;
+        title: string;
+        description: string;
+    }>();
 </script>
 
 <template>

@@ -1,163 +1,228 @@
 <script setup lang="ts">
-import {
-  AlertTriangle,
-  ShieldAlert,
-  ShieldCheck,
-  Clock,
-  Eraser,
-  Info,
-  Key,
-  FileCode,
-  Lock,
-  ExternalLink,
-  Zap,
-} from 'lucide-vue-next';
+    import {
+        AlertTriangle,
+        Clock,
+        Eraser,
+        ExternalLink,
+        FileCode,
+        Info,
+        Key,
+        Lock,
+        ShieldAlert,
+        ShieldCheck,
+        Zap,
+    } from "lucide-vue-next";
 
-const {
-  token,
-  decoded,
-  error,
-  securityWarnings,
-  timestamps,
-  expiryStatus,
-  clear,
-  isTimestampClaim,
-  getClaimDescription,
-  isStandardClaim,
-} = useJwtDecoder();
+    const {
+        token,
+        decoded,
+        error,
+        securityWarnings,
+        timestamps,
+        expiryStatus,
+        clear,
+        isTimestampClaim,
+        getClaimDescription,
+        isStandardClaim,
+    } = useJwtDecoder();
 
-// --- Example tokens ---
-const examples = [
-  {
-    label: 'HS256',
-    description: 'HMAC with SHA-256 — symmetric key',
-    // jwt.io example token
-    token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-    wiki: 'https://en.wikipedia.org/wiki/HMAC',
-  },
-  {
-    label: 'RS256',
-    description: 'RSA with SHA-256 — asymmetric key pair',
-    token: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkphbmUgRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.POstGetfAytaZS82wHcjoTyoqhMyxXiWdR7Nn7A29DNSl0EiXLdwJ6xC6AfgZWF1bOsS_TuYI3OG85AmiExREkrS6tDfTQ2B3WXlrr-wp5AokiRbz3_oB4OxG-W9KcEEbDRcZc0nH3L7LzYptiy1PtAylQGxHTWZXtGz4ht0bAecBgmpdgXMguEIcoqPJ1n3pIWk_dUZegpqx0Lka21H6XxUTxiy8OcaarA8zdnPUnV6AmNP3ecFawIFYdvJB_cm-GvpCSbr8G8y_Mllj8f4x9nBH8pQux89_6gUY618iYv7tuPWBFfEbLxtF2pZS6YC1aSfLQxaOoaBSTPoiHnw',
-    wiki: 'https://en.wikipedia.org/wiki/RSA_(cryptosystem)',
-  },
-  {
-    label: 'ES256',
-    description: 'ECDSA with P-256 and SHA-256 — elliptic curve',
-    token: 'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaWNlIFNtaXRoIiwicm9sZSI6ImVuZ2luZWVyIiwiaWF0IjoxNTE2MjM5MDIyfQ.FBRIFaGMUmwJcrCdMQDkJgJhjbcfy2lMaVhaKPYXVN7dJ1k3yY0YfcfCTMxnPbvoS3WPjANjnV3VGfI6VcYpYA',
-    wiki: 'https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm',
-  },
-];
+    // --- Example tokens ---
+    const examples = [
+        {
+            label: "HS256",
+            description: "HMAC with SHA-256 — symmetric key",
+            // jwt.io example token
+            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+            wiki: "https://en.wikipedia.org/wiki/HMAC",
+        },
+        {
+            label: "RS256",
+            description: "RSA with SHA-256 — asymmetric key pair",
+            token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkphbmUgRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.POstGetfAytaZS82wHcjoTyoqhMyxXiWdR7Nn7A29DNSl0EiXLdwJ6xC6AfgZWF1bOsS_TuYI3OG85AmiExREkrS6tDfTQ2B3WXlrr-wp5AokiRbz3_oB4OxG-W9KcEEbDRcZc0nH3L7LzYptiy1PtAylQGxHTWZXtGz4ht0bAecBgmpdgXMguEIcoqPJ1n3pIWk_dUZegpqx0Lka21H6XxUTxiy8OcaarA8zdnPUnV6AmNP3ecFawIFYdvJB_cm-GvpCSbr8G8y_Mllj8f4x9nBH8pQux89_6gUY618iYv7tuPWBFfEbLxtF2pZS6YC1aSfLQxaOoaBSTPoiHnw",
+            wiki: "https://en.wikipedia.org/wiki/RSA_(cryptosystem)",
+        },
+        {
+            label: "ES256",
+            description: "ECDSA with P-256 and SHA-256 — elliptic curve",
+            token: "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFsaWNlIFNtaXRoIiwicm9sZSI6ImVuZ2luZWVyIiwiaWF0IjoxNTE2MjM5MDIyfQ.FBRIFaGMUmwJcrCdMQDkJgJhjbcfy2lMaVhaKPYXVN7dJ1k3yY0YfcfCTMxnPbvoS3WPjANjnV3VGfI6VcYpYA",
+            wiki: "https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm",
+        },
+    ];
 
-function loadExample(ex: typeof examples[0]) {
-  token.value = ex.token;
-}
-
-// --- Algorithm info ---
-const algoInfo = computed(() => {
-  if (!decoded.value?.header.alg) return null;
-  const alg = decoded.value.header.alg as string;
-  const info: Record<string, { name: string; type: string; wiki: string }> = {
-    HS256: { name: 'HMAC-SHA256', type: 'Symmetric', wiki: 'https://en.wikipedia.org/wiki/HMAC' },
-    HS384: { name: 'HMAC-SHA384', type: 'Symmetric', wiki: 'https://en.wikipedia.org/wiki/HMAC' },
-    HS512: { name: 'HMAC-SHA512', type: 'Symmetric', wiki: 'https://en.wikipedia.org/wiki/HMAC' },
-    RS256: { name: 'RSA-SHA256', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/RSA_(cryptosystem)' },
-    RS384: { name: 'RSA-SHA384', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/RSA_(cryptosystem)' },
-    RS512: { name: 'RSA-SHA512', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/RSA_(cryptosystem)' },
-    ES256: { name: 'ECDSA P-256', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm' },
-    ES384: { name: 'ECDSA P-384', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm' },
-    ES512: { name: 'ECDSA P-521', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm' },
-    PS256: { name: 'RSA-PSS SHA-256', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/Probabilistic_signature_scheme' },
-    PS384: { name: 'RSA-PSS SHA-384', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/Probabilistic_signature_scheme' },
-    PS512: { name: 'RSA-PSS SHA-512', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/Probabilistic_signature_scheme' },
-    EdDSA: { name: 'EdDSA (Ed25519)', type: 'Asymmetric', wiki: 'https://en.wikipedia.org/wiki/EdDSA' },
-    none: { name: 'No signature', type: 'Insecure', wiki: 'https://datatracker.ietf.org/doc/html/rfc7518#section-3.6' },
-  };
-  return info[alg] || null;
-});
-
-// --- Color-coded token parts ---
-const tokenParts = computed(() => {
-  const raw = token.value.trim();
-  if (!raw) return null;
-  const dotIndices: number[] = [];
-  for (let i = 0; i < raw.length; i++) {
-    if (raw[i] === '.') dotIndices.push(i);
-  }
-  if (dotIndices.length !== 2) return null;
-  return {
-    header: raw.slice(0, dotIndices[0]),
-    dot1: '.',
-    payload: raw.slice(dotIndices[0] + 1, dotIndices[1]),
-    dot2: '.',
-    signature: raw.slice(dotIndices[1] + 1),
-  };
-});
-
-// --- JSON syntax highlighting ---
-function highlightJson(obj: Record<string, unknown>): string {
-  const json = JSON.stringify(obj, null, 2);
-  let html = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  html = html.replace(/("(?:[^"\\]|\\.)*")\s*:/g, '<span class="jwt-json-key">$1</span>:');
-  html = html.replace(/:\s*("(?:[^"\\]|\\.)*")/g, (match, str) => match.replace(str, `<span class="jwt-json-string">${str}</span>`));
-  html = html.replace(/(?<=:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)(?=[,\s\n\]}])/g, '<span class="jwt-json-number">$1</span>');
-  html = html.replace(/\b(true|false)\b/g, '<span class="jwt-json-boolean">$1</span>');
-  html = html.replace(/\bnull\b/g, '<span class="jwt-json-null">null</span>');
-  return html;
-}
-
-const highlightedHeader = computed(() => decoded.value ? highlightJson(decoded.value.header) : '');
-const highlightedPayload = computed(() => decoded.value ? highlightJson(decoded.value.payload as Record<string, unknown>) : '');
-
-// --- Payload claim entries ---
-interface ClaimEntry {
-  key: string;
-  value: unknown;
-  description?: string;
-  isTimestamp: boolean;
-  timestampInfo?: { humanReadable: string; relative: string };
-}
-
-const payloadClaims = computed<ClaimEntry[]>(() => {
-  if (!decoded.value) return [];
-  return Object.entries(decoded.value.payload).map(([key, value]) => {
-    const entry: ClaimEntry = {
-      key,
-      value,
-      description: getClaimDescription(key),
-      isTimestamp: isTimestampClaim(key) && typeof value === 'number',
-    };
-    if (entry.isTimestamp && timestamps.value[key]) {
-      entry.timestampInfo = {
-        humanReadable: timestamps.value[key].humanReadable,
-        relative: timestamps.value[key].relative,
-      };
+    function loadExample(ex: (typeof examples)[0]) {
+        token.value = ex.token;
     }
-    return entry;
-  });
-});
 
-const activeTooltip = ref<string | null>(null);
+    // --- Algorithm info ---
+    const algoInfo = computed(() => {
+        if (!decoded.value?.header.alg) return null;
+        const alg = decoded.value.header.alg as string;
+        const info: Record<string, { name: string; type: string; wiki: string }> = {
+            HS256: {
+                name: "HMAC-SHA256",
+                type: "Symmetric",
+                wiki: "https://en.wikipedia.org/wiki/HMAC",
+            },
+            HS384: {
+                name: "HMAC-SHA384",
+                type: "Symmetric",
+                wiki: "https://en.wikipedia.org/wiki/HMAC",
+            },
+            HS512: {
+                name: "HMAC-SHA512",
+                type: "Symmetric",
+                wiki: "https://en.wikipedia.org/wiki/HMAC",
+            },
+            RS256: {
+                name: "RSA-SHA256",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/RSA_(cryptosystem)",
+            },
+            RS384: {
+                name: "RSA-SHA384",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/RSA_(cryptosystem)",
+            },
+            RS512: {
+                name: "RSA-SHA512",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/RSA_(cryptosystem)",
+            },
+            ES256: {
+                name: "ECDSA P-256",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm",
+            },
+            ES384: {
+                name: "ECDSA P-384",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm",
+            },
+            ES512: {
+                name: "ECDSA P-521",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm",
+            },
+            PS256: {
+                name: "RSA-PSS SHA-256",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/Probabilistic_signature_scheme",
+            },
+            PS384: {
+                name: "RSA-PSS SHA-384",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/Probabilistic_signature_scheme",
+            },
+            PS512: {
+                name: "RSA-PSS SHA-512",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/Probabilistic_signature_scheme",
+            },
+            EdDSA: {
+                name: "EdDSA (Ed25519)",
+                type: "Asymmetric",
+                wiki: "https://en.wikipedia.org/wiki/EdDSA",
+            },
+            none: {
+                name: "No signature",
+                type: "Insecure",
+                wiki: "https://datatracker.ietf.org/doc/html/rfc7518#section-3.6",
+            },
+        };
+        return info[alg] || null;
+    });
 
-function toggleTooltip(key: string) {
-  activeTooltip.value = activeTooltip.value === key ? null : key;
-}
+    // --- Color-coded token parts ---
+    const tokenParts = computed(() => {
+        const raw = token.value.trim();
+        if (!raw) return null;
+        const dotIndices: number[] = [];
+        for (let i = 0; i < raw.length; i++) {
+            if (raw[i] === ".") dotIndices.push(i);
+        }
+        if (dotIndices.length !== 2) return null;
+        return {
+            header: raw.slice(0, dotIndices[0]),
+            dot1: ".",
+            payload: raw.slice(dotIndices[0] + 1, dotIndices[1]),
+            dot2: ".",
+            signature: raw.slice(dotIndices[1] + 1),
+        };
+    });
 
-function formatValue(value: unknown): string {
-  if (typeof value === 'string') return `"${value}"`;
-  if (typeof value === 'object') return JSON.stringify(value);
-  return String(value);
-}
+    // --- JSON syntax highlighting ---
+    function highlightJson(obj: Record<string, unknown>): string {
+        const json = JSON.stringify(obj, null, 2);
+        let html = json.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        html = html.replace(/("(?:[^"\\]|\\.)*")\s*:/g, '<span class="jwt-json-key">$1</span>:');
+        html = html.replace(/:\s*("(?:[^"\\]|\\.)*")/g, (match, str) =>
+            match.replace(str, `<span class="jwt-json-string">${str}</span>`),
+        );
+        html = html.replace(
+            /(?<=:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)(?=[,\s\n\]}])/g,
+            '<span class="jwt-json-number">$1</span>',
+        );
+        html = html.replace(/\b(true|false)\b/g, '<span class="jwt-json-boolean">$1</span>');
+        html = html.replace(/\bnull\b/g, '<span class="jwt-json-null">null</span>');
+        return html;
+    }
 
-const textareaRef = ref<HTMLTextAreaElement | null>(null);
-const overlayRef = ref<HTMLPreElement | null>(null);
+    const highlightedHeader = computed(() =>
+        decoded.value ? highlightJson(decoded.value.header) : "",
+    );
+    const highlightedPayload = computed(() =>
+        decoded.value ? highlightJson(decoded.value.payload as Record<string, unknown>) : "",
+    );
 
-function syncScroll() {
-  if (textareaRef.value && overlayRef.value) {
-    overlayRef.value.scrollTop = textareaRef.value.scrollTop;
-    overlayRef.value.scrollLeft = textareaRef.value.scrollLeft;
-  }
-}
+    // --- Payload claim entries ---
+    interface ClaimEntry {
+        key: string;
+        value: unknown;
+        description?: string;
+        isTimestamp: boolean;
+        timestampInfo?: { humanReadable: string; relative: string };
+    }
+
+    const payloadClaims = computed<ClaimEntry[]>(() => {
+        if (!decoded.value) return [];
+        return Object.entries(decoded.value.payload).map(([key, value]) => {
+            const entry: ClaimEntry = {
+                key,
+                value,
+                description: getClaimDescription(key),
+                isTimestamp: isTimestampClaim(key) && typeof value === "number",
+            };
+            if (entry.isTimestamp && timestamps.value[key]) {
+                entry.timestampInfo = {
+                    humanReadable: timestamps.value[key].humanReadable,
+                    relative: timestamps.value[key].relative,
+                };
+            }
+            return entry;
+        });
+    });
+
+    const activeTooltip = ref<string | null>(null);
+
+    function toggleTooltip(key: string) {
+        activeTooltip.value = activeTooltip.value === key ? null : key;
+    }
+
+    function formatValue(value: unknown): string {
+        if (typeof value === "string") return `"${value}"`;
+        if (typeof value === "object") return JSON.stringify(value);
+        return String(value);
+    }
+
+    const textareaRef = ref<HTMLTextAreaElement | null>(null);
+    const overlayRef = ref<HTMLPreElement | null>(null);
+
+    function syncScroll() {
+        if (textareaRef.value && overlayRef.value) {
+            overlayRef.value.scrollTop = textareaRef.value.scrollTop;
+            overlayRef.value.scrollLeft = textareaRef.value.scrollLeft;
+        }
+    }
 </script>
 
 <template>

@@ -1,45 +1,50 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronRight } from 'lucide-vue-next';
-import type { TreeNode } from '~/composables/useJsonFormatter';
+    import { ChevronDown, ChevronRight } from "lucide-vue-next";
+    import type { TreeNode } from "~/composables/useJsonFormatter";
 
-const props = defineProps<{
-  node: TreeNode;
-  isRoot?: boolean;
-}>();
+    const props = defineProps<{
+        node: TreeNode;
+        isRoot?: boolean;
+    }>();
 
-const emit = defineEmits<{
-  toggle: [node: TreeNode];
-}>();
+    const emit = defineEmits<{
+        toggle: [node: TreeNode];
+    }>();
 
-const isExpandable = computed(() => props.node.type === 'object' || props.node.type === 'array');
+    const isExpandable = computed(
+        () => props.node.type === "object" || props.node.type === "array",
+    );
 
-const valueColorClass = computed(() => ({
-  string: 'text-green-600 dark:text-green-400',
-  number: 'text-blue-600 dark:text-blue-400',
-  boolean: 'text-purple-600 dark:text-purple-400',
-  null: 'text-content-muted',
-  object: 'text-content-tertiary',
-  array: 'text-content-tertiary',
-})[props.node.type]);
+    const valueColorClass = computed(
+        () =>
+            ({
+                string: "text-green-600 dark:text-green-400",
+                number: "text-blue-600 dark:text-blue-400",
+                boolean: "text-purple-600 dark:text-purple-400",
+                null: "text-content-muted",
+                object: "text-content-tertiary",
+                array: "text-content-tertiary",
+            })[props.node.type],
+    );
 
-const preview = computed(() => {
-  const node = props.node;
-  if (node.type === 'string') return `"${String(node.value)}"`;
-  if (node.type === 'null') return 'null';
-  if (node.type === 'object') {
-    const count = node.children?.length ?? 0;
-    return `{ ${count} ${count === 1 ? 'key' : 'keys'} }`;
-  }
-  if (node.type === 'array') {
-    const count = node.children?.length ?? 0;
-    return `[ ${count} ${count === 1 ? 'item' : 'items'} ]`;
-  }
-  return String(node.value);
-});
+    const preview = computed(() => {
+        const node = props.node;
+        if (node.type === "string") return `"${String(node.value)}"`;
+        if (node.type === "null") return "null";
+        if (node.type === "object") {
+            const count = node.children?.length ?? 0;
+            return `{ ${count} ${count === 1 ? "key" : "keys"} }`;
+        }
+        if (node.type === "array") {
+            const count = node.children?.length ?? 0;
+            return `[ ${count} ${count === 1 ? "item" : "items"} ]`;
+        }
+        return String(node.value);
+    });
 
-function onToggle(node: TreeNode) {
-  emit('toggle', node);
-}
+    function onToggle(node: TreeNode) {
+        emit("toggle", node);
+    }
 </script>
 
 <template>

@@ -1,160 +1,167 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-vue-next';
-import type { IPage, IFaqItem, PageStatus, PageTemplate, ICategory } from '@tiny-tools/shared';
+    import type { ICategory, IFaqItem, IPage, PageStatus, PageTemplate } from "@tiny-tools/shared";
+    import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
-const route = useRoute();
-const id = route.params.id as string;
+    const cms = useCms();
+    const route = useRoute();
+    const id = route.params.id as string;
 
-const loading = ref(true);
-const saving = ref(false);
-const error = ref('');
-const categories = ref<ICategory[]>([]);
-const allPages = ref<IPage[]>([]);
-const seoOpen = ref(false);
+    const loading = ref(true);
+    const saving = ref(false);
+    const error = ref("");
+    const categories = ref<ICategory[]>([]);
+    const allPages = ref<IPage[]>([]);
+    const seoOpen = ref(false);
 
-const form = reactive({
-  title: '',
-  slug: '',
-  content: '',
-  excerpt: '',
-  status: 'draft' as PageStatus,
-  template: 'static' as PageTemplate,
-  category: '',
-  publishedAt: '',
-  seo: {
-    metaTitle: '',
-    metaDescription: '',
-    focusKeyword: '',
-    ogImage: '',
-    noIndex: false,
-  },
-  showInHeader: false,
-  showInFooter: false,
-  navLabel: '',
-  footerGroup: '',
-  footerGroupOrder: 0,
-  faq: [] as IFaqItem[],
-  relatedPages: [] as string[],
-});
+    const form = reactive({
+        title: "",
+        slug: "",
+        content: "",
+        excerpt: "",
+        status: "draft" as PageStatus,
+        template: "static" as PageTemplate,
+        category: "",
+        publishedAt: "",
+        seo: {
+            metaTitle: "",
+            metaDescription: "",
+            focusKeyword: "",
+            ogImage: "",
+            noIndex: false,
+        },
+        showInHeader: false,
+        showInFooter: false,
+        navLabel: "",
+        footerGroup: "",
+        footerGroupOrder: 0,
+        faq: [] as IFaqItem[],
+        relatedPages: [] as string[],
+    });
 
-const existingFooterGroups = computed(() => {
-  const groups = new Set<string>();
-  for (const p of allPages.value) {
-    if (p.footerGroup) groups.add(p.footerGroup);
-  }
-  return [...groups].sort();
-});
+    const existingFooterGroups = computed(() => {
+        const groups = new Set<string>();
+        for (const p of allPages.value) {
+            if (p.footerGroup) groups.add(p.footerGroup);
+        }
+        return [...groups].sort();
+    });
 
-function addFaq() {
-  form.faq.push({ question: '', answer: '' });
-}
+    function addFaq() {
+        form.faq.push({ question: "", answer: "" });
+    }
 
-function removeFaq(index: number) {
-  form.faq.splice(index, 1);
-}
+    function removeFaq(index: number) {
+        form.faq.splice(index, 1);
+    }
 
-function toggleRelatedPage(pageId: string) {
-  const idx = form.relatedPages.indexOf(pageId);
-  if (idx >= 0) {
-    form.relatedPages.splice(idx, 1);
-  } else {
-    form.relatedPages.push(pageId);
-  }
-}
+    function toggleRelatedPage(pageId: string) {
+        const idx = form.relatedPages.indexOf(pageId);
+        if (idx >= 0) {
+            form.relatedPages.splice(idx, 1);
+        } else {
+            form.relatedPages.push(pageId);
+        }
+    }
 
-function formatDateForInput(date: Date | string | undefined): string {
-  if (!date) return '';
-  const d = new Date(date);
-  return d.toISOString().slice(0, 16);
-}
+    function formatDateForInput(date: Date | string | undefined): string {
+        if (!date) return "";
+        const d = new Date(date);
+        return d.toISOString().slice(0, 16);
+    }
 
-async function loadPage() {
-  loading.value = true;
-  error.value = '';
+    async function loadPage() {
+        loading.value = true;
+        error.value = "";
 
-  try {
-    const [page, catsRes, pagesRes] = await Promise.all([
-      cms.pages.get(id),
-      cms.categories.list({ pageSize: 100 }),
-      cms.pages.list({ pageSize: 100 }),
-    ]);
+        try {
+            const [page, catsRes, pagesRes] = await Promise.all([
+                cms.pages.get(id),
+                cms.categories.list({ pageSize: 100 }),
+                cms.pages.list({ pageSize: 100 }),
+            ]);
 
-    categories.value = catsRes.items;
-    allPages.value = pagesRes.items.filter((p: IPage) => p._id !== id);
+            categories.value = catsRes.items;
+            allPages.value = pagesRes.items.filter((p: IPage) => p._id !== id);
 
-    form.title = page.title;
-    form.slug = page.slug;
-    form.content = page.content;
-    form.excerpt = page.excerpt || '';
-    form.status = page.status;
-    form.template = page.template;
-    form.category = page.category || '';
-    const np = page.navPlacement || 'none';
-    form.showInHeader = np === 'header' || np === 'both';
-    form.showInFooter = np === 'footer' || np === 'both';
-    form.navLabel = page.navLabel || '';
-    form.footerGroup = page.footerGroup || '';
-    form.footerGroupOrder = page.footerGroupOrder ?? 0;
-    form.publishedAt = formatDateForInput(page.publishedAt);
-    form.seo.metaTitle = page.seo?.metaTitle || '';
-    form.seo.metaDescription = page.seo?.metaDescription || '';
-    form.seo.focusKeyword = page.seo?.focusKeyword || '';
-    form.seo.ogImage = page.seo?.ogImage || '';
-    form.seo.noIndex = page.seo?.noIndex || false;
-    form.faq = page.faq ? [...page.faq] : [];
-    form.relatedPages = page.relatedPages ? [...page.relatedPages] : [];
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load page.';
-  } finally {
-    loading.value = false;
-  }
-}
+            form.title = page.title;
+            form.slug = page.slug;
+            form.content = page.content;
+            form.excerpt = page.excerpt || "";
+            form.status = page.status;
+            form.template = page.template;
+            form.category = page.category || "";
+            const np = page.navPlacement || "none";
+            form.showInHeader = np === "header" || np === "both";
+            form.showInFooter = np === "footer" || np === "both";
+            form.navLabel = page.navLabel || "";
+            form.footerGroup = page.footerGroup || "";
+            form.footerGroupOrder = page.footerGroupOrder ?? 0;
+            form.publishedAt = formatDateForInput(page.publishedAt);
+            form.seo.metaTitle = page.seo?.metaTitle || "";
+            form.seo.metaDescription = page.seo?.metaDescription || "";
+            form.seo.focusKeyword = page.seo?.focusKeyword || "";
+            form.seo.ogImage = page.seo?.ogImage || "";
+            form.seo.noIndex = page.seo?.noIndex || false;
+            form.faq = page.faq ? [...page.faq] : [];
+            form.relatedPages = page.relatedPages ? [...page.relatedPages] : [];
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load page.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-async function save(publish: boolean) {
-  saving.value = true;
-  error.value = '';
+    async function save(publish: boolean) {
+        saving.value = true;
+        error.value = "";
 
-  try {
-    const data: Partial<IPage> = {
-      title: form.title,
-      slug: form.slug,
-      content: form.content,
-      excerpt: form.excerpt || undefined,
-      status: publish ? 'published' : form.status,
-      template: form.template,
-      navPlacement: form.showInHeader && form.showInFooter ? 'both'
-        : form.showInHeader ? 'header'
-        : form.showInFooter ? 'footer'
-        : 'none',
-      navLabel: form.navLabel || undefined,
-      footerGroup: form.footerGroup || undefined,
-      footerGroupOrder: form.footerGroup ? form.footerGroupOrder : undefined,
-      category: form.category || null,
-      publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
-      seo: {
-        metaTitle: form.seo.metaTitle,
-        metaDescription: form.seo.metaDescription,
-        focusKeyword: form.seo.focusKeyword || undefined,
-        ogImage: form.seo.ogImage || undefined,
-        noIndex: form.seo.noIndex,
-      },
-      faq: form.faq.length > 0 ? form.faq.filter(f => f.question && f.answer) : undefined,
-      relatedPages: form.relatedPages.length > 0 ? form.relatedPages : undefined,
-    };
+        try {
+            const data: Partial<IPage> = {
+                title: form.title,
+                slug: form.slug,
+                content: form.content,
+                excerpt: form.excerpt || undefined,
+                status: publish ? "published" : form.status,
+                template: form.template,
+                navPlacement:
+                    form.showInHeader && form.showInFooter
+                        ? "both"
+                        : form.showInHeader
+                          ? "header"
+                          : form.showInFooter
+                            ? "footer"
+                            : "none",
+                navLabel: form.navLabel || undefined,
+                footerGroup: form.footerGroup || undefined,
+                footerGroupOrder: form.footerGroup ? form.footerGroupOrder : undefined,
+                category: form.category || null,
+                publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
+                seo: {
+                    metaTitle: form.seo.metaTitle,
+                    metaDescription: form.seo.metaDescription,
+                    focusKeyword: form.seo.focusKeyword || undefined,
+                    ogImage: form.seo.ogImage || undefined,
+                    noIndex: form.seo.noIndex,
+                },
+                faq:
+                    form.faq.length > 0
+                        ? form.faq.filter((f) => f.question && f.answer)
+                        : undefined,
+                relatedPages: form.relatedPages.length > 0 ? form.relatedPages : undefined,
+            };
 
-    await cms.pages.update(id, data);
-    error.value = ''; // clear any previous error
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to update page.';
-  } finally {
-    saving.value = false;
-  }
-}
+            await cms.pages.update(id, data);
+            error.value = ""; // clear any previous error
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to update page.";
+        } finally {
+            saving.value = false;
+        }
+    }
 
-onMounted(loadPage);
+    onMounted(loadPage);
 </script>
 
 <template>

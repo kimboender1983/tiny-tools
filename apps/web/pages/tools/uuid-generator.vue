@@ -1,89 +1,110 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import { generateJsonLd } from '~/utils/seo';
+    import { TOOLS } from "@tiny-tools/shared";
+    import { generateJsonLd } from "~/utils/seo";
 
-const appStore = useAppStore();
-const tool = TOOLS.find((t) => t.slug === 'uuid-generator')!;
-const siteUrl = 'https://pickbox.dev';
-const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
+    const appStore = useAppStore();
+    const tool = TOOLS.find((t) => t.slug === "uuid-generator");
+    if (!tool) throw new Error("Tool not found: uuid-generator");
+    const siteUrl = "https://pickbox.dev";
+    const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
-const faqItems = [
-  {
-    question: 'What is a UUID?',
-    answer: 'A UUID (Universally Unique Identifier) is a 128-bit identifier standardized by RFC 9562 (formerly RFC 4122). UUIDs are designed to be unique across space and time without requiring a central authority. They are represented as 32 hexadecimal digits grouped in a 8-4-4-4-12 pattern separated by hyphens, such as 550e8400-e29b-41d4-a716-446655440000.',
-  },
-  {
-    question: 'What is the difference between UUID v4 and v7?',
-    answer: 'UUID v4 generates 122 random bits, making collisions astronomically unlikely but providing no ordering. UUID v7, introduced in RFC 9562, embeds a 48-bit Unix millisecond timestamp in the first 48 bits followed by random data. This means v7 UUIDs are time-sortable — they naturally sort by creation time, which dramatically improves database index performance when used as primary keys.',
-  },
-  {
-    question: 'Can UUIDs collide?',
-    answer: 'While theoretically possible, a UUID v4 collision is extraordinarily unlikely. With 122 random bits, you would need to generate approximately 2.71 × 10^18 UUIDs to have a 50% probability of a single collision. For practical purposes, UUID collisions are considered impossible in real-world applications.',
-  },
-  {
-    question: 'Should I use UUID v4 or v7 for database primary keys?',
-    answer: 'UUID v7 is strongly recommended for database primary keys. Because v7 UUIDs are time-sorted, they insert into B-tree indexes sequentially, avoiding random page splits that fragment the index. This can improve write performance by 2-10x compared to random v4 UUIDs in databases like PostgreSQL, MySQL, and MongoDB.',
-  },
-  {
-    question: 'What is the difference between UUID and GUID?',
-    answer: 'UUID and GUID (Globally Unique Identifier) are essentially the same thing. GUID is the term used by Microsoft (used in Windows, .NET, SQL Server), while UUID is the standard term used by the IETF RFC and most other platforms. They use the same format and are interchangeable.',
-  },
-];
+    const faqItems = [
+        {
+            question: "What is a UUID?",
+            answer: "A UUID (Universally Unique Identifier) is a 128-bit identifier standardized by RFC 9562 (formerly RFC 4122). UUIDs are designed to be unique across space and time without requiring a central authority. They are represented as 32 hexadecimal digits grouped in a 8-4-4-4-12 pattern separated by hyphens, such as 550e8400-e29b-41d4-a716-446655440000.",
+        },
+        {
+            question: "What is the difference between UUID v4 and v7?",
+            answer: "UUID v4 generates 122 random bits, making collisions astronomically unlikely but providing no ordering. UUID v7, introduced in RFC 9562, embeds a 48-bit Unix millisecond timestamp in the first 48 bits followed by random data. This means v7 UUIDs are time-sortable — they naturally sort by creation time, which dramatically improves database index performance when used as primary keys.",
+        },
+        {
+            question: "Can UUIDs collide?",
+            answer: "While theoretically possible, a UUID v4 collision is extraordinarily unlikely. With 122 random bits, you would need to generate approximately 2.71 × 10^18 UUIDs to have a 50% probability of a single collision. For practical purposes, UUID collisions are considered impossible in real-world applications.",
+        },
+        {
+            question: "Should I use UUID v4 or v7 for database primary keys?",
+            answer: "UUID v7 is strongly recommended for database primary keys. Because v7 UUIDs are time-sorted, they insert into B-tree indexes sequentially, avoiding random page splits that fragment the index. This can improve write performance by 2-10x compared to random v4 UUIDs in databases like PostgreSQL, MySQL, and MongoDB.",
+        },
+        {
+            question: "What is the difference between UUID and GUID?",
+            answer: "UUID and GUID (Globally Unique Identifier) are essentially the same thing. GUID is the term used by Microsoft (used in Windows, .NET, SQL Server), while UUID is the standard term used by the IETF RFC and most other platforms. They use the same format and are interchangeable.",
+        },
+    ];
 
-const navLinks = [
-  { id: 'what-is-uuid', label: 'What is a UUID' },
-  { id: 'uuid-versions', label: 'UUID Versions' },
-  { id: 'v4-vs-v7', label: 'v4 vs v7' },
-  { id: 'database-keys', label: 'Database Keys' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'built-with', label: 'Built With' },
-  { id: 'related-tools', label: 'Related Tools' },
-];
+    const navLinks = [
+        { id: "what-is-uuid", label: "What is a UUID" },
+        { id: "uuid-versions", label: "UUID Versions" },
+        { id: "v4-vs-v7", label: "v4 vs v7" },
+        { id: "database-keys", label: "Database Keys" },
+        { id: "faq", label: "FAQ" },
+        { id: "built-with", label: "Built With" },
+        { id: "related-tools", label: "Related Tools" },
+    ];
 
-useHead({
-  title: 'UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox',
-  meta: [
-    { name: 'description', content: 'Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500 UUIDs, copy with one click. Free tool running entirely in your browser.' },
-    { name: 'keywords', content: tool.keywords.join(', ') },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox' },
-    { property: 'og:description', content: 'Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500, copy with one click.' },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox' },
-    { name: 'twitter:description', content: 'Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500, copy with one click.' },
-  ],
-  link: [
-    { rel: 'canonical', href: canonicalUrl },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('SoftwareApplication', {
-        name: tool.name,
-        description: tool.description,
-        url: canonicalUrl,
-        category: tool.category,
-      })),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('BreadcrumbList', [
-        { name: 'Home', url: siteUrl },
-        { name: 'UUID Generator', url: canonicalUrl },
-      ])),
-    },
-  ],
-});
+    useHead({
+        title: "UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500 UUIDs, copy with one click. Free tool running entirely in your browser.",
+            },
+            { name: "keywords", content: tool.keywords.join(", ") },
+            { property: "og:type", content: "website" },
+            {
+                property: "og:title",
+                content: "UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox",
+            },
+            {
+                property: "og:description",
+                content:
+                    "Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500, copy with one click.",
+            },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            { name: "twitter:card", content: "summary_large_image" },
+            {
+                name: "twitter:title",
+                content: "UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox",
+            },
+            {
+                name: "twitter:description",
+                content:
+                    "Generate UUID v4 and v7 identifiers instantly. Bulk generate up to 500, copy with one click.",
+            },
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("SoftwareApplication", {
+                        name: tool.name,
+                        description: tool.description,
+                        url: canonicalUrl,
+                        category: tool.category,
+                    }),
+                ),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(generateJsonLd("FAQPage", faqItems)),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("BreadcrumbList", [
+                        { name: "Home", url: siteUrl },
+                        { name: "UUID Generator", url: canonicalUrl },
+                    ]),
+                ),
+            },
+        ],
+    });
 
-onMounted(() => {
-  appStore.addRecentTool(tool.slug);
-});
+    onMounted(() => {
+        appStore.addRecentTool(tool.slug);
+    });
 </script>
 
 <template>

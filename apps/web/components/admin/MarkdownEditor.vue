@@ -1,112 +1,112 @@
 <script setup lang="ts">
-import { MdEditor, NormalToolbar, type ExposeParam } from 'md-editor-v3';
-import 'md-editor-v3/lib/style.css';
-import { Image as ImageIcon, X, Upload, Check, Loader2 } from 'lucide-vue-next';
-import type { IMedia } from '@tiny-tools/shared';
+    import { type ExposeParam, MdEditor, NormalToolbar } from "md-editor-v3";
+    import "md-editor-v3/lib/style.css";
+    import type { IMedia } from "@tiny-tools/shared";
+    import { Check, Image as ImageIcon, Loader2, Upload, X } from "lucide-vue-next";
 
-const model = defineModel<string>({ required: true });
+    const model = defineModel<string>({ required: true });
 
-defineProps<{
-  placeholder?: string;
-}>();
+    defineProps<{
+        placeholder?: string;
+    }>();
 
-const colorMode = useColorMode();
-const theme = computed(() => (colorMode.value === 'dark' ? 'dark' : 'light'));
-const cms = useCms();
-const editorRef = ref<ExposeParam>();
+    const colorMode = useColorMode();
+    const theme = computed(() => (colorMode.value === "dark" ? "dark" : "light"));
+    const cms = useCms();
+    const editorRef = ref<ExposeParam>();
 
-// Media gallery state
-const galleryOpen = ref(false);
-const galleryLoading = ref(false);
-const galleryUploading = ref(false);
-const mediaItems = ref<IMedia[]>([]);
-const selectedMedia = ref<IMedia | null>(null);
-const insertAlt = ref('');
-const insertCaption = ref('');
+    // Media gallery state
+    const galleryOpen = ref(false);
+    const galleryLoading = ref(false);
+    const galleryUploading = ref(false);
+    const mediaItems = ref<IMedia[]>([]);
+    const selectedMedia = ref<IMedia | null>(null);
+    const insertAlt = ref("");
+    const insertCaption = ref("");
 
-async function loadMedia() {
-  galleryLoading.value = true;
-  try {
-    const res = await cms.media.list({ page: 1, pageSize: 50 });
-    mediaItems.value = (res as any).items || [];
-  } catch {
-    mediaItems.value = [];
-  } finally {
-    galleryLoading.value = false;
-  }
-}
-
-function openGallery() {
-  selectedMedia.value = null;
-  insertAlt.value = '';
-  insertCaption.value = '';
-  galleryOpen.value = true;
-  loadMedia();
-}
-
-function selectMedia(item: IMedia) {
-  selectedMedia.value = item;
-  insertAlt.value = item.alt || '';
-  insertCaption.value = item.caption || '';
-}
-
-function insertImage() {
-  if (!selectedMedia.value) return;
-
-  const url = selectedMedia.value.url;
-  const alt = insertAlt.value.trim();
-  const caption = insertCaption.value.trim();
-
-  let markdown: string;
-  if (caption) {
-    markdown = `\n<figure>\n  <img src="${url}" alt="${alt}" />\n  <figcaption>${caption}</figcaption>\n</figure>\n`;
-  } else {
-    markdown = `\n![${alt}](${url})\n`;
-  }
-
-  galleryOpen.value = false;
-
-  // Insert at cursor position using the editor's API
-  nextTick(() => {
-    editorRef.value?.insert(() => ({
-      targetValue: markdown,
-      select: '',
-      deselect: '',
-    }));
-  });
-}
-
-async function uploadInGallery(e: Event) {
-  const input = e.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file) return;
-
-  galleryUploading.value = true;
-  try {
-    const media = await cms.media.upload(file);
-    mediaItems.value.unshift(media);
-    selectMedia(media);
-  } catch {
-    // Upload failed
-  } finally {
-    galleryUploading.value = false;
-    input.value = '';
-  }
-}
-
-// Handle drag-and-drop / paste image uploads in the editor
-async function onUploadImg(files: File[], callback: (urls: string[]) => void) {
-  const urls: string[] = [];
-  for (const file of files) {
-    try {
-      const media = await cms.media.upload(file);
-      urls.push(media.url);
-    } catch {
-      // Skip failed uploads
+    async function loadMedia() {
+        galleryLoading.value = true;
+        try {
+            const res = await cms.media.list({ page: 1, pageSize: 50 });
+            mediaItems.value = res.items || [];
+        } catch {
+            mediaItems.value = [];
+        } finally {
+            galleryLoading.value = false;
+        }
     }
-  }
-  callback(urls);
-}
+
+    function openGallery() {
+        selectedMedia.value = null;
+        insertAlt.value = "";
+        insertCaption.value = "";
+        galleryOpen.value = true;
+        loadMedia();
+    }
+
+    function selectMedia(item: IMedia) {
+        selectedMedia.value = item;
+        insertAlt.value = item.alt || "";
+        insertCaption.value = item.caption || "";
+    }
+
+    function insertImage() {
+        if (!selectedMedia.value) return;
+
+        const url = selectedMedia.value.url;
+        const alt = insertAlt.value.trim();
+        const caption = insertCaption.value.trim();
+
+        let markdown: string;
+        if (caption) {
+            markdown = `\n<figure>\n  <img src="${url}" alt="${alt}" />\n  <figcaption>${caption}</figcaption>\n</figure>\n`;
+        } else {
+            markdown = `\n![${alt}](${url})\n`;
+        }
+
+        galleryOpen.value = false;
+
+        // Insert at cursor position using the editor's API
+        nextTick(() => {
+            editorRef.value?.insert(() => ({
+                targetValue: markdown,
+                select: "",
+                deselect: "",
+            }));
+        });
+    }
+
+    async function uploadInGallery(e: Event) {
+        const input = e.target as HTMLInputElement;
+        const file = input.files?.[0];
+        if (!file) return;
+
+        galleryUploading.value = true;
+        try {
+            const media = await cms.media.upload(file);
+            mediaItems.value.unshift(media);
+            selectMedia(media);
+        } catch {
+            // Upload failed
+        } finally {
+            galleryUploading.value = false;
+            input.value = "";
+        }
+    }
+
+    // Handle drag-and-drop / paste image uploads in the editor
+    async function onUploadImg(files: File[], callback: (urls: string[]) => void) {
+        const urls: string[] = [];
+        for (const file of files) {
+            try {
+                const media = await cms.media.upload(file);
+                urls.push(media.url);
+            } catch {
+                // Skip failed uploads
+            }
+        }
+        callback(urls);
+    }
 </script>
 
 <template>

@@ -1,84 +1,105 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import { generateJsonLd } from '~/utils/seo';
+    import { TOOLS } from "@tiny-tools/shared";
+    import { generateJsonLd } from "~/utils/seo";
 
-const appStore = useAppStore();
-const tool = TOOLS.find((t) => t.slug === 'json-diff')!;
-const siteUrl = 'https://pickbox.dev';
-const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
+    const appStore = useAppStore();
+    const tool = TOOLS.find((t) => t.slug === "json-diff");
+    if (!tool) throw new Error("Tool not found: json-diff");
+    const siteUrl = "https://pickbox.dev";
+    const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
-const faqItems = [
-  {
-    question: 'How does the JSON diff comparison work?',
-    answer: 'Our JSON diff tool parses both inputs into structured objects and performs a deep recursive comparison. It detects added keys, removed keys, and changed values at every nesting level. The results are displayed in a side-by-side view with color-coded highlighting so you can instantly see what changed.',
-  },
-  {
-    question: 'Can I compare minified JSON with formatted JSON?',
-    answer: 'Yes. The tool parses both inputs into their object representations before comparing, so whitespace, indentation, and formatting differences are completely ignored. Only structural and value differences are reported.',
-  },
-  {
-    question: 'Does key order matter when comparing JSON?',
-    answer: 'No. According to the JSON specification, objects are unordered collections of key-value pairs. Our diff tool compares by key name regardless of the order they appear in. Two objects with the same keys and values in different orders are considered identical.',
-  },
-  {
-    question: 'Is my data safe when using this comparison tool?',
-    answer: 'Absolutely. The entire comparison runs in your browser using JavaScript. No data is transmitted to any server. Your API responses, configuration files, and database exports stay entirely on your device throughout the process.',
-  },
-];
+    const faqItems = [
+        {
+            question: "How does the JSON diff comparison work?",
+            answer: "Our JSON diff tool parses both inputs into structured objects and performs a deep recursive comparison. It detects added keys, removed keys, and changed values at every nesting level. The results are displayed in a side-by-side view with color-coded highlighting so you can instantly see what changed.",
+        },
+        {
+            question: "Can I compare minified JSON with formatted JSON?",
+            answer: "Yes. The tool parses both inputs into their object representations before comparing, so whitespace, indentation, and formatting differences are completely ignored. Only structural and value differences are reported.",
+        },
+        {
+            question: "Does key order matter when comparing JSON?",
+            answer: "No. According to the JSON specification, objects are unordered collections of key-value pairs. Our diff tool compares by key name regardless of the order they appear in. Two objects with the same keys and values in different orders are considered identical.",
+        },
+        {
+            question: "Is my data safe when using this comparison tool?",
+            answer: "Absolutely. The entire comparison runs in your browser using JavaScript. No data is transmitted to any server. Your API responses, configuration files, and database exports stay entirely on your device throughout the process.",
+        },
+    ];
 
-const navLinks = [
-  { id: 'why-compare', label: 'Why Compare' },
-  { id: 'how-it-works', label: 'How It Works' },
-  { id: 'use-cases', label: 'Use Cases' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'built-with', label: 'Built With' },
-  { id: 'related-tools', label: 'Related Tools' },
-];
+    const navLinks = [
+        { id: "why-compare", label: "Why Compare" },
+        { id: "how-it-works", label: "How It Works" },
+        { id: "use-cases", label: "Use Cases" },
+        { id: "faq", label: "FAQ" },
+        { id: "built-with", label: "Built With" },
+        { id: "related-tools", label: "Related Tools" },
+    ];
 
-useHead({
-  title: 'JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox',
-  meta: [
-    { name: 'description', content: 'Compare two JSON objects side by side and instantly spot differences. Free online JSON diff tool with deep comparison, color-coded output, and zero uploads.' },
-    { name: 'keywords', content: tool.keywords.join(', ') },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox' },
-    { property: 'og:description', content: 'Compare two JSON objects side by side and instantly spot differences. Free diff tool with color-coded output.' },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox' },
-    { name: 'twitter:description', content: 'Compare two JSON objects side by side and instantly spot differences. Free diff tool with color-coded output.' },
-  ],
-  link: [
-    { rel: 'canonical', href: canonicalUrl },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('SoftwareApplication', {
-        name: tool.name,
-        description: tool.description,
-        url: canonicalUrl,
-        category: tool.category,
-      })),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('BreadcrumbList', [
-        { name: 'Home', url: siteUrl },
-        { name: 'JSON Diff', url: canonicalUrl },
-      ])),
-    },
-  ],
-});
+    useHead({
+        title: "JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Compare two JSON objects side by side and instantly spot differences. Free online JSON diff tool with deep comparison, color-coded output, and zero uploads.",
+            },
+            { name: "keywords", content: tool.keywords.join(", ") },
+            { property: "og:type", content: "website" },
+            {
+                property: "og:title",
+                content: "JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox",
+            },
+            {
+                property: "og:description",
+                content:
+                    "Compare two JSON objects side by side and instantly spot differences. Free diff tool with color-coded output.",
+            },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            { name: "twitter:card", content: "summary_large_image" },
+            {
+                name: "twitter:title",
+                content: "JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox",
+            },
+            {
+                name: "twitter:description",
+                content:
+                    "Compare two JSON objects side by side and instantly spot differences. Free diff tool with color-coded output.",
+            },
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("SoftwareApplication", {
+                        name: tool.name,
+                        description: tool.description,
+                        url: canonicalUrl,
+                        category: tool.category,
+                    }),
+                ),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(generateJsonLd("FAQPage", faqItems)),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("BreadcrumbList", [
+                        { name: "Home", url: siteUrl },
+                        { name: "JSON Diff", url: canonicalUrl },
+                    ]),
+                ),
+            },
+        ],
+    });
 
-onMounted(() => {
-  appStore.addRecentTool(tool.slug);
-});
+    onMounted(() => {
+        appStore.addRecentTool(tool.slug);
+    });
 </script>
 
 <template>

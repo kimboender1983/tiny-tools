@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { ArrowRight } from 'lucide-vue-next';
-import * as icons from 'lucide-vue-next';
+    import * as icons from "lucide-vue-next";
+    import { ArrowRight } from "lucide-vue-next";
 
-const props = defineProps<{
-  to: string;
-  icon: string;
-  title: string;
-  description: string;
-}>();
+    const props = defineProps<{
+        to: string;
+        icon: string;
+        title: string;
+        description: string;
+    }>();
 
-const iconComponent = computed(() => {
-  const icon = (icons as Record<string, unknown>)[props.icon];
-  return icon ?? null;
-});
+    const iconComponent = computed(() => {
+        const icon = (icons as Record<string, unknown>)[props.icon];
+        return icon ?? null;
+    });
 </script>
 
 <template>

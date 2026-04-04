@@ -1,112 +1,112 @@
 <script setup lang="ts">
-import { Plus, Pencil, Trash2, Check, X } from 'lucide-vue-next';
-import type { IAuthor } from '@tiny-tools/shared';
+    import type { IAuthor } from "@tiny-tools/shared";
+    import { Check, Pencil, Plus, Trash2, X } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
-const authors = ref<IAuthor[]>([]);
-const deleteConfirmId = ref<string | null>(null);
-const editingId = ref<string | null>(null);
+    const loading = ref(true);
+    const error = ref("");
+    const authors = ref<IAuthor[]>([]);
+    const deleteConfirmId = ref<string | null>(null);
+    const editingId = ref<string | null>(null);
 
-// New author form
-const newForm = reactive({
-  name: '',
-  bio: '',
-  avatar: '',
-});
-
-// Edit form
-const editForm = reactive({
-  name: '',
-  bio: '',
-  avatar: '',
-});
-
-const showAddForm = ref(false);
-
-async function loadAuthors() {
-  loading.value = true;
-  error.value = '';
-
-  try {
-    authors.value = await cms.authors.list();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load authors.';
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function createAuthor() {
-  if (!newForm.name) return;
-  error.value = '';
-
-  try {
-    await cms.authors.create({
-      name: newForm.name,
-      bio: newForm.bio || undefined,
-      avatar: newForm.avatar || undefined,
+    // New author form
+    const newForm = reactive({
+        name: "",
+        bio: "",
+        avatar: "",
     });
-    newForm.name = '';
-    newForm.bio = '';
-    newForm.avatar = '';
-    showAddForm.value = false;
-    await loadAuthors();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to create author.';
-  }
-}
 
-function startEdit(author: IAuthor) {
-  editingId.value = author._id;
-  editForm.name = author.name;
-  editForm.bio = author.bio || '';
-  editForm.avatar = author.avatar || '';
-}
-
-function cancelEdit() {
-  editingId.value = null;
-}
-
-async function saveEdit(id: string) {
-  error.value = '';
-
-  try {
-    await cms.authors.update(id, {
-      name: editForm.name,
-      bio: editForm.bio || undefined,
-      avatar: editForm.avatar || undefined,
+    // Edit form
+    const editForm = reactive({
+        name: "",
+        bio: "",
+        avatar: "",
     });
-    editingId.value = null;
-    await loadAuthors();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to update author.';
-  }
-}
 
-async function deleteAuthor(id: string) {
-  error.value = '';
+    const showAddForm = ref(false);
 
-  try {
-    await cms.authors.delete(id);
-    deleteConfirmId.value = null;
-    await loadAuthors();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to delete author.';
-  }
-}
+    async function loadAuthors() {
+        loading.value = true;
+        error.value = "";
 
-function truncate(text: string | undefined, length: number): string {
-  if (!text) return '—';
-  if (text.length <= length) return text;
-  return text.slice(0, length) + '...';
-}
+        try {
+            authors.value = await cms.authors.list();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load authors.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-onMounted(loadAuthors);
+    async function createAuthor() {
+        if (!newForm.name) return;
+        error.value = "";
+
+        try {
+            await cms.authors.create({
+                name: newForm.name,
+                bio: newForm.bio || undefined,
+                avatar: newForm.avatar || undefined,
+            });
+            newForm.name = "";
+            newForm.bio = "";
+            newForm.avatar = "";
+            showAddForm.value = false;
+            await loadAuthors();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to create author.";
+        }
+    }
+
+    function startEdit(author: IAuthor) {
+        editingId.value = author._id;
+        editForm.name = author.name;
+        editForm.bio = author.bio || "";
+        editForm.avatar = author.avatar || "";
+    }
+
+    function cancelEdit() {
+        editingId.value = null;
+    }
+
+    async function saveEdit(id: string) {
+        error.value = "";
+
+        try {
+            await cms.authors.update(id, {
+                name: editForm.name,
+                bio: editForm.bio || undefined,
+                avatar: editForm.avatar || undefined,
+            });
+            editingId.value = null;
+            await loadAuthors();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to update author.";
+        }
+    }
+
+    async function deleteAuthor(id: string) {
+        error.value = "";
+
+        try {
+            await cms.authors.delete(id);
+            deleteConfirmId.value = null;
+            await loadAuthors();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to delete author.";
+        }
+    }
+
+    function truncate(text: string | undefined, length: number): string {
+        if (!text) return "—";
+        if (text.length <= length) return text;
+        return `${text.slice(0, length)}...`;
+    }
+
+    onMounted(loadAuthors);
 </script>
 
 <template>

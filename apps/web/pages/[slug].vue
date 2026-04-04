@@ -1,98 +1,106 @@
 <script setup lang="ts">
-import type { IPage } from '@tiny-tools/shared';
-import { renderMarkdown, processAffiliateLinks } from '~/utils/markdown';
+    import type { IPage } from "@tiny-tools/shared";
+    import { processAffiliateLinks, renderMarkdown } from "~/utils/markdown";
 
-const route = useRoute();
-const config = useRuntimeConfig();
-const api = useApi();
-const siteUrl = config.public.siteUrl as string;
-const slug = route.params.slug as string;
+    const route = useRoute();
+    const config = useRuntimeConfig();
+    const api = useApi();
+    const siteUrl = config.public.siteUrl as string;
+    const slug = route.params.slug as string;
 
-const { data: page } = await useAsyncData(`page-${slug}`, () =>
-  api.get<IPage>(`/content/pages/${slug}`).catch(() => null),
-);
+    const { data: page } = await useAsyncData(`page-${slug}`, () =>
+        api.get<IPage>(`/content/pages/${slug}`).catch(() => null),
+    );
 
-const notFound = computed(() => !page.value);
+    const notFound = computed(() => !page.value);
 
-// Set 404 status on SSR without throwing
-if (import.meta.server && !page.value) {
-  const event = useRequestEvent();
-  if (event) {
-    event.node.res.statusCode = 404;
-  }
-}
+    // Set 404 status on SSR without throwing
+    if (import.meta.server && !page.value) {
+        const event = useRequestEvent();
+        if (event) {
+            event.node.res.statusCode = 404;
+        }
+    }
 
-const pageTitle = computed(() => {
-  if (!page.value) return 'Page not found | Pickbox';
-  return page.value.seo?.metaTitle || `${page.value.title} | Pickbox`;
-});
+    const pageTitle = computed(() => {
+        if (!page.value) return "Page not found | Pickbox";
+        return page.value.seo?.metaTitle || `${page.value.title} | Pickbox`;
+    });
 
-const pageDescription = computed(() => {
-  return page.value?.seo?.metaDescription || page.value?.excerpt || '';
-});
+    const pageDescription = computed(() => {
+        return page.value?.seo?.metaDescription || page.value?.excerpt || "";
+    });
 
-const canonicalUrl = computed(() => {
-  return page.value?.seo?.canonicalUrl || `${siteUrl}/${page.value?.slug}`;
-});
+    const canonicalUrl = computed(() => {
+        return page.value?.seo?.canonicalUrl || `${siteUrl}/${page.value?.slug}`;
+    });
 
-const ogImage = computed(() => page.value?.seo?.ogImage);
+    const ogImage = computed(() => page.value?.seo?.ogImage);
 
-useHead({
-  title: pageTitle,
-});
+    useHead({
+        title: pageTitle,
+    });
 
-if (page.value) {
-  useHead({
-    meta: [
-      { name: 'description', content: pageDescription },
-      ...(page.value.seo?.noIndex ? [{ name: 'robots', content: 'noindex, nofollow' }] : []),
-      { property: 'og:type', content: 'website' },
-      { property: 'og:title', content: page.value.seo?.ogTitle || pageTitle.value },
-      { property: 'og:description', content: page.value.seo?.ogDescription || pageDescription.value },
-      { property: 'og:url', content: canonicalUrl },
-      { property: 'og:site_name', content: 'Pickbox' },
-      ...(ogImage.value ? [{ property: 'og:image', content: ogImage.value }] : []),
-      { name: 'twitter:card', content: page.value.seo?.twitterCard || 'summary' },
-      { name: 'twitter:title', content: page.value.seo?.ogTitle || pageTitle.value },
-      { name: 'twitter:description', content: page.value.seo?.ogDescription || pageDescription.value },
-      ...(ogImage.value ? [{ name: 'twitter:image', content: ogImage.value }] : []),
-    ],
-    link: [{ rel: 'canonical', href: canonicalUrl }],
-    script: [
-      {
-        type: 'application/ld+json',
-        innerHTML: JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'WebPage',
-          name: page.value.title,
-          description: pageDescription.value,
-          url: canonicalUrl.value,
-          publisher: {
-            '@type': 'Organization',
-            name: 'Pickbox',
-            url: siteUrl,
-          },
-        }),
-      },
-    ],
-  });
-}
+    if (page.value) {
+        useHead({
+            meta: [
+                { name: "description", content: pageDescription },
+                ...(page.value.seo?.noIndex
+                    ? [{ name: "robots", content: "noindex, nofollow" }]
+                    : []),
+                { property: "og:type", content: "website" },
+                { property: "og:title", content: page.value.seo?.ogTitle || pageTitle.value },
+                {
+                    property: "og:description",
+                    content: page.value.seo?.ogDescription || pageDescription.value,
+                },
+                { property: "og:url", content: canonicalUrl },
+                { property: "og:site_name", content: "Pickbox" },
+                ...(ogImage.value ? [{ property: "og:image", content: ogImage.value }] : []),
+                { name: "twitter:card", content: page.value.seo?.twitterCard || "summary" },
+                { name: "twitter:title", content: page.value.seo?.ogTitle || pageTitle.value },
+                {
+                    name: "twitter:description",
+                    content: page.value.seo?.ogDescription || pageDescription.value,
+                },
+                ...(ogImage.value ? [{ name: "twitter:image", content: ogImage.value }] : []),
+            ],
+            link: [{ rel: "canonical", href: canonicalUrl }],
+            script: [
+                {
+                    type: "application/ld+json",
+                    innerHTML: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "WebPage",
+                        name: page.value.title,
+                        description: pageDescription.value,
+                        url: canonicalUrl.value,
+                        publisher: {
+                            "@type": "Organization",
+                            name: "Pickbox",
+                            url: siteUrl,
+                        },
+                    }),
+                },
+            ],
+        });
+    }
 
-// Fetch active affiliates for shortcode resolution
-const { data: affiliatesData } = await useAsyncData('affiliates-map', () =>
-  api.get<{ slug: string; name: string }[]>('/content/affiliates').catch(() => []),
-);
+    // Fetch active affiliates for shortcode resolution
+    const { data: affiliatesData } = await useAsyncData("affiliates-map", () =>
+        api.get<{ slug: string; name: string }[]>("/content/affiliates").catch(() => []),
+    );
 
-const affiliatesMap = computed(() => {
-  const map = new Map<string, string>();
-  for (const a of affiliatesData.value ?? []) {
-    map.set(a.slug, a.name);
-  }
-  return map;
-});
+    const affiliatesMap = computed(() => {
+        const map = new Map<string, string>();
+        for (const a of affiliatesData.value ?? []) {
+            map.set(a.slug, a.name);
+        }
+        return map;
+    });
 
-const staticLegalContent: Record<string, string> = {
-  privacy: `
+    const staticLegalContent: Record<string, string> = {
+        privacy: `
 ## What Data We Collect
 
 Pickbox is designed with privacy at its core. **All tools run entirely in your browser** — no data you paste, upload, or process is ever sent to our servers.
@@ -132,7 +140,7 @@ If you have questions about this privacy policy, please open an issue on our [Gi
 
 *Last updated: April 2026*
 `,
-  terms: `
+        terms: `
 ## Acceptance of Terms
 
 By accessing and using Pickbox ("the Service"), you agree to be bound by these Terms of Use. If you do not agree to these terms, please do not use the Service.
@@ -184,14 +192,14 @@ If you have questions about these terms, please open an issue on our [GitHub rep
 
 *Last updated: April 2026*
 `,
-};
+    };
 
-const renderedContent = computed(() => {
-  const content = page.value?.content || staticLegalContent[slug] || '';
-  if (!content) return '';
-  const html = renderMarkdown(content);
-  return processAffiliateLinks(html, affiliatesMap.value);
-});
+    const renderedContent = computed(() => {
+        const content = page.value?.content || staticLegalContent[slug] || "";
+        if (!content) return "";
+        const html = renderMarkdown(content);
+        return processAffiliateLinks(html, affiliatesMap.value);
+    });
 </script>
 
 <template>

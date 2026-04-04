@@ -1,189 +1,261 @@
 <script setup lang="ts">
-import {
-  ArrowLeftRight,
-  ChevronDown,
-  ChevronUp,
-  Eraser,
-  FileJson,
-  FileText,
-  Minus,
-  Plus,
-  AlertTriangle,
-} from 'lucide-vue-next';
-import type { DiffLine } from '~/composables/useJsonDiff';
+    import {
+        AlertTriangle,
+        ArrowLeftRight,
+        ChevronDown,
+        ChevronUp,
+        Eraser,
+        FileJson,
+        FileText,
+        Minus,
+        Plus,
+    } from "lucide-vue-next";
+    import type { DiffLine } from "~/composables/useJsonDiff";
 
-const {
-  leftInput,
-  rightInput,
-  mode,
-  ignoreWhitespace,
-  diffResult,
-  jsonError,
-  stats,
-  currentDiffIndex,
-  totalDiffs,
-  currentDiffRow,
-  goToNextDiff,
-  goToPrevDiff,
-  swap,
-  clear,
-  generateDiffText,
-} = useJsonDiff();
+    const {
+        leftInput,
+        rightInput,
+        mode,
+        ignoreWhitespace,
+        diffResult,
+        jsonError,
+        stats,
+        currentDiffIndex,
+        totalDiffs,
+        currentDiffRow,
+        goToNextDiff,
+        goToPrevDiff,
+        swap,
+        clear,
+        generateDiffText,
+    } = useJsonDiff();
 
-const showDiff = computed(() => diffResult.value.left.length > 0);
+    const showDiff = computed(() => diffResult.value.left.length > 0);
 
-// --- File drop ---
-const isDraggingLeft = ref(false);
-const isDraggingRight = ref(false);
-let dragCounterLeft = 0;
-let dragCounterRight = 0;
+    // --- File drop ---
+    const isDraggingLeft = ref(false);
+    const isDraggingRight = ref(false);
+    let dragCounterLeft = 0;
+    let dragCounterRight = 0;
 
-function onDragEnterLeft(e: DragEvent) { e.preventDefault(); dragCounterLeft++; isDraggingLeft.value = true; }
-function onDragLeaveLeft(e: DragEvent) { e.preventDefault(); dragCounterLeft--; if (dragCounterLeft === 0) isDraggingLeft.value = false; }
-function onDragEnterRight(e: DragEvent) { e.preventDefault(); dragCounterRight++; isDraggingRight.value = true; }
-function onDragLeaveRight(e: DragEvent) { e.preventDefault(); dragCounterRight--; if (dragCounterRight === 0) isDraggingRight.value = false; }
-function onDragOver(e: DragEvent) { e.preventDefault(); }
-
-function onDropLeft(e: DragEvent) { e.preventDefault(); dragCounterLeft = 0; isDraggingLeft.value = false; readDroppedFile(e, 'left'); }
-function onDropRight(e: DragEvent) { e.preventDefault(); dragCounterRight = 0; isDraggingRight.value = false; readDroppedFile(e, 'right'); }
-
-function readDroppedFile(e: DragEvent, side: 'left' | 'right') {
-  const files = e.dataTransfer?.files;
-  if (!files?.length) return;
-  const file = files[0];
-  const validExts = ['.json', '.txt', '.xml', '.csv', '.yml', '.yaml', '.toml', '.cfg', '.log'];
-  const isValid = validExts.some(ext => file.name.endsWith(ext)) || file.type.startsWith('text/') || file.type === 'application/json';
-  if (!isValid) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    if (typeof reader.result === 'string') {
-      if (side === 'left') leftInput.value = reader.result;
-      else rightInput.value = reader.result;
+    function onDragEnterLeft(e: DragEvent) {
+        e.preventDefault();
+        dragCounterLeft++;
+        isDraggingLeft.value = true;
     }
-  };
-  reader.readAsText(file);
-}
+    function onDragLeaveLeft(e: DragEvent) {
+        e.preventDefault();
+        dragCounterLeft--;
+        if (dragCounterLeft === 0) isDraggingLeft.value = false;
+    }
+    function onDragEnterRight(e: DragEvent) {
+        e.preventDefault();
+        dragCounterRight++;
+        isDraggingRight.value = true;
+    }
+    function onDragLeaveRight(e: DragEvent) {
+        e.preventDefault();
+        dragCounterRight--;
+        if (dragCounterRight === 0) isDraggingRight.value = false;
+    }
+    function onDragOver(e: DragEvent) {
+        e.preventDefault();
+    }
 
-// --- Synchronized diff scrolling ---
-const leftDiffPane = ref<HTMLElement | null>(null);
-const rightDiffPane = ref<HTMLElement | null>(null);
-let scrollingSource: 'left' | 'right' | null = null;
+    function onDropLeft(e: DragEvent) {
+        e.preventDefault();
+        dragCounterLeft = 0;
+        isDraggingLeft.value = false;
+        readDroppedFile(e, "left");
+    }
+    function onDropRight(e: DragEvent) {
+        e.preventDefault();
+        dragCounterRight = 0;
+        isDraggingRight.value = false;
+        readDroppedFile(e, "right");
+    }
 
-function onLeftScroll() {
-  if (scrollingSource === 'right') return;
-  scrollingSource = 'left';
-  if (leftDiffPane.value && rightDiffPane.value) {
-    rightDiffPane.value.scrollTop = leftDiffPane.value.scrollTop;
-    rightDiffPane.value.scrollLeft = leftDiffPane.value.scrollLeft;
-  }
-  requestAnimationFrame(() => { scrollingSource = null; });
-}
+    function readDroppedFile(e: DragEvent, side: "left" | "right") {
+        const files = e.dataTransfer?.files;
+        if (!files?.length) return;
+        const file = files[0];
+        const validExts = [
+            ".json",
+            ".txt",
+            ".xml",
+            ".csv",
+            ".yml",
+            ".yaml",
+            ".toml",
+            ".cfg",
+            ".log",
+        ];
+        const isValid =
+            validExts.some((ext) => file.name.endsWith(ext)) ||
+            file.type.startsWith("text/") ||
+            file.type === "application/json";
+        if (!isValid) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (typeof reader.result === "string") {
+                if (side === "left") leftInput.value = reader.result;
+                else rightInput.value = reader.result;
+            }
+        };
+        reader.readAsText(file);
+    }
 
-function onRightScroll() {
-  if (scrollingSource === 'left') return;
-  scrollingSource = 'right';
-  if (leftDiffPane.value && rightDiffPane.value) {
-    leftDiffPane.value.scrollTop = rightDiffPane.value.scrollTop;
-    leftDiffPane.value.scrollLeft = rightDiffPane.value.scrollLeft;
-  }
-  requestAnimationFrame(() => { scrollingSource = null; });
-}
+    // --- Synchronized diff scrolling ---
+    const leftDiffPane = ref<HTMLElement | null>(null);
+    const rightDiffPane = ref<HTMLElement | null>(null);
+    let scrollingSource: "left" | "right" | null = null;
 
-watch(currentDiffRow, (row) => {
-  if (row < 0) return;
-  nextTick(() => {
-    const lineHeight = 26;
-    const scrollTo = row * lineHeight - 100;
-    if (leftDiffPane.value) leftDiffPane.value.scrollTop = Math.max(0, scrollTo);
-    if (rightDiffPane.value) rightDiffPane.value.scrollTop = Math.max(0, scrollTo);
-  });
-});
+    function onLeftScroll() {
+        if (scrollingSource === "right") return;
+        scrollingSource = "left";
+        if (leftDiffPane.value && rightDiffPane.value) {
+            rightDiffPane.value.scrollTop = leftDiffPane.value.scrollTop;
+            rightDiffPane.value.scrollLeft = leftDiffPane.value.scrollLeft;
+        }
+        requestAnimationFrame(() => {
+            scrollingSource = null;
+        });
+    }
 
-// --- Diff line rendering ---
-function lineClass(line: DiffLine): string {
-  if (!line.content && (line.type === 'added' || line.type === 'removed')) return 'diff-line-empty-placeholder';
-  switch (line.type) {
-    case 'added': return 'diff-line-added';
-    case 'removed': return 'diff-line-removed';
-    case 'modified': return 'diff-line-modified';
-    default: return '';
-  }
-}
+    function onRightScroll() {
+        if (scrollingSource === "left") return;
+        scrollingSource = "right";
+        if (leftDiffPane.value && rightDiffPane.value) {
+            leftDiffPane.value.scrollTop = rightDiffPane.value.scrollTop;
+            leftDiffPane.value.scrollLeft = rightDiffPane.value.scrollLeft;
+        }
+        requestAnimationFrame(() => {
+            scrollingSource = null;
+        });
+    }
 
-function getOppositeContent(idx: number, side: 'left' | 'right'): string {
-  const opposite = side === 'left' ? diffResult.value.right : diffResult.value.left;
-  return opposite[idx]?.content ?? '';
-}
+    watch(currentDiffRow, (row) => {
+        if (row < 0) return;
+        nextTick(() => {
+            const lineHeight = 26;
+            const scrollTo = row * lineHeight - 100;
+            if (leftDiffPane.value) leftDiffPane.value.scrollTop = Math.max(0, scrollTo);
+            if (rightDiffPane.value) rightDiffPane.value.scrollTop = Math.max(0, scrollTo);
+        });
+    });
 
-function lineIcon(line: DiffLine, side: 'left' | 'right'): 'plus' | 'minus' | null {
-  switch (line.type) {
-    case 'added': return side === 'right' ? 'plus' : null;
-    case 'removed': return side === 'left' ? 'minus' : null;
-    case 'modified': return side === 'left' ? 'minus' : 'plus';
-    default: return null;
-  }
-}
+    // --- Diff line rendering ---
+    function lineClass(line: DiffLine): string {
+        if (!line.content && (line.type === "added" || line.type === "removed"))
+            return "diff-line-empty-placeholder";
+        switch (line.type) {
+            case "added":
+                return "diff-line-added";
+            case "removed":
+                return "diff-line-removed";
+            case "modified":
+                return "diff-line-modified";
+            default:
+                return "";
+        }
+    }
 
-// --- Syntax highlighting ---
-function escapeHtml(str: string): string {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
+    function getOppositeContent(idx: number, side: "left" | "right"): string {
+        const opposite = side === "left" ? diffResult.value.right : diffResult.value.left;
+        return opposite[idx]?.content ?? "";
+    }
 
-function highlightLine(str: string): string {
-  let html = escapeHtml(str);
-  if (mode.value !== 'json') return html;
-  html = html.replace(/(&quot;(?:[^&]|&(?!quot;))*&quot;)\s*:/g, '<span class="json-key">$1</span>:');
-  html = html.replace(/:\s*(&quot;(?:[^&]|&(?!quot;))*&quot;)/g, (match, s) => match.replace(s, `<span class="json-string">${s}</span>`));
-  html = html.replace(/(?<!<span[^>]*>)(&quot;(?:[^&]|&(?!quot;))*&quot;)(?![^<]*<\/span>)/g, '<span class="json-string">$1</span>');
-  html = html.replace(/(?<=:\s*|[\[,]\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b/g, '<span class="json-number">$1</span>');
-  html = html.replace(/\b(true|false)\b/g, '<span class="json-boolean">$1</span>');
-  html = html.replace(/\bnull\b/g, '<span class="json-null">null</span>');
-  return html;
-}
+    function lineIcon(line: DiffLine, side: "left" | "right"): "plus" | "minus" | null {
+        switch (line.type) {
+            case "added":
+                return side === "right" ? "plus" : null;
+            case "removed":
+                return side === "left" ? "minus" : null;
+            case "modified":
+                return side === "left" ? "minus" : "plus";
+            default:
+                return null;
+        }
+    }
 
-// --- Input highlighting ---
-const leftHighlight = ref<HTMLElement | null>(null);
-const rightHighlight = ref<HTMLElement | null>(null);
-const leftTextarea = ref<HTMLTextAreaElement | null>(null);
-const rightTextarea = ref<HTMLTextAreaElement | null>(null);
+    // --- Syntax highlighting ---
+    function escapeHtml(str: string): string {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
 
-function highlightFullInput(text: string): string {
-  if (mode.value !== 'json' || !text) return escapeHtml(text);
-  return text.split('\n').map(line => highlightLine(line)).join('\n');
-}
+    function highlightLine(str: string): string {
+        let html = escapeHtml(str);
+        if (mode.value !== "json") return html;
+        html = html.replace(
+            /(&quot;(?:[^&]|&(?!quot;))*&quot;)\s*:/g,
+            '<span class="json-key">$1</span>:',
+        );
+        html = html.replace(/:\s*(&quot;(?:[^&]|&(?!quot;))*&quot;)/g, (match, s) =>
+            match.replace(s, `<span class="json-string">${s}</span>`),
+        );
+        html = html.replace(
+            /(?<!<span[^>]*>)(&quot;(?:[^&]|&(?!quot;))*&quot;)(?![^<]*<\/span>)/g,
+            '<span class="json-string">$1</span>',
+        );
+        html = html.replace(
+            /(?<=:\s*|[[,]\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)\b/g,
+            '<span class="json-number">$1</span>',
+        );
+        html = html.replace(/\b(true|false)\b/g, '<span class="json-boolean">$1</span>');
+        html = html.replace(/\bnull\b/g, '<span class="json-null">null</span>');
+        return html;
+    }
 
-const highlightedLeftInput = computed(() => highlightFullInput(leftInput.value));
-const highlightedRightInput = computed(() => highlightFullInput(rightInput.value));
+    // --- Input highlighting ---
+    const leftHighlight = ref<HTMLElement | null>(null);
+    const rightHighlight = ref<HTMLElement | null>(null);
+    const leftTextarea = ref<HTMLTextAreaElement | null>(null);
+    const rightTextarea = ref<HTMLTextAreaElement | null>(null);
 
-function syncLeftHighlight() {
-  if (!leftTextarea.value || !leftHighlight.value) return;
-  leftHighlight.value.scrollTop = leftTextarea.value.scrollTop;
-  leftHighlight.value.scrollLeft = leftTextarea.value.scrollLeft;
-}
+    function highlightFullInput(text: string): string {
+        if (mode.value !== "json" || !text) return escapeHtml(text);
+        return text
+            .split("\n")
+            .map((line) => highlightLine(line))
+            .join("\n");
+    }
 
-function syncRightHighlight() {
-  if (!rightTextarea.value || !rightHighlight.value) return;
-  rightHighlight.value.scrollTop = rightTextarea.value.scrollTop;
-  rightHighlight.value.scrollLeft = rightTextarea.value.scrollLeft;
-}
+    const highlightedLeftInput = computed(() => highlightFullInput(leftInput.value));
+    const highlightedRightInput = computed(() => highlightFullInput(rightInput.value));
 
-// --- Stats ---
-function formatSize(str: string): string {
-  const bytes = new Blob([str]).size;
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+    function syncLeftHighlight() {
+        if (!leftTextarea.value || !leftHighlight.value) return;
+        leftHighlight.value.scrollTop = leftTextarea.value.scrollTop;
+        leftHighlight.value.scrollLeft = leftTextarea.value.scrollLeft;
+    }
 
-const leftStats = computed(() => {
-  if (!leftInput.value) return null;
-  return { lines: leftInput.value.split('\n').length, size: formatSize(leftInput.value) };
-});
+    function syncRightHighlight() {
+        if (!rightTextarea.value || !rightHighlight.value) return;
+        rightHighlight.value.scrollTop = rightTextarea.value.scrollTop;
+        rightHighlight.value.scrollLeft = rightTextarea.value.scrollLeft;
+    }
 
-const rightStats = computed(() => {
-  if (!rightInput.value) return null;
-  return { lines: rightInput.value.split('\n').length, size: formatSize(rightInput.value) };
-});
+    // --- Stats ---
+    function formatSize(str: string): string {
+        const bytes = new Blob([str]).size;
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    const leftStats = computed(() => {
+        if (!leftInput.value) return null;
+        return { lines: leftInput.value.split("\n").length, size: formatSize(leftInput.value) };
+    });
+
+    const rightStats = computed(() => {
+        if (!rightInput.value) return null;
+        return { lines: rightInput.value.split("\n").length, size: formatSize(rightInput.value) };
+    });
 </script>
 
 <template>

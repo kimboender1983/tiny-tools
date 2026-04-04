@@ -1,99 +1,95 @@
 <script setup lang="ts">
-import type { IBlogPost, ICategory } from '@tiny-tools/shared';
-import { Calendar, Clock, BookOpen, ArrowLeft } from 'lucide-vue-next';
-import * as lucideIcons from 'lucide-vue-next';
+    import type { IBlogPost, ICategory } from "@tiny-tools/shared";
+    import * as lucideIcons from "lucide-vue-next";
+    import { ArrowLeft, BookOpen, Calendar, Clock } from "lucide-vue-next";
 
-interface PaginatedBlogResponse {
-  items: IBlogPost[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
+    interface PaginatedBlogResponse {
+        items: IBlogPost[];
+        total: number;
+        page: number;
+        pageSize: number;
+    }
 
-function getCategoryName(cat: string | ICategory | undefined): string {
-  if (!cat) return '';
-  return typeof cat === 'object' ? cat.name : cat;
-}
+    function getCategoryName(cat: string | ICategory | undefined): string {
+        if (!cat) return "";
+        return typeof cat === "object" ? cat.name : cat;
+    }
 
-function getCategorySlug(cat: string | ICategory | undefined): string {
-  if (!cat) return 'uncategorized';
-  return typeof cat === 'object' ? cat.slug : cat;
-}
+    function getCategorySlug(cat: string | ICategory | undefined): string {
+        if (!cat) return "uncategorized";
+        return typeof cat === "object" ? cat.slug : cat;
+    }
 
-function getCategoryIcon(cat: string | ICategory | undefined) {
-  if (!cat || typeof cat !== 'object' || !cat.icon) return null;
-  return (lucideIcons as Record<string, unknown>)[cat.icon] ?? null;
-}
+    function getCategoryIcon(cat: string | ICategory | undefined) {
+        if (!cat || typeof cat !== "object" || !cat.icon) return null;
+        return (lucideIcons as Record<string, unknown>)[cat.icon] ?? null;
+    }
 
-function blogPostUrl(post: IBlogPost): string {
-  return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
-}
+    function blogPostUrl(post: IBlogPost): string {
+        return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
+    }
 
-const route = useRoute();
-const config = useRuntimeConfig();
-const api = useApi();
-const siteUrl = config.public.siteUrl as string;
-const categorySlug = route.params.category as string;
+    const route = useRoute();
+    const config = useRuntimeConfig();
+    const api = useApi();
+    const siteUrl = config.public.siteUrl as string;
+    const categorySlug = route.params.category as string;
 
-// Fetch category info
-const { data: categories } = await useAsyncData(`categories`, () =>
-  api.get<ICategory[]>('/content/categories'),
-);
+    // Fetch category info
+    const { data: categories } = await useAsyncData(`categories`, () =>
+        api.get<ICategory[]>("/content/categories"),
+    );
 
-const category = computed(() =>
-  categories.value?.find((c) => c.slug === categorySlug),
-);
+    const category = computed(() => categories.value?.find((c) => c.slug === categorySlug));
 
-const categoryIconComponent = computed(() => {
-  if (!category.value?.icon) return null;
-  return (lucideIcons as Record<string, unknown>)[category.value.icon] ?? null;
-});
+    const categoryIconComponent = computed(() => {
+        if (!category.value?.icon) return null;
+        return (lucideIcons as Record<string, unknown>)[category.value.icon] ?? null;
+    });
 
-// Fetch posts in this category
-const currentPage = computed(() => {
-  const p = Number(route.query.page);
-  return p > 0 ? p : 1;
-});
+    // Fetch posts in this category
+    const currentPage = computed(() => {
+        const p = Number(route.query.page);
+        return p > 0 ? p : 1;
+    });
 
-const pageSize = 12;
+    const pageSize = 12;
 
-const { data, error } = await useAsyncData(
-  `blog-category-${categorySlug}-${currentPage.value}`,
-  () =>
-    api.get<PaginatedBlogResponse>('/content/blog', {
-      params: { page: currentPage.value, limit: pageSize, category: category.value?._id },
-    }),
-  { watch: [currentPage] },
-);
+    const { data, error } = await useAsyncData(
+        `blog-category-${categorySlug}-${currentPage.value}`,
+        () =>
+            api.get<PaginatedBlogResponse>("/content/blog", {
+                params: { page: currentPage.value, limit: pageSize, category: category.value?._id },
+            }),
+        { watch: [currentPage] },
+    );
 
-const posts = computed(() => data.value?.items ?? []);
-const totalPages = computed(() =>
-  data.value ? Math.ceil(data.value.total / pageSize) : 1,
-);
+    const posts = computed(() => data.value?.items ?? []);
+    const totalPages = computed(() => (data.value ? Math.ceil(data.value.total / pageSize) : 1));
 
-function formatDate(date: Date | string | undefined): string {
-  if (!date) return '';
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
+    function formatDate(date: Date | string | undefined): string {
+        if (!date) return "";
+        return new Date(date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
+    }
 
-const title = computed(() =>
-  category.value
-    ? `${category.value.name} — Blog | Pickbox`
-    : `${categorySlug} — Blog | Pickbox`,
-);
+    const title = computed(() =>
+        category.value
+            ? `${category.value.name} — Blog | Pickbox`
+            : `${categorySlug} — Blog | Pickbox`,
+    );
 
-useHead({
-  title,
-  meta: [
-    { property: 'og:title', content: title },
-    { property: 'og:url', content: `${siteUrl}/blog/${categorySlug}` },
-  ],
-  link: [{ rel: 'canonical', href: `${siteUrl}/blog/${categorySlug}` }],
-});
+    useHead({
+        title,
+        meta: [
+            { property: "og:title", content: title },
+            { property: "og:url", content: `${siteUrl}/blog/${categorySlug}` },
+        ],
+        link: [{ rel: "canonical", href: `${siteUrl}/blog/${categorySlug}` }],
+    });
 </script>
 
 <template>

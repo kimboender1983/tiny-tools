@@ -1,170 +1,170 @@
 <script setup lang="ts">
-import { Plus, Pencil, Trash2, Check, X, Key, Shield } from 'lucide-vue-next';
+    import { Check, Key, Pencil, Plus, Shield, Trash2, X } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-interface AdminUser {
-  _id: string;
-  email: string;
-  name?: string;
-  role: string;
-  plan: string;
-  avatar?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+    interface AdminUser {
+        _id: string;
+        email: string;
+        name?: string;
+        role: string;
+        plan: string;
+        avatar?: string;
+        createdAt: string;
+        updatedAt: string;
+    }
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
-const users = ref<AdminUser[]>([]);
-const deleteConfirmId = ref<string | null>(null);
-const editingId = ref<string | null>(null);
-const passwordChangeId = ref<string | null>(null);
+    const loading = ref(true);
+    const error = ref("");
+    const users = ref<AdminUser[]>([]);
+    const deleteConfirmId = ref<string | null>(null);
+    const editingId = ref<string | null>(null);
+    const passwordChangeId = ref<string | null>(null);
 
-// New user form
-const showAddForm = ref(false);
-const newForm = reactive({
-  email: '',
-  password: '',
-  name: '',
-  role: 'admin',
-});
-
-// Edit form
-const editForm = reactive({
-  email: '',
-  name: '',
-  role: '',
-});
-
-// Password form
-const passwordForm = reactive({
-  password: '',
-  confirm: '',
-});
-const passwordError = ref('');
-const passwordSuccess = ref('');
-
-async function loadUsers() {
-  loading.value = true;
-  error.value = '';
-  try {
-    users.value = await cms.users.list();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load users.';
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function createUser() {
-  if (!newForm.email || !newForm.password) return;
-  if (newForm.password.length < 8) {
-    error.value = 'Password must be at least 8 characters.';
-    return;
-  }
-  error.value = '';
-  try {
-    await cms.users.create({
-      email: newForm.email,
-      password: newForm.password,
-      name: newForm.name || undefined,
-      role: newForm.role,
+    // New user form
+    const showAddForm = ref(false);
+    const newForm = reactive({
+        email: "",
+        password: "",
+        name: "",
+        role: "admin",
     });
-    newForm.email = '';
-    newForm.password = '';
-    newForm.name = '';
-    newForm.role = 'admin';
-    showAddForm.value = false;
-    await loadUsers();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to create user.';
-  }
-}
 
-function startEdit(user: AdminUser) {
-  editingId.value = user._id;
-  editForm.email = user.email;
-  editForm.name = user.name || '';
-  editForm.role = user.role;
-}
-
-function cancelEdit() {
-  editingId.value = null;
-}
-
-async function saveEdit(id: string) {
-  error.value = '';
-  try {
-    await cms.users.update(id, {
-      email: editForm.email,
-      name: editForm.name || undefined,
-      role: editForm.role,
+    // Edit form
+    const editForm = reactive({
+        email: "",
+        name: "",
+        role: "",
     });
-    editingId.value = null;
-    await loadUsers();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to update user.';
-  }
-}
 
-function startPasswordChange(id: string) {
-  passwordChangeId.value = id;
-  passwordForm.password = '';
-  passwordForm.confirm = '';
-  passwordError.value = '';
-  passwordSuccess.value = '';
-}
+    // Password form
+    const passwordForm = reactive({
+        password: "",
+        confirm: "",
+    });
+    const passwordError = ref("");
+    const passwordSuccess = ref("");
 
-async function savePassword(id: string) {
-  passwordError.value = '';
-  passwordSuccess.value = '';
+    async function loadUsers() {
+        loading.value = true;
+        error.value = "";
+        try {
+            users.value = await cms.users.list();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load users.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-  if (passwordForm.password.length < 8) {
-    passwordError.value = 'Password must be at least 8 characters.';
-    return;
-  }
-  if (passwordForm.password !== passwordForm.confirm) {
-    passwordError.value = 'Passwords do not match.';
-    return;
-  }
+    async function createUser() {
+        if (!newForm.email || !newForm.password) return;
+        if (newForm.password.length < 8) {
+            error.value = "Password must be at least 8 characters.";
+            return;
+        }
+        error.value = "";
+        try {
+            await cms.users.create({
+                email: newForm.email,
+                password: newForm.password,
+                name: newForm.name || undefined,
+                role: newForm.role,
+            });
+            newForm.email = "";
+            newForm.password = "";
+            newForm.name = "";
+            newForm.role = "admin";
+            showAddForm.value = false;
+            await loadUsers();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to create user.";
+        }
+    }
 
-  try {
-    await cms.users.changePassword(id, passwordForm.password);
-    passwordSuccess.value = 'Password changed successfully.';
-    passwordForm.password = '';
-    passwordForm.confirm = '';
-    setTimeout(() => {
-      passwordChangeId.value = null;
-      passwordSuccess.value = '';
-    }, 1500);
-  } catch (e: unknown) {
-    passwordError.value = e instanceof Error ? e.message : 'Failed to change password.';
-  }
-}
+    function startEdit(user: AdminUser) {
+        editingId.value = user._id;
+        editForm.email = user.email;
+        editForm.name = user.name || "";
+        editForm.role = user.role;
+    }
 
-async function deleteUser(id: string) {
-  error.value = '';
-  try {
-    await cms.users.delete(id);
-    deleteConfirmId.value = null;
-    await loadUsers();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to delete user.';
-  }
-}
+    function cancelEdit() {
+        editingId.value = null;
+    }
 
-function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
+    async function saveEdit(id: string) {
+        error.value = "";
+        try {
+            await cms.users.update(id, {
+                email: editForm.email,
+                name: editForm.name || undefined,
+                role: editForm.role,
+            });
+            editingId.value = null;
+            await loadUsers();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to update user.";
+        }
+    }
 
-onMounted(loadUsers);
+    function startPasswordChange(id: string) {
+        passwordChangeId.value = id;
+        passwordForm.password = "";
+        passwordForm.confirm = "";
+        passwordError.value = "";
+        passwordSuccess.value = "";
+    }
+
+    async function savePassword(id: string) {
+        passwordError.value = "";
+        passwordSuccess.value = "";
+
+        if (passwordForm.password.length < 8) {
+            passwordError.value = "Password must be at least 8 characters.";
+            return;
+        }
+        if (passwordForm.password !== passwordForm.confirm) {
+            passwordError.value = "Passwords do not match.";
+            return;
+        }
+
+        try {
+            await cms.users.changePassword(id, passwordForm.password);
+            passwordSuccess.value = "Password changed successfully.";
+            passwordForm.password = "";
+            passwordForm.confirm = "";
+            setTimeout(() => {
+                passwordChangeId.value = null;
+                passwordSuccess.value = "";
+            }, 1500);
+        } catch (e: unknown) {
+            passwordError.value = e instanceof Error ? e.message : "Failed to change password.";
+        }
+    }
+
+    async function deleteUser(id: string) {
+        error.value = "";
+        try {
+            await cms.users.delete(id);
+            deleteConfirmId.value = null;
+            await loadUsers();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to delete user.";
+        }
+    }
+
+    function formatDate(date: string): string {
+        return new Date(date).toLocaleDateString(undefined, {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        });
+    }
+
+    onMounted(loadUsers);
 </script>
 
 <template>

@@ -1,46 +1,46 @@
 <script setup lang="ts">
-import { Plus, Trash2, ExternalLink, BarChart3 } from 'lucide-vue-next';
-import type { IAffiliate } from '@tiny-tools/shared';
+    import type { IAffiliate } from "@tiny-tools/shared";
+    import { BarChart3, ExternalLink, Plus, Trash2 } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
-const affiliates = ref<IAffiliate[]>([]);
-const deleteConfirmId = ref<string | null>(null);
+    const loading = ref(true);
+    const error = ref("");
+    const affiliates = ref<IAffiliate[]>([]);
+    const deleteConfirmId = ref<string | null>(null);
 
-async function loadAffiliates() {
-  loading.value = true;
-  error.value = '';
+    async function loadAffiliates() {
+        loading.value = true;
+        error.value = "";
 
-  try {
-    const res = await cms.affiliates.list({ pageSize: 100 });
-    affiliates.value = res.items;
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load affiliates.';
-  } finally {
-    loading.value = false;
-  }
-}
+        try {
+            const res = await cms.affiliates.list({ pageSize: 100 });
+            affiliates.value = res.items;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load affiliates.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-async function deleteAffiliate(id: string) {
-  try {
-    await cms.affiliates.delete(id);
-    deleteConfirmId.value = null;
-    await loadAffiliates();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to delete affiliate.';
-  }
-}
+    async function deleteAffiliate(id: string) {
+        try {
+            await cms.affiliates.delete(id);
+            deleteConfirmId.value = null;
+            await loadAffiliates();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to delete affiliate.";
+        }
+    }
 
-const statusClasses: Record<string, string> = {
-  active: 'bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400',
-  inactive: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-};
+    const statusClasses: Record<string, string> = {
+        active: "bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400",
+        inactive: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+    };
 
-onMounted(loadAffiliates);
+    onMounted(loadAffiliates);
 </script>
 
 <template>

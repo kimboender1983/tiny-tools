@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ChevronRight } from 'lucide-vue-next';
+    import { ChevronRight } from "lucide-vue-next";
 
-defineProps<{
-  links: { id: string; label: string }[];
-}>();
+    defineProps<{
+        links: { id: string; label: string }[];
+    }>();
 </script>
 
 <template>

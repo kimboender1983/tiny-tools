@@ -1,73 +1,102 @@
 <script setup lang="ts">
-import {
-  AlertTriangle,
-  Eraser,
-  Clock,
-  ArrowRightLeft,
-  Zap,
-  Calendar,
-  Globe,
-  Timer,
-  Copy,
-  Check,
-} from 'lucide-vue-next';
+    import {
+        AlertTriangle,
+        ArrowRightLeft,
+        Calendar,
+        Check,
+        Clock,
+        Copy,
+        Eraser,
+        Globe,
+        Timer,
+        Zap,
+    } from "lucide-vue-next";
 
-const {
-  input,
-  direction,
-  unit,
-  error,
-  parsed,
-  nowSeconds,
-  nowMilliseconds,
-  timezoneResults,
-  useNow,
-  clear,
-} = useUnixTimestamp();
+    const {
+        input,
+        direction,
+        unit,
+        error,
+        parsed,
+        nowSeconds,
+        nowMilliseconds,
+        timezoneResults,
+        useNow,
+        clear,
+    } = useUnixTimestamp();
 
-// Copy with feedback
-const copiedField = ref<string | null>(null);
-let copyTimeout: ReturnType<typeof setTimeout> | null = null;
+    // Copy with feedback
+    const copiedField = ref<string | null>(null);
+    let copyTimeout: ReturnType<typeof setTimeout> | null = null;
 
-async function copyValue(field: string, value: string) {
-  try {
-    await navigator.clipboard.writeText(value);
-    copiedField.value = field;
-    if (copyTimeout) clearTimeout(copyTimeout);
-    copyTimeout = setTimeout(() => { copiedField.value = null; }, 1500);
-  } catch { /* */ }
-}
+    async function copyValue(field: string, value: string) {
+        try {
+            await navigator.clipboard.writeText(value);
+            copiedField.value = field;
+            if (copyTimeout) clearTimeout(copyTimeout);
+            copyTimeout = setTimeout(() => {
+                copiedField.value = null;
+            }, 1500);
+        } catch {
+            /* */
+        }
+    }
 
-const examples = [
-  { label: 'Now', action: () => useNow() },
-  { label: 'Y2K', action: () => { direction.value = 'toDate'; unit.value = 'seconds'; input.value = '946684800'; } },
-  { label: 'Unix Epoch', action: () => { direction.value = 'toDate'; unit.value = 'seconds'; input.value = '0'; } },
-  { label: 'Date string', action: () => { direction.value = 'toTimestamp'; input.value = '2030-01-01T00:00:00Z'; } },
-];
+    const examples = [
+        { label: "Now", action: () => useNow() },
+        {
+            label: "Y2K",
+            action: () => {
+                direction.value = "toDate";
+                unit.value = "seconds";
+                input.value = "946684800";
+            },
+        },
+        {
+            label: "Unix Epoch",
+            action: () => {
+                direction.value = "toDate";
+                unit.value = "seconds";
+                input.value = "0";
+            },
+        },
+        {
+            label: "Date string",
+            action: () => {
+                direction.value = "toTimestamp";
+                input.value = "2030-01-01T00:00:00Z";
+            },
+        },
+    ];
 
-interface ResultField {
-  key: string;
-  label: string;
-  value: string;
-  mono?: boolean;
-}
+    interface ResultField {
+        key: string;
+        label: string;
+        value: string;
+        mono?: boolean;
+    }
 
-const resultFields = computed<ResultField[]>(() => {
-  if (!parsed.value) return [];
-  const p = parsed.value;
-  return [
-    { key: 'unix-s', label: 'Unix (seconds)', value: String(p.unixSeconds), mono: true },
-    { key: 'unix-ms', label: 'Unix (milliseconds)', value: String(p.unixMilliseconds), mono: true },
-    { key: 'iso', label: 'ISO 8601', value: p.iso, mono: true },
-    { key: 'local', label: 'Local time', value: p.local },
-    { key: 'utc', label: 'UTC', value: p.utc },
-    { key: 'relative', label: 'Relative', value: p.relative },
-    { key: 'day', label: 'Day of week', value: p.dayOfWeek },
-    { key: 'doy', label: 'Day of year', value: String(p.dayOfYear) },
-    { key: 'week', label: 'Week number', value: String(p.weekNumber) },
-    { key: 'leap', label: 'Leap year', value: p.isLeapYear ? 'Yes' : 'No' },
-  ];
-});
+    const resultFields = computed<ResultField[]>(() => {
+        if (!parsed.value) return [];
+        const p = parsed.value;
+        return [
+            { key: "unix-s", label: "Unix (seconds)", value: String(p.unixSeconds), mono: true },
+            {
+                key: "unix-ms",
+                label: "Unix (milliseconds)",
+                value: String(p.unixMilliseconds),
+                mono: true,
+            },
+            { key: "iso", label: "ISO 8601", value: p.iso, mono: true },
+            { key: "local", label: "Local time", value: p.local },
+            { key: "utc", label: "UTC", value: p.utc },
+            { key: "relative", label: "Relative", value: p.relative },
+            { key: "day", label: "Day of week", value: p.dayOfWeek },
+            { key: "doy", label: "Day of year", value: String(p.dayOfYear) },
+            { key: "week", label: "Week number", value: String(p.weekNumber) },
+            { key: "leap", label: "Leap year", value: p.isLeapYear ? "Yes" : "No" },
+        ];
+    });
 </script>
 
 <template>

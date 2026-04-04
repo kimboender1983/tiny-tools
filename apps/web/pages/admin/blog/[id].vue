@@ -1,158 +1,169 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronUp, Plus, Trash2 } from 'lucide-vue-next';
-import type { IBlogPost, BlogPostStatus, ICategory, IFaqItem, IAuthor } from '@tiny-tools/shared';
+    import type {
+        BlogPostStatus,
+        IAuthor,
+        IBlogPost,
+        ICategory,
+        IFaqItem,
+    } from "@tiny-tools/shared";
+    import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
-const route = useRoute();
-const id = route.params.id as string;
+    const cms = useCms();
+    const route = useRoute();
+    const id = route.params.id as string;
 
-const loading = ref(true);
-const saving = ref(false);
-const error = ref('');
-const categories = ref<ICategory[]>([]);
-const authors = ref<IAuthor[]>([]);
-const seoOpen = ref(false);
+    const loading = ref(true);
+    const saving = ref(false);
+    const error = ref("");
+    const categories = ref<ICategory[]>([]);
+    const authors = ref<IAuthor[]>([]);
+    const seoOpen = ref(false);
 
-const form = reactive({
-  title: '',
-  slug: '',
-  content: '',
-  excerpt: '',
-  status: 'draft' as BlogPostStatus,
-  category: '',
-  tags: '',
-  coverImage: '',
-  author: '',
-  publishedAt: '',
-  seo: {
-    metaTitle: '',
-    metaDescription: '',
-    focusKeyword: '',
-    ogImage: '',
-    noIndex: false,
-  },
-  faq: [] as IFaqItem[],
-});
+    const form = reactive({
+        title: "",
+        slug: "",
+        content: "",
+        excerpt: "",
+        status: "draft" as BlogPostStatus,
+        category: "",
+        tags: "",
+        coverImage: "",
+        author: "",
+        publishedAt: "",
+        seo: {
+            metaTitle: "",
+            metaDescription: "",
+            focusKeyword: "",
+            ogImage: "",
+            noIndex: false,
+        },
+        faq: [] as IFaqItem[],
+    });
 
-const readingTime = computed(() => {
-  const words = form.content.trim().split(/\s+/).filter(Boolean).length;
-  return Math.max(1, Math.ceil(words / 200));
-});
+    const readingTime = computed(() => {
+        const words = form.content.trim().split(/\s+/).filter(Boolean).length;
+        return Math.max(1, Math.ceil(words / 200));
+    });
 
-function addFaq() {
-  form.faq.push({ question: '', answer: '' });
-}
+    function addFaq() {
+        form.faq.push({ question: "", answer: "" });
+    }
 
-function removeFaq(index: number) {
-  form.faq.splice(index, 1);
-}
+    function removeFaq(index: number) {
+        form.faq.splice(index, 1);
+    }
 
-function formatDateForInput(date: Date | string | undefined): string {
-  if (!date) return '';
-  const d = new Date(date);
-  return d.toISOString().slice(0, 16);
-}
+    function formatDateForInput(date: Date | string | undefined): string {
+        if (!date) return "";
+        const d = new Date(date);
+        return d.toISOString().slice(0, 16);
+    }
 
-async function loadPost() {
-  loading.value = true;
-  error.value = '';
+    async function loadPost() {
+        loading.value = true;
+        error.value = "";
 
-  try {
-    const [post, catsRes, authorsRes] = await Promise.all([
-      cms.blogPosts.get(id),
-      cms.categories.list({ pageSize: 100 }),
-      cms.authors.list(),
-    ]);
+        try {
+            const [post, catsRes, authorsRes] = await Promise.all([
+                cms.blogPosts.get(id),
+                cms.categories.list({ pageSize: 100 }),
+                cms.authors.list(),
+            ]);
 
-    categories.value = catsRes.items;
-    authors.value = authorsRes;
+            categories.value = catsRes.items;
+            authors.value = authorsRes;
 
-    form.title = post.title;
-    form.slug = post.slug;
-    form.content = post.content;
-    form.excerpt = post.excerpt;
-    form.status = post.status;
-    form.category = post.category || '';
-    form.tags = post.tags?.join(', ') || '';
-    form.coverImage = post.coverImage || '';
-    form.author = (post.author as string) || '';
-    form.publishedAt = formatDateForInput(post.publishedAt);
-    form.seo.metaTitle = post.seo?.metaTitle || '';
-    form.seo.metaDescription = post.seo?.metaDescription || '';
-    form.seo.focusKeyword = post.seo?.focusKeyword || '';
-    form.seo.ogImage = post.seo?.ogImage || '';
-    form.seo.noIndex = post.seo?.noIndex || false;
-    form.faq = post.faq?.map(f => ({ question: f.question, answer: f.answer })) || [];
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load post.';
-  } finally {
-    loading.value = false;
-  }
-}
+            form.title = post.title;
+            form.slug = post.slug;
+            form.content = post.content;
+            form.excerpt = post.excerpt;
+            form.status = post.status;
+            form.category = post.category || "";
+            form.tags = post.tags?.join(", ") || "";
+            form.coverImage = post.coverImage || "";
+            form.author = (post.author as string) || "";
+            form.publishedAt = formatDateForInput(post.publishedAt);
+            form.seo.metaTitle = post.seo?.metaTitle || "";
+            form.seo.metaDescription = post.seo?.metaDescription || "";
+            form.seo.focusKeyword = post.seo?.focusKeyword || "";
+            form.seo.ogImage = post.seo?.ogImage || "";
+            form.seo.noIndex = post.seo?.noIndex || false;
+            form.faq = post.faq?.map((f) => ({ question: f.question, answer: f.answer })) || [];
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load post.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-function validate(publish: boolean): string | null {
-  if (!form.title.trim()) return 'Title is required.';
-  if (!form.content.trim()) return 'Content is required.';
-  if (!form.excerpt.trim()) return 'Excerpt is required.';
-  if (publish) {
-    if (!form.seo.metaTitle.trim()) return 'SEO meta title is required for publishing.';
-    if (!form.seo.metaDescription.trim()) return 'SEO meta description is required for publishing.';
-  }
-  return null;
-}
+    function validate(publish: boolean): string | null {
+        if (!form.title.trim()) return "Title is required.";
+        if (!form.content.trim()) return "Content is required.";
+        if (!form.excerpt.trim()) return "Excerpt is required.";
+        if (publish) {
+            if (!form.seo.metaTitle.trim()) return "SEO meta title is required for publishing.";
+            if (!form.seo.metaDescription.trim())
+                return "SEO meta description is required for publishing.";
+        }
+        return null;
+    }
 
-async function save(publish: boolean) {
-  const validationError = validate(publish);
-  if (validationError) {
-    error.value = validationError;
-    return;
-  }
+    async function save(publish: boolean) {
+        const validationError = validate(publish);
+        if (validationError) {
+            error.value = validationError;
+            return;
+        }
 
-  saving.value = true;
-  error.value = '';
+        saving.value = true;
+        error.value = "";
 
-  try {
-    const tags = form.tags
-      .split(',')
-      .map(t => t.trim())
-      .filter(Boolean);
+        try {
+            const tags = form.tags
+                .split(",")
+                .map((t) => t.trim())
+                .filter(Boolean);
 
-    const data: Partial<IBlogPost> = {
-      title: form.title,
-      slug: form.slug || undefined,
-      content: form.content,
-      excerpt: form.excerpt,
-      status: publish ? 'published' : form.status,
-      category: form.category || undefined,
-      tags: tags.length > 0 ? tags : undefined,
-      coverImage: form.coverImage || undefined,
-      author: form.author || undefined,
-      readingTime: readingTime.value,
-      publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
-      seo: (form.seo.metaTitle || form.seo.metaDescription) ? {
-        metaTitle: form.seo.metaTitle || undefined,
-        metaDescription: form.seo.metaDescription || undefined,
-        focusKeyword: form.seo.focusKeyword || undefined,
-        ogImage: form.seo.ogImage || undefined,
-        noIndex: form.seo.noIndex,
-      } : undefined,
-      faq: form.faq.filter(f => f.question.trim() && f.answer.trim()).length > 0
-        ? form.faq.filter(f => f.question.trim() && f.answer.trim())
-        : undefined,
-    };
+            const data: Partial<IBlogPost> = {
+                title: form.title,
+                slug: form.slug || undefined,
+                content: form.content,
+                excerpt: form.excerpt,
+                status: publish ? "published" : form.status,
+                category: form.category || undefined,
+                tags: tags.length > 0 ? tags : undefined,
+                coverImage: form.coverImage || undefined,
+                author: form.author || undefined,
+                readingTime: readingTime.value,
+                publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
+                seo:
+                    form.seo.metaTitle || form.seo.metaDescription
+                        ? {
+                              metaTitle: form.seo.metaTitle || undefined,
+                              metaDescription: form.seo.metaDescription || undefined,
+                              focusKeyword: form.seo.focusKeyword || undefined,
+                              ogImage: form.seo.ogImage || undefined,
+                              noIndex: form.seo.noIndex,
+                          }
+                        : undefined,
+                faq:
+                    form.faq.filter((f) => f.question.trim() && f.answer.trim()).length > 0
+                        ? form.faq.filter((f) => f.question.trim() && f.answer.trim())
+                        : undefined,
+            };
 
-    await cms.blogPosts.update(id, data);
-    error.value = '';
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to update post.';
-  } finally {
-    saving.value = false;
-  }
-}
+            await cms.blogPosts.update(id, data);
+            error.value = "";
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to update post.";
+        } finally {
+            saving.value = false;
+        }
+    }
 
-onMounted(loadPost);
+    onMounted(loadPost);
 </script>
 
 <template>

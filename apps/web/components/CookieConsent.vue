@@ -1,45 +1,45 @@
 <script setup lang="ts">
-import { Shield, BarChart3, Megaphone, X, Cookie, ChevronDown } from 'lucide-vue-next';
+    import { BarChart3, ChevronDown, Cookie, Megaphone, Shield, X } from "lucide-vue-next";
 
-const {
-  showBanner,
-  showSettings,
-  preferences,
-  acceptAll,
-  rejectAll,
-  savePreferences,
-  openSettings,
-} = useCookieConsent();
+    const {
+        showBanner,
+        showSettings,
+        preferences,
+        acceptAll,
+        rejectAll,
+        savePreferences,
+        openSettings,
+    } = useCookieConsent();
 
-const draft = reactive({
-  analytics: false,
-  advertising: false,
-});
+    const draft = reactive({
+        analytics: false,
+        advertising: false,
+    });
 
-// Sync draft with stored prefs when settings panel opens
-watch(showSettings, (open) => {
-  if (open) {
-    draft.analytics = preferences.value.analytics;
-    draft.advertising = preferences.value.advertising;
-  }
-});
+    // Sync draft with stored prefs when settings panel opens
+    watch(showSettings, (open) => {
+        if (open) {
+            draft.analytics = preferences.value.analytics;
+            draft.advertising = preferences.value.advertising;
+        }
+    });
 
-function handleSave() {
-  savePreferences({ analytics: draft.analytics, advertising: draft.advertising });
-}
-
-const isVisible = computed(() => showBanner.value || showSettings.value);
-
-// Trap focus & handle escape
-function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') {
-    if (showSettings.value) {
-      showSettings.value = false;
-      // Re-show banner if user hasn't consented yet
-      // (showBanner is readonly, but rejectAll/acceptAll handle it)
+    function handleSave() {
+        savePreferences({ analytics: draft.analytics, advertising: draft.advertising });
     }
-  }
-}
+
+    const isVisible = computed(() => showBanner.value || showSettings.value);
+
+    // Trap focus & handle escape
+    function onKeydown(e: KeyboardEvent) {
+        if (e.key === "Escape") {
+            if (showSettings.value) {
+                showSettings.value = false;
+                // Re-show banner if user hasn't consented yet
+                // (showBanner is readonly, but rejectAll/acceptAll handle it)
+            }
+        }
+    }
 </script>
 
 <template>

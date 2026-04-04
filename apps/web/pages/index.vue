@@ -1,17 +1,25 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import { Sparkles } from 'lucide-vue-next';
+    import { TOOLS } from "@tiny-tools/shared";
+    import { Sparkles } from "lucide-vue-next";
 
-useHead({
-  title: 'Pickbox — Free Online Developer Tools',
-  meta: [
-    { name: 'description', content: 'Free, fast developer tools that run entirely in your browser. JSON formatter, diff checker, JWT decoder, image compressor, and more. Your data never leaves your device.' },
-    { property: 'og:title', content: 'Pickbox — Free Online Developer Tools' },
-    { property: 'og:description', content: 'Free, fast developer tools that run entirely in your browser. Your data never leaves your device.' },
-    { property: 'og:type', content: 'website' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-  ],
-});
+    useHead({
+        title: "Pickbox — Free Online Developer Tools",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Free, fast developer tools that run entirely in your browser. JSON formatter, diff checker, JWT decoder, image compressor, and more. Your data never leaves your device.",
+            },
+            { property: "og:title", content: "Pickbox — Free Online Developer Tools" },
+            {
+                property: "og:description",
+                content:
+                    "Free, fast developer tools that run entirely in your browser. Your data never leaves your device.",
+            },
+            { property: "og:type", content: "website" },
+            { name: "twitter:card", content: "summary_large_image" },
+        ],
+    });
 </script>
 
 <template>

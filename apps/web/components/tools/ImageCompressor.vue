@@ -1,62 +1,62 @@
 <script setup lang="ts">
-import {
-  ImageDown,
-  Download,
-  Trash2,
-  X,
-  Archive,
-  Play,
-  Settings2,
-  ImageIcon,
-  TrendingDown,
-  AlertCircle,
-  Loader2,
-  RefreshCw,
-} from 'lucide-vue-next';
+    import {
+        AlertCircle,
+        Archive,
+        Download,
+        ImageDown,
+        ImageIcon,
+        Loader2,
+        Play,
+        RefreshCw,
+        Settings2,
+        Trash2,
+        TrendingDown,
+        X,
+    } from "lucide-vue-next";
 
-const {
-  images,
-  globalSettings,
-  isCompressing,
-  totalOriginalSize,
-  totalCompressedSize,
-  totalSavingsPercent,
-  hasCompressedImages,
-  hasPendingImages,
-  addFiles,
-  compressAll,
-  compressSingle,
-  downloadSingle,
-  downloadAllAsZip,
-  removeImage,
-  clearAll,
-  getSavings,
-  formatBytes,
-} = useImageCompressor();
+    const {
+        images,
+        globalSettings,
+        isCompressing,
+        totalOriginalSize,
+        totalCompressedSize,
+        totalSavingsPercent,
+        hasCompressedImages,
+        hasPendingImages,
+        addFiles,
+        compressAll,
+        compressSingle,
+        downloadSingle,
+        downloadAllAsZip,
+        removeImage,
+        clearAll,
+        getSavings,
+        formatBytes,
+    } = useImageCompressor();
 
-const isDownloadingZip = ref(false);
+    const isDownloadingZip = ref(false);
 
-// Warn when quality slider won't help (PNG output)
-const pngQualityWarning = computed(() => {
-  if (globalSettings.outputFormat === 'png') return true;
-  if (globalSettings.outputFormat === 'original' && images.value.length > 0) {
-    return images.value.every(img => img.originalFile.type === 'image/png');
-  }
-  return false;
-});
+    // Warn when quality slider won't help (PNG output)
+    const pngQualityWarning = computed(() => {
+        if (globalSettings.outputFormat === "png") return true;
+        if (globalSettings.outputFormat === "original" && images.value.length > 0) {
+            return images.value.every((img) => img.originalFile.type === "image/png");
+        }
+        return false;
+    });
 
-function onFilesReceived(files: File[]) {
-  addFiles(files);
-}
+    function onFilesReceived(files: File[]) {
+        addFiles(files);
+    }
 
-async function handleDownloadZip() {
-  isDownloadingZip.value = true;
-  try {
-    await downloadAllAsZip();
-  } finally {
-    isDownloadingZip.value = false;
-  }
-}
+    async function handleDownloadZip() {
+        isDownloadingZip.value = true;
+        try {
+            await downloadAllAsZip();
+        } finally {
+            isDownloadingZip.value = false;
+        }
+    }
 </script>
 
 <template>

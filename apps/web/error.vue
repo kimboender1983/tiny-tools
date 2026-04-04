@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const props = defineProps<{ error: { statusCode: number; statusMessage?: string } }>();
+    const props = defineProps<{ error: { statusCode: number; statusMessage?: string } }>();
 
-const handleError = () => clearError({ redirect: '/' });
+    const handleError = () => clearError({ redirect: "/" });
 </script>
 
 <template>

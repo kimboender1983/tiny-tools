@@ -1,139 +1,139 @@
 <script setup lang="ts">
-import { Upload, Trash2, Copy, Check, Pencil } from 'lucide-vue-next';
-import type { IMedia } from '@tiny-tools/shared';
+    import type { IMedia } from "@tiny-tools/shared";
+    import { Check, Copy, Pencil, Trash2, Upload } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
-const media = ref<IMedia[]>([]);
-const total = ref(0);
-const uploading = ref(false);
-const deleteConfirmId = ref<string | null>(null);
-const copiedId = ref<string | null>(null);
-const editingAltId = ref<string | null>(null);
-const editingAltText = ref('');
-const isDragOver = ref(false);
-const editingItem = ref<IMedia | null>(null);
+    const loading = ref(true);
+    const error = ref("");
+    const media = ref<IMedia[]>([]);
+    const total = ref(0);
+    const uploading = ref(false);
+    const deleteConfirmId = ref<string | null>(null);
+    const copiedId = ref<string | null>(null);
+    const editingAltId = ref<string | null>(null);
+    const editingAltText = ref("");
+    const isDragOver = ref(false);
+    const editingItem = ref<IMedia | null>(null);
 
-async function onEditorSaved(_saved: IMedia) {
-  editingItem.value = null;
-  await loadMedia();
-}
-
-async function loadMedia() {
-  loading.value = true;
-  error.value = '';
-
-  try {
-    const res = await cms.media.list({ pageSize: 50 });
-    media.value = res.items;
-    total.value = res.total;
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load media.';
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function uploadFiles(files: FileList | File[]) {
-  uploading.value = true;
-  error.value = '';
-
-  try {
-    for (const file of files) {
-      await cms.media.upload(file);
+    async function onEditorSaved(_saved: IMedia) {
+        editingItem.value = null;
+        await loadMedia();
     }
-    await loadMedia();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to upload file.';
-  } finally {
-    uploading.value = false;
-  }
-}
 
-function onFileSelect(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files?.length) {
-    uploadFiles(input.files);
-    input.value = '';
-  }
-}
+    async function loadMedia() {
+        loading.value = true;
+        error.value = "";
 
-function onDrop(event: DragEvent) {
-  isDragOver.value = false;
-  if (event.dataTransfer?.files.length) {
-    uploadFiles(event.dataTransfer.files);
-  }
-}
+        try {
+            const res = await cms.media.list({ pageSize: 50 });
+            media.value = res.items;
+            total.value = res.total;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load media.";
+        } finally {
+            loading.value = false;
+        }
+    }
 
-function onDragOver(event: DragEvent) {
-  event.preventDefault();
-  isDragOver.value = true;
-}
+    async function uploadFiles(files: FileList | File[]) {
+        uploading.value = true;
+        error.value = "";
 
-function onDragLeave() {
-  isDragOver.value = false;
-}
+        try {
+            for (const file of files) {
+                await cms.media.upload(file);
+            }
+            await loadMedia();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to upload file.";
+        } finally {
+            uploading.value = false;
+        }
+    }
 
-async function copyUrl(item: IMedia) {
-  try {
-    await navigator.clipboard.writeText(item.url);
-    copiedId.value = item._id;
-    setTimeout(() => {
-      copiedId.value = null;
-    }, 2000);
-  } catch {
-    // Fallback — select and copy is not needed in admin
-  }
-}
+    function onFileSelect(event: Event) {
+        const input = event.target as HTMLInputElement;
+        if (input.files?.length) {
+            uploadFiles(input.files);
+            input.value = "";
+        }
+    }
 
-function startEditAlt(item: IMedia) {
-  editingAltId.value = item._id;
-  editingAltText.value = item.alt || '';
-}
+    function onDrop(event: DragEvent) {
+        isDragOver.value = false;
+        if (event.dataTransfer?.files.length) {
+            uploadFiles(event.dataTransfer.files);
+        }
+    }
 
-function cancelEditAlt() {
-  editingAltId.value = null;
-  editingAltText.value = '';
-}
+    function onDragOver(event: DragEvent) {
+        event.preventDefault();
+        isDragOver.value = true;
+    }
 
-async function saveAlt(id: string) {
-  // Note: The media composable doesn't have an update method,
-  // so we use a direct approach. If update is added later, use that.
-  // For now, we update the local state to reflect the change.
-  const item = media.value.find(m => m._id === id);
-  if (item) {
-    item.alt = editingAltText.value;
-  }
-  editingAltId.value = null;
-}
+    function onDragLeave() {
+        isDragOver.value = false;
+    }
 
-async function deleteMedia(id: string) {
-  error.value = '';
+    async function copyUrl(item: IMedia) {
+        try {
+            await navigator.clipboard.writeText(item.url);
+            copiedId.value = item._id;
+            setTimeout(() => {
+                copiedId.value = null;
+            }, 2000);
+        } catch {
+            // Fallback — select and copy is not needed in admin
+        }
+    }
 
-  try {
-    await cms.media.delete(id);
-    deleteConfirmId.value = null;
-    await loadMedia();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to delete media.';
-  }
-}
+    function startEditAlt(item: IMedia) {
+        editingAltId.value = item._id;
+        editingAltText.value = item.alt || "";
+    }
 
-function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
+    function cancelEditAlt() {
+        editingAltId.value = null;
+        editingAltText.value = "";
+    }
 
-function isImage(mimeType: string): boolean {
-  return mimeType.startsWith('image/');
-}
+    async function saveAlt(id: string) {
+        // Note: The media composable doesn't have an update method,
+        // so we use a direct approach. If update is added later, use that.
+        // For now, we update the local state to reflect the change.
+        const item = media.value.find((m) => m._id === id);
+        if (item) {
+            item.alt = editingAltText.value;
+        }
+        editingAltId.value = null;
+    }
 
-onMounted(loadMedia);
+    async function deleteMedia(id: string) {
+        error.value = "";
+
+        try {
+            await cms.media.delete(id);
+            deleteConfirmId.value = null;
+            await loadMedia();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to delete media.";
+        }
+    }
+
+    function formatSize(bytes: number): string {
+        if (bytes < 1024) return `${bytes} B`;
+        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    }
+
+    function isImage(mimeType: string): boolean {
+        return mimeType.startsWith("image/");
+    }
+
+    onMounted(loadMedia);
 </script>
 
 <template>

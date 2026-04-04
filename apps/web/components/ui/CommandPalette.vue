@@ -1,104 +1,104 @@
 <script setup lang="ts">
-import { Search, CornerDownLeft, ArrowUp, ArrowDown } from 'lucide-vue-next';
-import * as icons from 'lucide-vue-next';
-import { TOOLS } from '@tiny-tools/shared';
+    import { TOOLS } from "@tiny-tools/shared";
+    import * as icons from "lucide-vue-next";
+    import { ArrowDown, ArrowUp, CornerDownLeft, Search } from "lucide-vue-next";
 
-const router = useRouter();
-const isOpen = ref(false);
-const query = ref('');
-const activeIndex = ref(0);
-const inputRef = ref<HTMLInputElement | null>(null);
+    const router = useRouter();
+    const isOpen = ref(false);
+    const query = ref("");
+    const activeIndex = ref(0);
+    const inputRef = ref<HTMLInputElement | null>(null);
 
-const filteredTools = computed(() => {
-  const q = query.value.toLowerCase().trim();
-  if (!q) return TOOLS;
-  return TOOLS.filter(
-    (tool) =>
-      tool.name.toLowerCase().includes(q) ||
-      tool.description.toLowerCase().includes(q) ||
-      tool.category.toLowerCase().includes(q) ||
-      tool.keywords.some((kw) => kw.toLowerCase().includes(q)),
-  );
-});
+    const filteredTools = computed(() => {
+        const q = query.value.toLowerCase().trim();
+        if (!q) return TOOLS;
+        return TOOLS.filter(
+            (tool) =>
+                tool.name.toLowerCase().includes(q) ||
+                tool.description.toLowerCase().includes(q) ||
+                tool.category.toLowerCase().includes(q) ||
+                tool.keywords.some((kw) => kw.toLowerCase().includes(q)),
+        );
+    });
 
-function getIcon(name: string) {
-  return (icons as Record<string, unknown>)[name] ?? null;
-}
-
-function open() {
-  isOpen.value = true;
-  query.value = '';
-  activeIndex.value = 0;
-  nextTick(() => inputRef.value?.focus());
-}
-
-function close() {
-  isOpen.value = false;
-}
-
-function selectTool(slug: string) {
-  close();
-  router.push(`/tools/${slug}`);
-}
-
-function onKeyDown(e: KeyboardEvent) {
-  switch (e.key) {
-    case 'ArrowDown':
-      e.preventDefault();
-      activeIndex.value = Math.min(activeIndex.value + 1, filteredTools.value.length - 1);
-      scrollActiveIntoView();
-      break;
-    case 'ArrowUp':
-      e.preventDefault();
-      activeIndex.value = Math.max(activeIndex.value - 1, 0);
-      scrollActiveIntoView();
-      break;
-    case 'Enter':
-      e.preventDefault();
-      if (filteredTools.value[activeIndex.value]) {
-        selectTool(filteredTools.value[activeIndex.value].slug);
-      }
-      break;
-    case 'Escape':
-      e.preventDefault();
-      close();
-      break;
-  }
-}
-
-function scrollActiveIntoView() {
-  nextTick(() => {
-    const el = document.querySelector('[data-command-active="true"]');
-    el?.scrollIntoView({ block: 'nearest' });
-  });
-}
-
-watch(query, () => {
-  activeIndex.value = 0;
-});
-
-// Global keyboard shortcut
-function onGlobalKeyDown(e: KeyboardEvent) {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-    e.preventDefault();
-    if (isOpen.value) {
-      close();
-    } else {
-      open();
+    function getIcon(name: string) {
+        return (icons as Record<string, unknown>)[name] ?? null;
     }
-  }
-}
 
-onMounted(() => {
-  document.addEventListener('keydown', onGlobalKeyDown);
-});
+    function open() {
+        isOpen.value = true;
+        query.value = "";
+        activeIndex.value = 0;
+        nextTick(() => inputRef.value?.focus());
+    }
 
-onUnmounted(() => {
-  document.removeEventListener('keydown', onGlobalKeyDown);
-});
+    function close() {
+        isOpen.value = false;
+    }
 
-// Expose open for external use
-defineExpose({ open });
+    function selectTool(slug: string) {
+        close();
+        router.push(`/tools/${slug}`);
+    }
+
+    function onKeyDown(e: KeyboardEvent) {
+        switch (e.key) {
+            case "ArrowDown":
+                e.preventDefault();
+                activeIndex.value = Math.min(activeIndex.value + 1, filteredTools.value.length - 1);
+                scrollActiveIntoView();
+                break;
+            case "ArrowUp":
+                e.preventDefault();
+                activeIndex.value = Math.max(activeIndex.value - 1, 0);
+                scrollActiveIntoView();
+                break;
+            case "Enter":
+                e.preventDefault();
+                if (filteredTools.value[activeIndex.value]) {
+                    selectTool(filteredTools.value[activeIndex.value].slug);
+                }
+                break;
+            case "Escape":
+                e.preventDefault();
+                close();
+                break;
+        }
+    }
+
+    function scrollActiveIntoView() {
+        nextTick(() => {
+            const el = document.querySelector('[data-command-active="true"]');
+            el?.scrollIntoView({ block: "nearest" });
+        });
+    }
+
+    watch(query, () => {
+        activeIndex.value = 0;
+    });
+
+    // Global keyboard shortcut
+    function onGlobalKeyDown(e: KeyboardEvent) {
+        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+            e.preventDefault();
+            if (isOpen.value) {
+                close();
+            } else {
+                open();
+            }
+        }
+    }
+
+    onMounted(() => {
+        document.addEventListener("keydown", onGlobalKeyDown);
+    });
+
+    onUnmounted(() => {
+        document.removeEventListener("keydown", onGlobalKeyDown);
+    });
+
+    // Expose open for external use
+    defineExpose({ open });
 </script>
 
 <template>

@@ -1,33 +1,33 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { HydratedDocument } from "mongoose";
 
 export type AffiliateDocument = HydratedDocument<Affiliate>;
 
 @Schema({ timestamps: true })
 export class Affiliate {
-  @Prop({ required: true, trim: true })
-  name!: string;
+    @Prop({ required: true, trim: true })
+    name!: string;
 
-  @Prop({ required: true, unique: true, lowercase: true, trim: true })
-  slug!: string;
+    @Prop({ required: true, unique: true, lowercase: true, trim: true })
+    slug!: string;
 
-  @Prop({ required: true })
-  url!: string;
+    @Prop({ required: true })
+    url!: string;
 
-  @Prop()
-  logo?: string;
+    @Prop()
+    logo?: string;
 
-  @Prop()
-  description?: string;
+    @Prop()
+    description?: string;
 
-  @Prop()
-  programInfo?: string;
+    @Prop()
+    programInfo?: string;
 
-  @Prop({ required: true, enum: ['active', 'inactive'], default: 'active' })
-  status!: string;
+    @Prop({ required: true, enum: ["active", "inactive"], default: "active" })
+    status!: string;
 
-  createdAt!: Date;
-  updatedAt!: Date;
+    createdAt!: Date;
+    updatedAt!: Date;
 }
 
 export const AffiliateSchema = SchemaFactory.createForClass(Affiliate);

@@ -1,69 +1,82 @@
 <script setup lang="ts">
-import { Menu, X, Sun, Moon, Palette, PartyPopper, Circle, ChevronDown, Check } from 'lucide-vue-next';
-import { TOOLS } from '@tiny-tools/shared';
+    import { TOOLS } from "@tiny-tools/shared";
+    import {
+        Check,
+        ChevronDown,
+        Circle,
+        Menu,
+        Moon,
+        Palette,
+        PartyPopper,
+        Sun,
+        X,
+    } from "lucide-vue-next";
 
-const colorMode = useColorMode();
-const mobileMenuOpen = ref(false);
-const themeMenuOpen = ref(false);
-const { data: nav } = useNavigation();
-const headerItems = computed(() =>
-  nav.value.header.length > 0
-    ? nav.value.header
-    : TOOLS.map(t => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` }))
-);
+    const colorMode = useColorMode();
+    const mobileMenuOpen = ref(false);
+    const themeMenuOpen = ref(false);
+    const { data: nav } = useNavigation();
+    const headerItems = computed(() =>
+        nav.value.header.length > 0
+            ? nav.value.header
+            : TOOLS.map((t) => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` })),
+    );
 
-const MAIN_MODES = ['light', 'dark', 'grayscale'] as const;
+    const MAIN_MODES = ["light", "dark", "grayscale"] as const;
 
-const ALL_THEMES = [
-  { id: 'light', label: 'Light', icon: Sun },
-  { id: 'dark', label: 'Dark', icon: Moon },
-  { id: 'grayscale', label: 'Grayscale', icon: Circle },
-  { id: 'vibrant', label: 'Vibrant', icon: Palette },
-  { id: 'party', label: 'Party', icon: PartyPopper },
-] as const;
+    const ALL_THEMES = [
+        { id: "light", label: "Light", icon: Sun },
+        { id: "dark", label: "Dark", icon: Moon },
+        { id: "grayscale", label: "Grayscale", icon: Circle },
+        { id: "vibrant", label: "Vibrant", icon: Palette },
+        { id: "party", label: "Party", icon: PartyPopper },
+    ] as const;
 
-function toggleTheme() {
-  const idx = MAIN_MODES.indexOf(colorMode.value as typeof MAIN_MODES[number]);
-  if (idx >= 0) {
-    colorMode.preference = MAIN_MODES[(idx + 1) % MAIN_MODES.length];
-  } else {
-    colorMode.preference = 'light';
-  }
-}
+    function toggleTheme() {
+        const idx = MAIN_MODES.indexOf(colorMode.value as (typeof MAIN_MODES)[number]);
+        if (idx >= 0) {
+            colorMode.preference = MAIN_MODES[(idx + 1) % MAIN_MODES.length];
+        } else {
+            colorMode.preference = "light";
+        }
+    }
 
-function selectTheme(id: string) {
-  colorMode.preference = id;
-  themeMenuOpen.value = false;
-}
+    function selectTheme(id: string) {
+        colorMode.preference = id;
+        themeMenuOpen.value = false;
+    }
 
-const themeIcon = computed(() => {
-  return ALL_THEMES.find(t => t.id === colorMode.value)?.icon ?? Sun;
-});
+    const themeIcon = computed(() => {
+        return ALL_THEMES.find((t) => t.id === colorMode.value)?.icon ?? Sun;
+    });
 
-const themeLabel = computed(() => {
-  const current = ALL_THEMES.find(t => t.id === colorMode.value);
-  return current ? `Current: ${current.label}` : 'Switch theme';
-});
+    const themeLabel = computed(() => {
+        const current = ALL_THEMES.find((t) => t.id === colorMode.value);
+        return current ? `Current: ${current.label}` : "Switch theme";
+    });
 
-function onClickOutside(e: MouseEvent) {
-  const target = e.target as HTMLElement;
-  if (!target.closest('[data-theme-menu]')) {
-    themeMenuOpen.value = false;
-  }
-}
+    function onClickOutside(e: MouseEvent) {
+        const target = e.target as HTMLElement;
+        if (!target.closest("[data-theme-menu]")) {
+            themeMenuOpen.value = false;
+        }
+    }
 
-watch(themeMenuOpen, (open) => {
-  if (open) {
-    document.addEventListener('click', onClickOutside, { capture: true });
-  } else {
-    document.removeEventListener('click', onClickOutside, { capture: true });
-  }
-});
+    watch(themeMenuOpen, (open) => {
+        if (open) {
+            document.addEventListener("click", onClickOutside, { capture: true });
+        } else {
+            document.removeEventListener("click", onClickOutside, { capture: true });
+        }
+    });
 
-watch(() => useRoute().path, () => {
-  mobileMenuOpen.value = false;
-  themeMenuOpen.value = false;
-});
+    watch(
+        () => useRoute().path,
+        () => {
+            mobileMenuOpen.value = false;
+            themeMenuOpen.value = false;
+        },
+    );
 </script>
 
 <template>

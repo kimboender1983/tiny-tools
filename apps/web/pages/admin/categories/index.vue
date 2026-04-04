@@ -1,127 +1,127 @@
 <script setup lang="ts">
-import { Plus, Pencil, Trash2, Check, X } from 'lucide-vue-next';
-import * as icons from 'lucide-vue-next';
-import type { ICategory } from '@tiny-tools/shared';
+    import type { ICategory } from "@tiny-tools/shared";
+    import * as icons from "lucide-vue-next";
+    import { Check, Pencil, Plus, Trash2, X } from "lucide-vue-next";
 
-function getIcon(name: string | undefined) {
-  if (!name) return null;
-  return (icons as Record<string, unknown>)[name] ?? null;
-}
+    function getIcon(name: string | undefined) {
+        if (!name) return null;
+        return (icons as Record<string, unknown>)[name] ?? null;
+    }
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
-const categories = ref<ICategory[]>([]);
-const deleteConfirmId = ref<string | null>(null);
-const editingId = ref<string | null>(null);
+    const loading = ref(true);
+    const error = ref("");
+    const categories = ref<ICategory[]>([]);
+    const deleteConfirmId = ref<string | null>(null);
+    const editingId = ref<string | null>(null);
 
-// New category form
-const newForm = reactive({
-  name: '',
-  slug: '',
-  icon: '',
-  order: 0,
-});
-
-// Edit form
-const editForm = reactive({
-  name: '',
-  slug: '',
-  icon: '',
-  order: 0,
-});
-
-const showAddForm = ref(false);
-
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
-
-async function loadCategories() {
-  loading.value = true;
-  error.value = '';
-
-  try {
-    const res = await cms.categories.list({ pageSize: 100 });
-    categories.value = res.items;
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load categories.';
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function createCategory() {
-  if (!newForm.name) return;
-  error.value = '';
-
-  try {
-    await cms.categories.create({
-      name: newForm.name,
-      slug: newForm.slug || generateSlug(newForm.name),
-      icon: newForm.icon || undefined,
-      order: newForm.order,
-      seo: { metaTitle: newForm.name, metaDescription: '' },
+    // New category form
+    const newForm = reactive({
+        name: "",
+        slug: "",
+        icon: "",
+        order: 0,
     });
-    newForm.name = '';
-    newForm.slug = '';
-    newForm.icon = '';
-    newForm.order = 0;
-    showAddForm.value = false;
-    await loadCategories();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to create category.';
-  }
-}
 
-function startEdit(cat: ICategory) {
-  editingId.value = cat._id;
-  editForm.name = cat.name;
-  editForm.slug = cat.slug;
-  editForm.icon = cat.icon || '';
-  editForm.order = cat.order;
-}
-
-function cancelEdit() {
-  editingId.value = null;
-}
-
-async function saveEdit(id: string) {
-  error.value = '';
-
-  try {
-    await cms.categories.update(id, {
-      name: editForm.name,
-      slug: editForm.slug,
-      icon: editForm.icon || undefined,
-      order: editForm.order,
+    // Edit form
+    const editForm = reactive({
+        name: "",
+        slug: "",
+        icon: "",
+        order: 0,
     });
-    editingId.value = null;
-    await loadCategories();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to update category.';
-  }
-}
 
-async function deleteCategory(id: string) {
-  error.value = '';
+    const showAddForm = ref(false);
 
-  try {
-    await cms.categories.delete(id);
-    deleteConfirmId.value = null;
-    await loadCategories();
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to delete category.';
-  }
-}
+    function generateSlug(name: string): string {
+        return name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+    }
 
-onMounted(loadCategories);
+    async function loadCategories() {
+        loading.value = true;
+        error.value = "";
+
+        try {
+            const res = await cms.categories.list({ pageSize: 100 });
+            categories.value = res.items;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load categories.";
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    async function createCategory() {
+        if (!newForm.name) return;
+        error.value = "";
+
+        try {
+            await cms.categories.create({
+                name: newForm.name,
+                slug: newForm.slug || generateSlug(newForm.name),
+                icon: newForm.icon || undefined,
+                order: newForm.order,
+                seo: { metaTitle: newForm.name, metaDescription: "" },
+            });
+            newForm.name = "";
+            newForm.slug = "";
+            newForm.icon = "";
+            newForm.order = 0;
+            showAddForm.value = false;
+            await loadCategories();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to create category.";
+        }
+    }
+
+    function startEdit(cat: ICategory) {
+        editingId.value = cat._id;
+        editForm.name = cat.name;
+        editForm.slug = cat.slug;
+        editForm.icon = cat.icon || "";
+        editForm.order = cat.order;
+    }
+
+    function cancelEdit() {
+        editingId.value = null;
+    }
+
+    async function saveEdit(id: string) {
+        error.value = "";
+
+        try {
+            await cms.categories.update(id, {
+                name: editForm.name,
+                slug: editForm.slug,
+                icon: editForm.icon || undefined,
+                order: editForm.order,
+            });
+            editingId.value = null;
+            await loadCategories();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to update category.";
+        }
+    }
+
+    async function deleteCategory(id: string) {
+        error.value = "";
+
+        try {
+            await cms.categories.delete(id);
+            deleteConfirmId.value = null;
+            await loadCategories();
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to delete category.";
+        }
+    }
+
+    onMounted(loadCategories);
 </script>
 
 <template>

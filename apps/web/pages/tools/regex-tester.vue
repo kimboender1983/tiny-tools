@@ -1,88 +1,109 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import { generateJsonLd } from '~/utils/seo';
+    import { TOOLS } from "@tiny-tools/shared";
+    import { generateJsonLd } from "~/utils/seo";
 
-const appStore = useAppStore();
-const tool = TOOLS.find((t) => t.slug === 'regex-tester')!;
-const siteUrl = 'https://pickbox.dev';
-const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
+    const appStore = useAppStore();
+    const tool = TOOLS.find((t) => t.slug === "regex-tester");
+    if (!tool) throw new Error("Tool not found: regex-tester");
+    const siteUrl = "https://pickbox.dev";
+    const canonicalUrl = `${siteUrl}/tools/${tool.slug}`;
 
-const faqItems = [
-  {
-    question: 'What is a regular expression (regex)?',
-    answer: 'A regular expression is a sequence of characters that defines a search pattern. It is used for pattern matching within strings — finding, extracting, validating, or replacing text. Regular expressions are supported in virtually every programming language and many text editors.',
-  },
-  {
-    question: 'What do the flags g, i, m, s, and u mean?',
-    answer: 'g (global) finds all matches instead of stopping at the first. i (case-insensitive) ignores letter casing. m (multiline) makes ^ and $ match the start/end of each line, not just the entire string. s (dotall) makes . match newline characters. u (unicode) enables full Unicode matching, including surrogate pairs and Unicode property escapes.',
-  },
-  {
-    question: 'What is a capture group?',
-    answer: 'A capture group is a portion of the regex enclosed in parentheses ( ). It captures the matched text so you can reference it later — in replacement strings as $1, $2, etc., or in code via the match array. Named groups use the syntax (?<name>...) and can be referenced as $<name> in replacements.',
-  },
-  {
-    question: 'Is this regex tester safe to use with sensitive data?',
-    answer: 'Yes. This tool runs entirely in your browser using JavaScript\'s native RegExp engine. No data is sent to any server. Your patterns and test strings are processed locally and optionally saved to sessionStorage for convenience.',
-  },
-  {
-    question: 'Why does my regex work differently in different languages?',
-    answer: 'Regex flavors vary between languages. JavaScript\'s regex engine does not support lookbehind in older browsers, possessive quantifiers, or atomic groups. Features like \\b word boundaries, Unicode categories (\\p{L}), and backreferences may behave differently. This tester uses JavaScript\'s native RegExp, so results match what you\'d get in Node.js or browser JavaScript.',
-  },
-];
+    const faqItems = [
+        {
+            question: "What is a regular expression (regex)?",
+            answer: "A regular expression is a sequence of characters that defines a search pattern. It is used for pattern matching within strings — finding, extracting, validating, or replacing text. Regular expressions are supported in virtually every programming language and many text editors.",
+        },
+        {
+            question: "What do the flags g, i, m, s, and u mean?",
+            answer: "g (global) finds all matches instead of stopping at the first. i (case-insensitive) ignores letter casing. m (multiline) makes ^ and $ match the start/end of each line, not just the entire string. s (dotall) makes . match newline characters. u (unicode) enables full Unicode matching, including surrogate pairs and Unicode property escapes.",
+        },
+        {
+            question: "What is a capture group?",
+            answer: "A capture group is a portion of the regex enclosed in parentheses ( ). It captures the matched text so you can reference it later — in replacement strings as $1, $2, etc., or in code via the match array. Named groups use the syntax (?<name>...) and can be referenced as $<name> in replacements.",
+        },
+        {
+            question: "Is this regex tester safe to use with sensitive data?",
+            answer: "Yes. This tool runs entirely in your browser using JavaScript's native RegExp engine. No data is sent to any server. Your patterns and test strings are processed locally and optionally saved to sessionStorage for convenience.",
+        },
+        {
+            question: "Why does my regex work differently in different languages?",
+            answer: "Regex flavors vary between languages. JavaScript's regex engine does not support lookbehind in older browsers, possessive quantifiers, or atomic groups. Features like \\b word boundaries, Unicode categories (\\p{L}), and backreferences may behave differently. This tester uses JavaScript's native RegExp, so results match what you'd get in Node.js or browser JavaScript.",
+        },
+    ];
 
-const navLinks = [
-  { id: 'what-is-regex', label: 'What is Regex' },
-  { id: 'syntax-guide', label: 'Syntax Guide' },
-  { id: 'common-patterns', label: 'Common Patterns' },
-  { id: 'faq', label: 'FAQ' },
-  { id: 'built-with', label: 'Built With' },
-  { id: 'related-tools', label: 'Related Tools' },
-];
+    const navLinks = [
+        { id: "what-is-regex", label: "What is Regex" },
+        { id: "syntax-guide", label: "Syntax Guide" },
+        { id: "common-patterns", label: "Common Patterns" },
+        { id: "faq", label: "FAQ" },
+        { id: "built-with", label: "Built With" },
+        { id: "related-tools", label: "Related Tools" },
+    ];
 
-useHead({
-  title: 'Regex Tester — Free Online Regular Expression Tester | Pickbox',
-  meta: [
-    { name: 'description', content: 'Test and debug regular expressions with live matching, capture group highlighting, and replacement preview. Free regex tester running entirely in your browser.' },
-    { name: 'keywords', content: tool.keywords.join(', ') },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:title', content: 'Regex Tester — Free Online Regular Expression Tester | Pickbox' },
-    { property: 'og:description', content: 'Test regex patterns with live matching, capture groups, and replacement preview. Free, browser-based.' },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Regex Tester — Free Online Regular Expression Tester | Pickbox' },
-    { name: 'twitter:description', content: 'Test regex patterns with live matching, capture groups, and replacement preview. Free, browser-based.' },
-  ],
-  link: [
-    { rel: 'canonical', href: canonicalUrl },
-  ],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('SoftwareApplication', {
-        name: tool.name,
-        description: tool.description,
-        url: canonicalUrl,
-        category: tool.category,
-      })),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('FAQPage', faqItems)),
-    },
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(generateJsonLd('BreadcrumbList', [
-        { name: 'Home', url: siteUrl },
-        { name: 'Regex Tester', url: canonicalUrl },
-      ])),
-    },
-  ],
-});
+    useHead({
+        title: "Regex Tester — Free Online Regular Expression Tester | Pickbox",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Test and debug regular expressions with live matching, capture group highlighting, and replacement preview. Free regex tester running entirely in your browser.",
+            },
+            { name: "keywords", content: tool.keywords.join(", ") },
+            { property: "og:type", content: "website" },
+            {
+                property: "og:title",
+                content: "Regex Tester — Free Online Regular Expression Tester | Pickbox",
+            },
+            {
+                property: "og:description",
+                content:
+                    "Test regex patterns with live matching, capture groups, and replacement preview. Free, browser-based.",
+            },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            { name: "twitter:card", content: "summary_large_image" },
+            {
+                name: "twitter:title",
+                content: "Regex Tester — Free Online Regular Expression Tester | Pickbox",
+            },
+            {
+                name: "twitter:description",
+                content:
+                    "Test regex patterns with live matching, capture groups, and replacement preview. Free, browser-based.",
+            },
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("SoftwareApplication", {
+                        name: tool.name,
+                        description: tool.description,
+                        url: canonicalUrl,
+                        category: tool.category,
+                    }),
+                ),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(generateJsonLd("FAQPage", faqItems)),
+            },
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("BreadcrumbList", [
+                        { name: "Home", url: siteUrl },
+                        { name: "Regex Tester", url: canonicalUrl },
+                    ]),
+                ),
+            },
+        ],
+    });
 
-onMounted(() => {
-  appStore.addRecentTool(tool.slug);
-});
+    onMounted(() => {
+        appStore.addRecentTool(tool.slug);
+    });
 </script>
 
 <template>

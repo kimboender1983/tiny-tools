@@ -1,64 +1,154 @@
 <script setup lang="ts">
-import { X, Search } from 'lucide-vue-next';
-import * as icons from 'lucide-vue-next';
+    import * as icons from "lucide-vue-next";
+    import { Search, X } from "lucide-vue-next";
 
-const model = defineModel<string>({ required: true });
+    const model = defineModel<string>({ required: true });
 
-defineProps<{
-  label?: string;
-}>();
+    defineProps<{
+        label?: string;
+    }>();
 
-const open = ref(false);
-const search = ref('');
+    const open = ref(false);
+    const search = ref("");
 
-// Curated list of useful icons for categories
-const ICON_NAMES = [
-  'Braces', 'Code', 'FileCode', 'FileJson', 'Terminal',
-  'GitCompare', 'GitBranch', 'GitMerge', 'GitPullRequest',
-  'KeyRound', 'Lock', 'Shield', 'ShieldCheck', 'Fingerprint',
-  'Image', 'ImageDown', 'Camera', 'Palette', 'Paintbrush',
-  'Type', 'AlignLeft', 'FileText', 'BookOpen', 'Newspaper',
-  'Globe', 'Link', 'ExternalLink', 'Share2', 'Rss',
-  'Database', 'Server', 'Cloud', 'CloudUpload', 'HardDrive',
-  'Cpu', 'Zap', 'Activity', 'BarChart3', 'PieChart',
-  'Calculator', 'Hash', 'Binary', 'Regex', 'Variable',
-  'Search', 'Filter', 'SlidersHorizontal', 'Settings', 'Wrench',
-  'Clock', 'Timer', 'Calendar', 'CalendarDays',
-  'Download', 'Upload', 'FolderOpen', 'Archive', 'Package',
-  'Layers', 'Layout', 'Grid3X3', 'Table', 'Columns3',
-  'Monitor', 'Smartphone', 'Tablet', 'Laptop',
-  'Wifi', 'Bluetooth', 'Radio', 'Antenna',
-  'Mail', 'MessageSquare', 'Bell', 'Megaphone',
-  'Users', 'User', 'UserCheck', 'UserPlus',
-  'Heart', 'Star', 'Bookmark', 'Flag', 'Tag',
-  'Map', 'MapPin', 'Navigation', 'Compass',
-  'Music', 'Video', 'Headphones', 'Mic',
-  'Sun', 'Moon', 'CloudSun', 'Thermometer',
-  'Scissors', 'Eraser', 'PenTool', 'Highlighter',
-  'Rocket', 'Flame', 'Sparkles', 'Wand2',
-  'Box', 'Boxes', 'Puzzle', 'Component',
-  'CircleDot', 'Crosshair', 'Target', 'Eye',
-  'ArrowRight', 'ArrowUpRight', 'ChevronRight', 'MoveRight',
-];
+    // Curated list of useful icons for categories
+    const ICON_NAMES = [
+        "Braces",
+        "Code",
+        "FileCode",
+        "FileJson",
+        "Terminal",
+        "GitCompare",
+        "GitBranch",
+        "GitMerge",
+        "GitPullRequest",
+        "KeyRound",
+        "Lock",
+        "Shield",
+        "ShieldCheck",
+        "Fingerprint",
+        "Image",
+        "ImageDown",
+        "Camera",
+        "Palette",
+        "Paintbrush",
+        "Type",
+        "AlignLeft",
+        "FileText",
+        "BookOpen",
+        "Newspaper",
+        "Globe",
+        "Link",
+        "ExternalLink",
+        "Share2",
+        "Rss",
+        "Database",
+        "Server",
+        "Cloud",
+        "CloudUpload",
+        "HardDrive",
+        "Cpu",
+        "Zap",
+        "Activity",
+        "BarChart3",
+        "PieChart",
+        "Calculator",
+        "Hash",
+        "Binary",
+        "Regex",
+        "Variable",
+        "Search",
+        "Filter",
+        "SlidersHorizontal",
+        "Settings",
+        "Wrench",
+        "Clock",
+        "Timer",
+        "Calendar",
+        "CalendarDays",
+        "Download",
+        "Upload",
+        "FolderOpen",
+        "Archive",
+        "Package",
+        "Layers",
+        "Layout",
+        "Grid3X3",
+        "Table",
+        "Columns3",
+        "Monitor",
+        "Smartphone",
+        "Tablet",
+        "Laptop",
+        "Wifi",
+        "Bluetooth",
+        "Radio",
+        "Antenna",
+        "Mail",
+        "MessageSquare",
+        "Bell",
+        "Megaphone",
+        "Users",
+        "User",
+        "UserCheck",
+        "UserPlus",
+        "Heart",
+        "Star",
+        "Bookmark",
+        "Flag",
+        "Tag",
+        "Map",
+        "MapPin",
+        "Navigation",
+        "Compass",
+        "Music",
+        "Video",
+        "Headphones",
+        "Mic",
+        "Sun",
+        "Moon",
+        "CloudSun",
+        "Thermometer",
+        "Scissors",
+        "Eraser",
+        "PenTool",
+        "Highlighter",
+        "Rocket",
+        "Flame",
+        "Sparkles",
+        "Wand2",
+        "Box",
+        "Boxes",
+        "Puzzle",
+        "Component",
+        "CircleDot",
+        "Crosshair",
+        "Target",
+        "Eye",
+        "ArrowRight",
+        "ArrowUpRight",
+        "ChevronRight",
+        "MoveRight",
+    ];
 
-const filteredIcons = computed(() => {
-  if (!search.value) return ICON_NAMES;
-  const q = search.value.toLowerCase();
-  return ICON_NAMES.filter((name) => name.toLowerCase().includes(q));
-});
+    const filteredIcons = computed(() => {
+        if (!search.value) return ICON_NAMES;
+        const q = search.value.toLowerCase();
+        return ICON_NAMES.filter((name) => name.toLowerCase().includes(q));
+    });
 
-function getIcon(name: string) {
-  return (icons as Record<string, unknown>)[name] ?? null;
-}
+    function getIcon(name: string) {
+        return (icons as Record<string, unknown>)[name] ?? null;
+    }
 
-function select(name: string) {
-  model.value = name;
-  open.value = false;
-}
+    function select(name: string) {
+        model.value = name;
+        open.value = false;
+    }
 
-function clear() {
-  model.value = '';
-}
+    function clear() {
+        model.value = "";
+    }
 </script>
 
 <template>

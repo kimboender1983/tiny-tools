@@ -1,67 +1,55 @@
 <script setup lang="ts">
-import {
-  RefreshCw,
-  Copy,
-  Check,
-  Eraser,
-  Download,
-  Minus,
-  Plus,
-} from 'lucide-vue-next';
+    import { Check, Copy, Download, Eraser, Minus, Plus, RefreshCw } from "lucide-vue-next";
 
-const {
-  version,
-  count,
-  uppercase,
-  formattedUuids,
-  outputText,
-  generate,
-  clear,
-} = useUuidGenerator();
+    const { version, count, uppercase, formattedUuids, outputText, generate, clear } =
+        useUuidGenerator();
 
-// Copy individual UUID
-const copiedId = ref<string | null>(null);
-let copyTimeout: ReturnType<typeof setTimeout> | null = null;
+    // Copy individual UUID
+    const copiedId = ref<string | null>(null);
+    let copyTimeout: ReturnType<typeof setTimeout> | null = null;
 
-async function copyUuid(entry: { id: string; value: string }) {
-  try {
-    await navigator.clipboard.writeText(entry.value);
-    copiedId.value = entry.id;
-    if (copyTimeout) clearTimeout(copyTimeout);
-    copyTimeout = setTimeout(() => { copiedId.value = null; }, 1500);
-  } catch {
-    // fallback
-  }
-}
+    async function copyUuid(entry: { id: string; value: string }) {
+        try {
+            await navigator.clipboard.writeText(entry.value);
+            copiedId.value = entry.id;
+            if (copyTimeout) clearTimeout(copyTimeout);
+            copyTimeout = setTimeout(() => {
+                copiedId.value = null;
+            }, 1500);
+        } catch {
+            // fallback
+        }
+    }
 
-// Copy all
-const copiedAll = ref(false);
-async function copyAll() {
-  try {
-    await navigator.clipboard.writeText(outputText.value);
-    copiedAll.value = true;
-    setTimeout(() => { copiedAll.value = false; }, 1500);
-  } catch {
-    // fallback
-  }
-}
+    // Copy all
+    const copiedAll = ref(false);
+    async function copyAll() {
+        try {
+            await navigator.clipboard.writeText(outputText.value);
+            copiedAll.value = true;
+            setTimeout(() => {
+                copiedAll.value = false;
+            }, 1500);
+        } catch {
+            // fallback
+        }
+    }
 
-function downloadUuids() {
-  const blob = new Blob([outputText.value], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `uuids-${version.value}-${Date.now()}.txt`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
+    function downloadUuids() {
+        const blob = new Blob([outputText.value], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `uuids-${version.value}-${Date.now()}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 
-function adjustCount(delta: number) {
-  count.value = Math.min(1000, Math.max(1, count.value + delta));
-}
-
+    function adjustCount(delta: number) {
+        count.value = Math.min(1000, Math.max(1, count.value + delta));
+    }
 </script>
 
 <template>

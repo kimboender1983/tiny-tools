@@ -1,10 +1,10 @@
 <script setup lang="ts">
-defineProps<{
-  slot: string;
-  format: 'leaderboard' | 'rectangle' | 'mobile-banner';
-}>();
+    defineProps<{
+        slot: string;
+        format: "leaderboard" | "rectangle" | "mobile-banner";
+    }>();
 
-const { isEnabled } = useAds();
+    const { isEnabled } = useAds();
 </script>
 
 <template>

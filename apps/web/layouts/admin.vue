@@ -1,22 +1,32 @@
 <script setup lang="ts">
-import { LayoutDashboard, FileText, BookOpen, FolderOpen, Users, Image, Link, LogOut, UserCog } from 'lucide-vue-next';
+    import {
+        BookOpen,
+        FileText,
+        FolderOpen,
+        Image,
+        LayoutDashboard,
+        Link,
+        LogOut,
+        UserCog,
+        Users,
+    } from "lucide-vue-next";
 
-const { logout } = useAuth();
+    const { logout } = useAuth();
 
-useHead({
-  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
-});
+    useHead({
+        meta: [{ name: "robots", content: "noindex, nofollow" }],
+    });
 
-const navItems = [
-  { label: 'Dashboard', to: '/admin', icon: LayoutDashboard },
-  { label: 'Pages', to: '/admin/pages', icon: FileText },
-  { label: 'Blog Posts', to: '/admin/blog', icon: BookOpen },
-  { label: 'Categories', to: '/admin/categories', icon: FolderOpen },
-  { label: 'Authors', to: '/admin/authors', icon: Users },
-  { label: 'Affiliates', to: '/admin/affiliates', icon: Link },
-  { label: 'Media', to: '/admin/media', icon: Image },
-  { label: 'Users', to: '/admin/users', icon: UserCog },
-];
+    const navItems = [
+        { label: "Dashboard", to: "/admin", icon: LayoutDashboard },
+        { label: "Pages", to: "/admin/pages", icon: FileText },
+        { label: "Blog Posts", to: "/admin/blog", icon: BookOpen },
+        { label: "Categories", to: "/admin/categories", icon: FolderOpen },
+        { label: "Authors", to: "/admin/authors", icon: Users },
+        { label: "Affiliates", to: "/admin/affiliates", icon: Link },
+        { label: "Media", to: "/admin/media", icon: Image },
+        { label: "Users", to: "/admin/users", icon: UserCog },
+    ];
 </script>
 
 <template>

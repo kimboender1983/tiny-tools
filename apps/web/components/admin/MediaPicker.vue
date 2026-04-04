@@ -1,65 +1,65 @@
 <script setup lang="ts">
-import { X, Upload, Check, Image as ImageIcon, Loader2 } from 'lucide-vue-next';
-import type { IMedia } from '@tiny-tools/shared';
+    import type { IMedia } from "@tiny-tools/shared";
+    import { Check, Image as ImageIcon, Loader2, Upload, X } from "lucide-vue-next";
 
-const props = defineProps<{
-  modelValue: string;
-  label?: string;
-}>();
+    const props = defineProps<{
+        modelValue: string;
+        label?: string;
+    }>();
 
-const emit = defineEmits<{
-  'update:modelValue': [value: string];
-}>();
+    const emit = defineEmits<{
+        "update:modelValue": [value: string];
+    }>();
 
-const cms = useCms();
-const open = ref(false);
-const loading = ref(false);
-const uploading = ref(false);
-const mediaItems = ref<IMedia[]>([]);
+    const cms = useCms();
+    const open = ref(false);
+    const loading = ref(false);
+    const uploading = ref(false);
+    const mediaItems = ref<IMedia[]>([]);
 
-async function loadMedia() {
-  loading.value = true;
-  try {
-    const res = await cms.media.list({ page: 1, pageSize: 50 });
-    mediaItems.value = (res as any).items || [];
-  } catch {
-    mediaItems.value = [];
-  } finally {
-    loading.value = false;
-  }
-}
+    async function loadMedia() {
+        loading.value = true;
+        try {
+            const res = await cms.media.list({ page: 1, pageSize: 50 });
+            mediaItems.value = res.items || [];
+        } catch {
+            mediaItems.value = [];
+        } finally {
+            loading.value = false;
+        }
+    }
 
-function openPicker() {
-  open.value = true;
-  loadMedia();
-}
+    function openPicker() {
+        open.value = true;
+        loadMedia();
+    }
 
-function selectImage(url: string) {
-  emit('update:modelValue', url);
-  open.value = false;
-}
+    function selectImage(url: string) {
+        emit("update:modelValue", url);
+        open.value = false;
+    }
 
-function clearImage() {
-  emit('update:modelValue', '');
-}
+    function clearImage() {
+        emit("update:modelValue", "");
+    }
 
-async function uploadFile(e: Event) {
-  const input = e.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file) return;
+    async function uploadFile(e: Event) {
+        const input = e.target as HTMLInputElement;
+        const file = input.files?.[0];
+        if (!file) return;
 
-  uploading.value = true;
-  try {
-    const media = await cms.media.upload(file);
-    mediaItems.value.unshift(media);
-    selectImage(media.url);
-  } catch {
-    // Upload failed
-  } finally {
-    uploading.value = false;
-    input.value = '';
-  }
-}
+        uploading.value = true;
+        try {
+            const media = await cms.media.upload(file);
+            mediaItems.value.unshift(media);
+            selectImage(media.url);
+        } catch {
+            // Upload failed
+        } finally {
+            uploading.value = false;
+            input.value = "";
+        }
+    }
 </script>
 
 <template>

@@ -1,20 +1,31 @@
 <script setup lang="ts">
-import { TOOLS } from '@tiny-tools/shared';
-import type { IFooterSection } from '@tiny-tools/shared';
-import { Cookie } from 'lucide-vue-next';
+    import type { IFooterSection } from "@tiny-tools/shared";
+    import { TOOLS } from "@tiny-tools/shared";
+    import { Cookie } from "lucide-vue-next";
 
-const { data: nav } = useNavigation();
-const { openSettings: openCookieSettings } = useCookieConsent();
+    const { data: nav } = useNavigation();
+    const { openSettings: openCookieSettings } = useCookieConsent();
 
-const fallbackSections: IFooterSection[] = [
-  { title: 'Tools', order: 1, items: TOOLS.map(t => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` })) },
-  { title: 'Resources', order: 2, items: [{ title: 'Blog', slug: 'blog', path: '/blog' }] },
-  { title: 'Legal', order: 3, items: [{ title: 'Privacy Policy', slug: 'privacy', path: '/privacy' }, { title: 'Terms of Use', slug: 'terms', path: '/terms' }] },
-];
+    const fallbackSections: IFooterSection[] = [
+        {
+            title: "Tools",
+            order: 1,
+            items: TOOLS.map((t) => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` })),
+        },
+        { title: "Resources", order: 2, items: [{ title: "Blog", slug: "blog", path: "/blog" }] },
+        {
+            title: "Legal",
+            order: 3,
+            items: [
+                { title: "Privacy Policy", slug: "privacy", path: "/privacy" },
+                { title: "Terms of Use", slug: "terms", path: "/terms" },
+            ],
+        },
+    ];
 
-const footerSections = computed(() =>
-  nav.value.footer.length > 0 ? nav.value.footer : fallbackSections
-);
+    const footerSections = computed(() =>
+        nav.value.footer.length > 0 ? nav.value.footer : fallbackSections,
+    );
 </script>
 
 <template>

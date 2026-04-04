@@ -1,74 +1,74 @@
 <script setup lang="ts">
-import type { IAffiliate } from '@tiny-tools/shared';
+    import type { IAffiliate } from "@tiny-tools/shared";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
-const route = useRoute();
-const id = route.params.id as string;
+    const cms = useCms();
+    const route = useRoute();
+    const id = route.params.id as string;
 
-const loading = ref(true);
-const saving = ref(false);
-const error = ref('');
+    const loading = ref(true);
+    const saving = ref(false);
+    const error = ref("");
 
-const form = reactive({
-  name: '',
-  slug: '',
-  url: '',
-  logo: '',
-  description: '',
-  programInfo: '',
-  status: 'active' as 'active' | 'inactive',
-});
-
-async function loadAffiliate() {
-  loading.value = true;
-  error.value = '';
-
-  try {
-    const aff = await cms.affiliates.get(id);
-    form.name = aff.name;
-    form.slug = aff.slug;
-    form.url = aff.url;
-    form.logo = aff.logo || '';
-    form.description = aff.description || '';
-    form.programInfo = aff.programInfo || '';
-    form.status = aff.status;
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load affiliate.';
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function save() {
-  if (!form.name.trim() || !form.url.trim()) {
-    error.value = 'Name and URL are required.';
-    return;
-  }
-
-  saving.value = true;
-  error.value = '';
-
-  try {
-    await cms.affiliates.update(id, {
-      name: form.name,
-      slug: form.slug,
-      url: form.url,
-      logo: form.logo || undefined,
-      description: form.description || undefined,
-      programInfo: form.programInfo || undefined,
-      status: form.status,
+    const form = reactive({
+        name: "",
+        slug: "",
+        url: "",
+        logo: "",
+        description: "",
+        programInfo: "",
+        status: "active" as "active" | "inactive",
     });
-    error.value = '';
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to update affiliate.';
-  } finally {
-    saving.value = false;
-  }
-}
 
-onMounted(loadAffiliate);
+    async function loadAffiliate() {
+        loading.value = true;
+        error.value = "";
+
+        try {
+            const aff = await cms.affiliates.get(id);
+            form.name = aff.name;
+            form.slug = aff.slug;
+            form.url = aff.url;
+            form.logo = aff.logo || "";
+            form.description = aff.description || "";
+            form.programInfo = aff.programInfo || "";
+            form.status = aff.status;
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load affiliate.";
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    async function save() {
+        if (!form.name.trim() || !form.url.trim()) {
+            error.value = "Name and URL are required.";
+            return;
+        }
+
+        saving.value = true;
+        error.value = "";
+
+        try {
+            await cms.affiliates.update(id, {
+                name: form.name,
+                slug: form.slug,
+                url: form.url,
+                logo: form.logo || undefined,
+                description: form.description || undefined,
+                programInfo: form.programInfo || undefined,
+                status: form.status,
+            });
+            error.value = "";
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to update affiliate.";
+        } finally {
+            saving.value = false;
+        }
+    }
+
+    onMounted(loadAffiliate);
 </script>
 
 <template>

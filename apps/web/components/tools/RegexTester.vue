@@ -1,146 +1,153 @@
 <script setup lang="ts">
-import {
-  AlertTriangle,
-  Eraser,
-  Zap,
-  Replace,
-} from 'lucide-vue-next';
+    import { AlertTriangle, Eraser, Replace, Zap } from "lucide-vue-next";
 
-const {
-  pattern,
-  flags,
-  testString,
-  replacement,
-  error,
-  matches,
-  matchCount,
-  groupCount,
-  replacedOutput,
-  toggleFlag,
-  hasFlag,
-  clear,
-  loadExample,
-} = useRegexTester();
+    const {
+        pattern,
+        flags,
+        testString,
+        replacement,
+        error,
+        matches,
+        matchCount,
+        groupCount,
+        replacedOutput,
+        toggleFlag,
+        hasFlag,
+        clear,
+        loadExample,
+    } = useRegexTester();
 
-const showReplace = ref(false);
+    const showReplace = ref(false);
 
-// Build highlighted HTML from test string + matches
-const highlightedHtml = computed(() => {
-  if (!testString.value || !matches.value.length) {
-    return escapeHtml(testString.value);
-  }
+    // Build highlighted HTML from test string + matches
+    const highlightedHtml = computed(() => {
+        if (!testString.value || !matches.value.length) {
+            return escapeHtml(testString.value);
+        }
 
-  const text = testString.value;
-  const sorted = [...matches.value].sort((a, b) => a.index - b.index);
+        const text = testString.value;
+        const sorted = [...matches.value].sort((a, b) => a.index - b.index);
 
-  let result = '';
-  let lastEnd = 0;
-  const colors = [
-    'bg-yellow-200/70 dark:bg-yellow-500/30',
-    'bg-blue-200/70 dark:bg-blue-500/30',
-    'bg-green-200/70 dark:bg-green-500/30',
-    'bg-pink-200/70 dark:bg-pink-500/30',
-    'bg-purple-200/70 dark:bg-purple-500/30',
-    'bg-orange-200/70 dark:bg-orange-500/30',
-  ];
+        let result = "";
+        let lastEnd = 0;
+        const colors = [
+            "bg-yellow-200/70 dark:bg-yellow-500/30",
+            "bg-blue-200/70 dark:bg-blue-500/30",
+            "bg-green-200/70 dark:bg-green-500/30",
+            "bg-pink-200/70 dark:bg-pink-500/30",
+            "bg-purple-200/70 dark:bg-purple-500/30",
+            "bg-orange-200/70 dark:bg-orange-500/30",
+        ];
 
-  for (let i = 0; i < sorted.length; i++) {
-    const m = sorted[i];
-    const end = m.index + m.value.length;
+        for (let i = 0; i < sorted.length; i++) {
+            const m = sorted[i];
+            const end = m.index + m.value.length;
 
-    // Text before match
-    if (m.index > lastEnd) {
-      result += escapeHtml(text.slice(lastEnd, m.index));
+            // Text before match
+            if (m.index > lastEnd) {
+                result += escapeHtml(text.slice(lastEnd, m.index));
+            }
+
+            const color = colors[i % colors.length];
+            result += `<mark class="rounded px-0.5 ${color} text-inherit">${escapeHtml(m.value)}</mark>`;
+            lastEnd = end;
+        }
+
+        // Remaining text
+        if (lastEnd < text.length) {
+            result += escapeHtml(text.slice(lastEnd));
+        }
+
+        return result;
+    });
+
+    function escapeHtml(str: string): string {
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
     }
 
-    const color = colors[i % colors.length];
-    result += `<mark class="rounded px-0.5 ${color} text-inherit">${escapeHtml(m.value)}</mark>`;
-    lastEnd = end;
-  }
+    const examples = [
+        {
+            label: "Email",
+            pattern: "[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}",
+            flags: "gi",
+            testString: "Contact us at hello@example.com or support@pickbox.dev for help.",
+        },
+        {
+            label: "URL",
+            pattern: "https?:\\/\\/[\\w.-]+(?:\\.[a-zA-Z]{2,})(?:\\/[^\\s]*)?",
+            flags: "gi",
+            testString: "Visit https://pickbox.dev or http://example.com/path?q=1 for more info.",
+        },
+        {
+            label: "Date (YYYY-MM-DD)",
+            pattern: "(?<year>\\d{4})-(?<month>0[1-9]|1[0-2])-(?<day>0[1-9]|[12]\\d|3[01])",
+            flags: "g",
+            testString: "Events on 2026-04-03, 2026-12-25, and 2025-01-15 are confirmed.",
+        },
+        {
+            label: "Replace digits",
+            pattern: "\\d+",
+            flags: "g",
+            testString: "Order #12345 has 3 items totaling $99.95",
+            replacement: "[NUM]",
+        },
+    ];
 
-  // Remaining text
-  if (lastEnd < text.length) {
-    result += escapeHtml(text.slice(lastEnd));
-  }
+    const FLAG_INFO: { flag: string; label: string; description: string }[] = [
+        { flag: "g", label: "g", description: "Global — find all matches" },
+        { flag: "i", label: "i", description: "Case-insensitive" },
+        { flag: "m", label: "m", description: "Multiline — ^ and $ match line boundaries" },
+        { flag: "s", label: "s", description: "Dotall — . matches newlines" },
+        { flag: "u", label: "u", description: "Unicode — full Unicode support" },
+    ];
 
-  return result;
-});
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-const examples = [
-  {
-    label: 'Email',
-    pattern: '[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}',
-    flags: 'gi',
-    testString: 'Contact us at hello@example.com or support@pickbox.dev for help.',
-  },
-  {
-    label: 'URL',
-    pattern: 'https?:\\/\\/[\\w.-]+(?:\\.[a-zA-Z]{2,})(?:\\/[^\\s]*)?',
-    flags: 'gi',
-    testString: 'Visit https://pickbox.dev or http://example.com/path?q=1 for more info.',
-  },
-  {
-    label: 'Date (YYYY-MM-DD)',
-    pattern: '(?<year>\\d{4})-(?<month>0[1-9]|1[0-2])-(?<day>0[1-9]|[12]\\d|3[01])',
-    flags: 'g',
-    testString: 'Events on 2026-04-03, 2026-12-25, and 2025-01-15 are confirmed.',
-  },
-  {
-    label: 'Replace digits',
-    pattern: '\\d+',
-    flags: 'g',
-    testString: 'Order #12345 has 3 items totaling $99.95',
-    replacement: '[NUM]',
-  },
-];
-
-const FLAG_INFO: { flag: string; label: string; description: string }[] = [
-  { flag: 'g', label: 'g', description: 'Global — find all matches' },
-  { flag: 'i', label: 'i', description: 'Case-insensitive' },
-  { flag: 'm', label: 'm', description: 'Multiline — ^ and $ match line boundaries' },
-  { flag: 's', label: 's', description: 'Dotall — . matches newlines' },
-  { flag: 'u', label: 'u', description: 'Unicode — full Unicode support' },
-];
-
-// Quick reference
-const CHEATSHEET = [
-  { cat: 'Characters', items: [
-    { token: '.', desc: 'Any character (except newline)' },
-    { token: '\\d', desc: 'Digit [0-9]' },
-    { token: '\\w', desc: 'Word char [a-zA-Z0-9_]' },
-    { token: '\\s', desc: 'Whitespace' },
-    { token: '\\b', desc: 'Word boundary' },
-  ]},
-  { cat: 'Quantifiers', items: [
-    { token: '*', desc: '0 or more' },
-    { token: '+', desc: '1 or more' },
-    { token: '?', desc: '0 or 1' },
-    { token: '{n}', desc: 'Exactly n' },
-    { token: '{n,m}', desc: 'Between n and m' },
-  ]},
-  { cat: 'Groups & Lookaround', items: [
-    { token: '(abc)', desc: 'Capture group' },
-    { token: '(?:abc)', desc: 'Non-capturing group' },
-    { token: '(?<name>abc)', desc: 'Named group' },
-    { token: '(?=abc)', desc: 'Lookahead' },
-    { token: '(?!abc)', desc: 'Negative lookahead' },
-  ]},
-  { cat: 'Anchors & Alternation', items: [
-    { token: '^', desc: 'Start of string/line' },
-    { token: '$', desc: 'End of string/line' },
-    { token: 'a|b', desc: 'Alternation (a or b)' },
-    { token: '[abc]', desc: 'Character class' },
-    { token: '[^abc]', desc: 'Negated class' },
-  ]},
-];
+    // Quick reference
+    const CHEATSHEET = [
+        {
+            cat: "Characters",
+            items: [
+                { token: ".", desc: "Any character (except newline)" },
+                { token: "\\d", desc: "Digit [0-9]" },
+                { token: "\\w", desc: "Word char [a-zA-Z0-9_]" },
+                { token: "\\s", desc: "Whitespace" },
+                { token: "\\b", desc: "Word boundary" },
+            ],
+        },
+        {
+            cat: "Quantifiers",
+            items: [
+                { token: "*", desc: "0 or more" },
+                { token: "+", desc: "1 or more" },
+                { token: "?", desc: "0 or 1" },
+                { token: "{n}", desc: "Exactly n" },
+                { token: "{n,m}", desc: "Between n and m" },
+            ],
+        },
+        {
+            cat: "Groups & Lookaround",
+            items: [
+                { token: "(abc)", desc: "Capture group" },
+                { token: "(?:abc)", desc: "Non-capturing group" },
+                { token: "(?<name>abc)", desc: "Named group" },
+                { token: "(?=abc)", desc: "Lookahead" },
+                { token: "(?!abc)", desc: "Negative lookahead" },
+            ],
+        },
+        {
+            cat: "Anchors & Alternation",
+            items: [
+                { token: "^", desc: "Start of string/line" },
+                { token: "$", desc: "End of string/line" },
+                { token: "a|b", desc: "Alternation (a or b)" },
+                { token: "[abc]", desc: "Character class" },
+                { token: "[^abc]", desc: "Negated class" },
+            ],
+        },
+    ];
 </script>
 
 <template>

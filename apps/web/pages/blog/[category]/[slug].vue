@@ -1,369 +1,389 @@
 <script setup lang="ts">
-import type { IBlogPost, ICategory } from '@tiny-tools/shared';
-import { TOOLS } from '@tiny-tools/shared';
-import { generateJsonLd } from '~/utils/seo';
-import {
-  Calendar,
-  Clock,
-  ArrowLeft,
-  ChevronRight,
-  BookOpen,
-  List,
-} from 'lucide-vue-next';
-import * as lucideIcons from 'lucide-vue-next';
+    import type { IBlogPost, ICategory } from "@tiny-tools/shared";
+    import { TOOLS } from "@tiny-tools/shared";
+    import * as lucideIcons from "lucide-vue-next";
+    import { ArrowLeft, BookOpen, Calendar, ChevronRight, Clock, List } from "lucide-vue-next";
+    import { generateJsonLd } from "~/utils/seo";
 
-interface PaginatedBlogResponse {
-  items: IBlogPost[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
+    interface PaginatedBlogResponse {
+        items: IBlogPost[];
+        total: number;
+        page: number;
+        pageSize: number;
+    }
 
-function getCategoryName(cat: string | ICategory | undefined): string {
-  if (!cat) return '';
-  return typeof cat === 'object' ? cat.name : cat;
-}
+    function getCategoryName(cat: string | ICategory | undefined): string {
+        if (!cat) return "";
+        return typeof cat === "object" ? cat.name : cat;
+    }
 
-function getCategorySlug(cat: string | ICategory | undefined): string {
-  if (!cat) return 'uncategorized';
-  return typeof cat === 'object' ? cat.slug : cat;
-}
+    function getCategorySlug(cat: string | ICategory | undefined): string {
+        if (!cat) return "uncategorized";
+        return typeof cat === "object" ? cat.slug : cat;
+    }
 
-function getCategoryIcon(cat: string | ICategory | undefined) {
-  if (!cat || typeof cat !== 'object' || !cat.icon) return null;
-  return (lucideIcons as Record<string, unknown>)[cat.icon] ?? null;
-}
+    function getCategoryIcon(cat: string | ICategory | undefined) {
+        if (!cat || typeof cat !== "object" || !cat.icon) return null;
+        return (lucideIcons as Record<string, unknown>)[cat.icon] ?? null;
+    }
 
-function blogPostUrl(post: IBlogPost): string {
-  return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
-}
+    function blogPostUrl(post: IBlogPost): string {
+        return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
+    }
 
-const route = useRoute();
-const config = useRuntimeConfig();
-const api = useApi();
-const siteUrl = config.public.siteUrl as string;
-const slug = route.params.slug as string;
+    const route = useRoute();
+    const config = useRuntimeConfig();
+    const api = useApi();
+    const siteUrl = config.public.siteUrl as string;
+    const slug = route.params.slug as string;
 
-// Fetch the blog post
-const { data: post, error } = await useAsyncData(`blog-post-${slug}`, () =>
-  api.get<IBlogPost>(`/content/blog/${slug}`),
-);
+    // Fetch the blog post
+    const { data: post, error } = await useAsyncData(`blog-post-${slug}`, () =>
+        api.get<IBlogPost>(`/content/blog/${slug}`),
+    );
 
-if (error.value || !post.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Post not found' });
-}
+    if (error.value || !post.value) {
+        throw createError({ statusCode: 404, statusMessage: "Post not found" });
+    }
 
-// Fetch related posts
-const { data: relatedData } = await useAsyncData(
-  `blog-related-${slug}`,
-  () =>
-    api.get<PaginatedBlogResponse>('/content/blog', {
-      params: { pageSize: 3, category: post.value?.category },
-    }),
-  { default: () => ({ items: [], total: 0, page: 1, pageSize: 3 }) },
-);
+    // Fetch related posts
+    const { data: relatedData } = await useAsyncData(
+        `blog-related-${slug}`,
+        () =>
+            api.get<PaginatedBlogResponse>("/content/blog", {
+                params: { pageSize: 3, category: post.value?.category },
+            }),
+        { default: () => ({ items: [], total: 0, page: 1, pageSize: 3 }) },
+    );
 
-const relatedPosts = computed(() =>
-  (relatedData.value?.items ?? []).filter((p) => p.slug !== slug).slice(0, 3),
-);
+    const relatedPosts = computed(() =>
+        (relatedData.value?.items ?? []).filter((p) => p.slug !== slug).slice(0, 3),
+    );
 
-// --- Markdown rendering with syntax highlighting + affiliate links ---
-import { renderMarkdown, processAffiliateLinks } from '~/utils/markdown';
+    // --- Markdown rendering with syntax highlighting + affiliate links ---
+    import { processAffiliateLinks, renderMarkdown } from "~/utils/markdown";
 
-// Fetch active affiliates for shortcode resolution
-const { data: affiliatesData } = await useAsyncData('affiliates-map', () =>
-  api.get<{ slug: string; name: string }[]>('/content/affiliates'),
-);
+    // Fetch active affiliates for shortcode resolution
+    const { data: affiliatesData } = await useAsyncData("affiliates-map", () =>
+        api.get<{ slug: string; name: string }[]>("/content/affiliates"),
+    );
 
-const affiliatesMap = computed(() => {
-  const map = new Map<string, string>();
-  for (const a of affiliatesData.value ?? []) {
-    map.set(a.slug, a.name);
-  }
-  return map;
-});
-
-function slugify(text: string): string {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-}
-
-// Render markdown to HTML
-const renderedHtml = computed(() => {
-  if (!post.value?.content) return '';
-  const html = renderMarkdown(post.value.content);
-  return processAffiliateLinks(html, affiliatesMap.value);
-});
-
-// Extract headings from rendered HTML for table of contents
-interface TocItem {
-  id: string;
-  text: string;
-  level: number;
-}
-
-const tableOfContents = computed<TocItem[]>(() => {
-  if (!renderedHtml.value) return [];
-  const headingRegex = /<h([23])[^>]*>(.*?)<\/h[23]>/gi;
-  const items: TocItem[] = [];
-  let match: RegExpExecArray | null;
-
-  while ((match = headingRegex.exec(renderedHtml.value)) !== null) {
-    const level = parseInt(match[1], 10);
-    const text = match[2].replace(/<[^>]+>/g, '');
-    items.push({ id: slugify(text), text, level });
-  }
-
-  return items;
-});
-
-// Inject IDs into headings for anchor links
-const processedContent = computed(() => {
-  if (!renderedHtml.value) return '';
-  let html = renderedHtml.value;
-
-  // Add IDs to h2/h3 headings
-  html = html.replace(/<h([23])([^>]*)>(.*?)<\/h[23]>/gi, (_match, level, attrs, inner) => {
-    const text = inner.replace(/<[^>]+>/g, '');
-    const id = slugify(text);
-    if (attrs.includes('id="')) return _match;
-    return `<h${level} id="${id}"${attrs}>${inner}</h${level}>`;
-  });
-
-  return html;
-});
-
-// Pick a relevant tool for CTA
-const suggestedTool = computed(() => {
-  if (!post.value) return TOOLS[0];
-  const content = `${post.value.title} ${post.value.content} ${post.value.category ?? ''}`.toLowerCase();
-  return (
-    TOOLS.find((t) =>
-      t.keywords.some((kw) => content.includes(kw.toLowerCase())),
-    ) ?? TOOLS[0]
-  );
-});
-
-// Add copy buttons to code blocks after render
-onMounted(() => {
-  nextTick(() => {
-    document.querySelectorAll('.prose pre').forEach((pre) => {
-      if (pre.querySelector('.code-copy-btn')) return;
-      const btn = document.createElement('button');
-      btn.className = 'code-copy-btn';
-      btn.textContent = 'Copy';
-      btn.addEventListener('click', async () => {
-        const code = pre.querySelector('code');
-        if (!code) return;
-        try {
-          await navigator.clipboard.writeText(code.textContent || '');
-          btn.textContent = 'Copied!';
-          btn.classList.add('copied');
-          setTimeout(() => {
-            btn.textContent = 'Copy';
-            btn.classList.remove('copied');
-          }, 1500);
-        } catch { /* ignore */ }
-      });
-      pre.style.position = 'relative';
-      pre.appendChild(btn);
+    const affiliatesMap = computed(() => {
+        const map = new Map<string, string>();
+        for (const a of affiliatesData.value ?? []) {
+            map.set(a.slug, a.name);
+        }
+        return map;
     });
 
-    // Image lightbox — click to zoom
-    initImageLightbox();
-  });
-});
-
-function initImageLightbox() {
-  const proseEl = document.querySelector('.prose');
-  if (!proseEl) return;
-
-  proseEl.querySelectorAll('img').forEach((img) => {
-    // Skip tiny images (icons, badges)
-    if (img.naturalWidth > 0 && img.naturalWidth < 80) return;
-
-    img.addEventListener('click', () => openLightbox(img));
-  });
-}
-
-let activeLightboxSource: HTMLImageElement | null = null;
-
-function openLightbox(img: HTMLImageElement) {
-  activeLightboxSource = img;
-  const rect = img.getBoundingClientRect();
-
-  const overlay = document.createElement('div');
-  overlay.className = 'image-lightbox';
-
-  const clone = document.createElement('img');
-  clone.src = img.src;
-  clone.alt = img.alt;
-
-  // Position the clone exactly over the source image
-  clone.style.position = 'fixed';
-  clone.style.left = `${rect.left}px`;
-  clone.style.top = `${rect.top}px`;
-  clone.style.width = `${rect.width}px`;
-  clone.style.height = `${rect.height}px`;
-  clone.style.borderRadius = '0.75rem';
-  clone.style.objectFit = 'cover';
-  clone.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-  clone.style.transformOrigin = 'center center';
-  clone.style.zIndex = '101';
-
-  overlay.appendChild(clone);
-
-  // Hide the source image while lightbox is open
-  img.style.visibility = 'hidden';
-
-  // Show caption from figcaption if inside a <figure>
-  const figure = img.closest('figure');
-  const figcaption = figure?.querySelector('figcaption');
-  let captionEl: HTMLElement | null = null;
-  if (figcaption?.textContent) {
-    captionEl = document.createElement('figcaption');
-    captionEl.textContent = figcaption.textContent;
-    captionEl.style.opacity = '0';
-    captionEl.style.transition = 'opacity 0.3s ease 0.15s';
-    overlay.appendChild(captionEl);
-  }
-
-  // Close on click or Escape
-  const close = () => closeLightbox(overlay, img, clone);
-  overlay.addEventListener('click', close);
-  const onKeydown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      close();
-      document.removeEventListener('keydown', onKeydown);
+    function slugify(text: string): string {
+        return text
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
     }
-  };
-  document.addEventListener('keydown', onKeydown);
 
-  document.body.appendChild(overlay);
+    // Render markdown to HTML
+    const renderedHtml = computed(() => {
+        if (!post.value?.content) return "";
+        const html = renderMarkdown(post.value.content);
+        return processAffiliateLinks(html, affiliatesMap.value);
+    });
 
-  // Animate: overlay fades in, image flies to center
-  requestAnimationFrame(() => {
-    overlay.classList.add('is-visible');
+    // Extract headings from rendered HTML for table of contents
+    interface TocItem {
+        id: string;
+        text: string;
+        level: number;
+    }
 
-    // Calculate the centered destination
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const padding = 40;
-    const maxW = vw - padding * 2;
-    const maxH = vh - padding * 2;
+    const tableOfContents = computed<TocItem[]>(() => {
+        if (!renderedHtml.value) return [];
+        const headingRegex = /<h([23])[^>]*>(.*?)<\/h[23]>/gi;
+        const items: TocItem[] = [];
+        let match: RegExpExecArray | null = headingRegex.exec(renderedHtml.value);
 
-    // Use natural dimensions to get aspect ratio
-    const natW = img.naturalWidth || rect.width;
-    const natH = img.naturalHeight || rect.height;
-    const scale = Math.min(maxW / natW, maxH / natH, 1);
-    const destW = natW * scale;
-    const destH = natH * scale;
-    const destLeft = (vw - destW) / 2;
-    const destTop = (vh - destH) / 2;
+        while (match !== null) {
+            const level = parseInt(match[1], 10);
+            const text = match[2].replace(/<[^>]+>/g, "");
+            items.push({ id: slugify(text), text, level });
+            match = headingRegex.exec(renderedHtml.value);
+        }
 
-    clone.style.left = `${destLeft}px`;
-    clone.style.top = `${destTop}px`;
-    clone.style.width = `${destW}px`;
-    clone.style.height = `${destH}px`;
-    clone.style.objectFit = 'contain';
+        return items;
+    });
 
-    if (captionEl) captionEl.style.opacity = '1';
-  });
-}
+    // Inject IDs into headings for anchor links
+    const processedContent = computed(() => {
+        if (!renderedHtml.value) return "";
+        let html = renderedHtml.value;
 
-function closeLightbox(overlay: HTMLElement, sourceImg: HTMLImageElement, clone: HTMLImageElement) {
-  // Animate back to original position
-  const rect = sourceImg.getBoundingClientRect();
+        // Add IDs to h2/h3 headings
+        html = html.replace(/<h([23])([^>]*)>(.*?)<\/h[23]>/gi, (_match, level, attrs, inner) => {
+            const text = inner.replace(/<[^>]+>/g, "");
+            const id = slugify(text);
+            if (attrs.includes('id="')) return _match;
+            return `<h${level} id="${id}"${attrs}>${inner}</h${level}>`;
+        });
 
-  clone.style.left = `${rect.left}px`;
-  clone.style.top = `${rect.top}px`;
-  clone.style.width = `${rect.width}px`;
-  clone.style.height = `${rect.height}px`;
-  clone.style.objectFit = 'cover';
+        return html;
+    });
 
-  overlay.classList.remove('is-visible');
+    // Pick a relevant tool for CTA
+    const suggestedTool = computed(() => {
+        if (!post.value) return TOOLS[0];
+        const content =
+            `${post.value.title} ${post.value.content} ${post.value.category ?? ""}`.toLowerCase();
+        return (
+            TOOLS.find((t) => t.keywords.some((kw) => content.includes(kw.toLowerCase()))) ??
+            TOOLS[0]
+        );
+    });
 
-  // Hide caption immediately
-  const captionEl = overlay.querySelector('figcaption') as HTMLElement | null;
-  if (captionEl) {
-    captionEl.style.transition = 'opacity 0.15s ease';
-    captionEl.style.opacity = '0';
-  }
+    // Add copy buttons to code blocks after render
+    onMounted(() => {
+        nextTick(() => {
+            document.querySelectorAll(".prose pre").forEach((pre) => {
+                if (pre.querySelector(".code-copy-btn")) return;
+                const btn = document.createElement("button");
+                btn.className = "code-copy-btn";
+                btn.textContent = "Copy";
+                btn.addEventListener("click", async () => {
+                    const code = pre.querySelector("code");
+                    if (!code) return;
+                    try {
+                        await navigator.clipboard.writeText(code.textContent || "");
+                        btn.textContent = "Copied!";
+                        btn.classList.add("copied");
+                        setTimeout(() => {
+                            btn.textContent = "Copy";
+                            btn.classList.remove("copied");
+                        }, 1500);
+                    } catch {
+                        /* ignore */
+                    }
+                });
+                pre.style.position = "relative";
+                pre.appendChild(btn);
+            });
 
-  clone.addEventListener('transitionend', () => {
-    sourceImg.style.visibility = '';
-    overlay.remove();
-    activeLightboxSource = null;
-  }, { once: true });
-}
+            // Image lightbox — click to zoom
+            initImageLightbox();
+        });
+    });
 
-function formatDate(date: Date | string | undefined): string {
-  if (!date) return '';
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
+    function initImageLightbox() {
+        const proseEl = document.querySelector(".prose");
+        if (!proseEl) return;
 
-// SEO
-const p = post.value!;
-const pageTitle = p.seo?.metaTitle || `${p.title} | Pickbox Blog`;
-const pageDescription = p.seo?.metaDescription || p.excerpt;
-const canonicalUrl = p.seo?.canonicalUrl || `${siteUrl}/blog/${getCategorySlug(p.category)}/${p.slug}`;
-const ogImage = p.seo?.ogImage || p.coverImage;
+        proseEl.querySelectorAll("img").forEach((img) => {
+            // Skip tiny images (icons, badges)
+            if (img.naturalWidth > 0 && img.naturalWidth < 80) return;
 
-useHead({
-  title: pageTitle,
-  meta: [
-    { name: 'description', content: pageDescription },
-    { property: 'og:type', content: 'article' },
-    { property: 'og:title', content: p.seo?.ogTitle || pageTitle },
-    {
-      property: 'og:description',
-      content: p.seo?.ogDescription || pageDescription,
-    },
-    { property: 'og:url', content: canonicalUrl },
-    { property: 'og:site_name', content: 'Pickbox' },
-    ...(ogImage ? [{ property: 'og:image', content: ogImage }] : []),
-    { name: 'twitter:card', content: p.seo?.twitterCard || 'summary_large_image' },
-    { name: 'twitter:title', content: p.seo?.ogTitle || pageTitle },
-    { name: 'twitter:description', content: p.seo?.ogDescription || pageDescription },
-    ...(ogImage ? [{ name: 'twitter:image', content: ogImage }] : []),
-    ...(p.publishedAt
-      ? [{ property: 'article:published_time', content: new Date(p.publishedAt).toISOString() }]
-      : []),
-    ...(p.updatedAt
-      ? [{ property: 'article:modified_time', content: new Date(p.updatedAt).toISOString() }]
-      : []),
-    ...(typeof p.author === 'object' && p.author?.name
-      ? [{ property: 'article:author', content: p.author.name }]
-      : []),
-    ...(getCategoryName(p.category)
-      ? [{ property: 'article:section', content: getCategoryName(p.category) }]
-      : []),
-  ],
-  link: [{ rel: 'canonical', href: canonicalUrl }],
-  script: [
-    {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify(
-        generateJsonLd('Article', {
-          title: p.title,
-          description: p.excerpt,
-          url: canonicalUrl,
-          image: ogImage,
-          datePublished: p.publishedAt
-            ? new Date(p.publishedAt).toISOString()
-            : new Date(p.createdAt).toISOString(),
-          dateModified: new Date(p.updatedAt).toISOString(),
-          authorName: typeof p.author === 'object' ? (p.author?.name || 'Pickbox') : 'Pickbox',
-          authorImage: typeof p.author === 'object' ? p.author?.avatar : undefined,
-          section: getCategoryName(p.category) || undefined,
-        }),
-      ),
-    },
-  ],
-});
+            img.addEventListener("click", () => openLightbox(img));
+        });
+    }
+
+    let activeLightboxSource: HTMLImageElement | null = null;
+
+    function openLightbox(img: HTMLImageElement) {
+        activeLightboxSource = img;
+        const rect = img.getBoundingClientRect();
+
+        const overlay = document.createElement("div");
+        overlay.className = "image-lightbox";
+
+        const clone = document.createElement("img");
+        clone.src = img.src;
+        clone.alt = img.alt;
+
+        // Position the clone exactly over the source image
+        clone.style.position = "fixed";
+        clone.style.left = `${rect.left}px`;
+        clone.style.top = `${rect.top}px`;
+        clone.style.width = `${rect.width}px`;
+        clone.style.height = `${rect.height}px`;
+        clone.style.borderRadius = "0.75rem";
+        clone.style.objectFit = "cover";
+        clone.style.transition = "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
+        clone.style.transformOrigin = "center center";
+        clone.style.zIndex = "101";
+
+        overlay.appendChild(clone);
+
+        // Hide the source image while lightbox is open
+        img.style.visibility = "hidden";
+
+        // Show caption from figcaption if inside a <figure>
+        const figure = img.closest("figure");
+        const figcaption = figure?.querySelector("figcaption");
+        let captionEl: HTMLElement | null = null;
+        if (figcaption?.textContent) {
+            captionEl = document.createElement("figcaption");
+            captionEl.textContent = figcaption.textContent;
+            captionEl.style.opacity = "0";
+            captionEl.style.transition = "opacity 0.3s ease 0.15s";
+            overlay.appendChild(captionEl);
+        }
+
+        // Close on click or Escape
+        const close = () => closeLightbox(overlay, img, clone);
+        overlay.addEventListener("click", close);
+        const onKeydown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                close();
+                document.removeEventListener("keydown", onKeydown);
+            }
+        };
+        document.addEventListener("keydown", onKeydown);
+
+        document.body.appendChild(overlay);
+
+        // Animate: overlay fades in, image flies to center
+        requestAnimationFrame(() => {
+            overlay.classList.add("is-visible");
+
+            // Calculate the centered destination
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
+            const padding = 40;
+            const maxW = vw - padding * 2;
+            const maxH = vh - padding * 2;
+
+            // Use natural dimensions to get aspect ratio
+            const natW = img.naturalWidth || rect.width;
+            const natH = img.naturalHeight || rect.height;
+            const scale = Math.min(maxW / natW, maxH / natH, 1);
+            const destW = natW * scale;
+            const destH = natH * scale;
+            const destLeft = (vw - destW) / 2;
+            const destTop = (vh - destH) / 2;
+
+            clone.style.left = `${destLeft}px`;
+            clone.style.top = `${destTop}px`;
+            clone.style.width = `${destW}px`;
+            clone.style.height = `${destH}px`;
+            clone.style.objectFit = "contain";
+
+            if (captionEl) captionEl.style.opacity = "1";
+        });
+    }
+
+    function closeLightbox(
+        overlay: HTMLElement,
+        sourceImg: HTMLImageElement,
+        clone: HTMLImageElement,
+    ) {
+        // Animate back to original position
+        const rect = sourceImg.getBoundingClientRect();
+
+        clone.style.left = `${rect.left}px`;
+        clone.style.top = `${rect.top}px`;
+        clone.style.width = `${rect.width}px`;
+        clone.style.height = `${rect.height}px`;
+        clone.style.objectFit = "cover";
+
+        overlay.classList.remove("is-visible");
+
+        // Hide caption immediately
+        const captionEl = overlay.querySelector("figcaption") as HTMLElement | null;
+        if (captionEl) {
+            captionEl.style.transition = "opacity 0.15s ease";
+            captionEl.style.opacity = "0";
+        }
+
+        clone.addEventListener(
+            "transitionend",
+            () => {
+                sourceImg.style.visibility = "";
+                overlay.remove();
+                activeLightboxSource = null;
+            },
+            { once: true },
+        );
+    }
+
+    function formatDate(date: Date | string | undefined): string {
+        if (!date) return "";
+        return new Date(date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+    }
+
+    // SEO
+    const p = post.value;
+    if (!p) throw new Error("Post not found");
+    const pageTitle = p.seo?.metaTitle || `${p.title} | Pickbox Blog`;
+    const pageDescription = p.seo?.metaDescription || p.excerpt;
+    const canonicalUrl =
+        p.seo?.canonicalUrl || `${siteUrl}/blog/${getCategorySlug(p.category)}/${p.slug}`;
+    const ogImage = p.seo?.ogImage || p.coverImage;
+
+    useHead({
+        title: pageTitle,
+        meta: [
+            { name: "description", content: pageDescription },
+            { property: "og:type", content: "article" },
+            { property: "og:title", content: p.seo?.ogTitle || pageTitle },
+            {
+                property: "og:description",
+                content: p.seo?.ogDescription || pageDescription,
+            },
+            { property: "og:url", content: canonicalUrl },
+            { property: "og:site_name", content: "Pickbox" },
+            ...(ogImage ? [{ property: "og:image", content: ogImage }] : []),
+            { name: "twitter:card", content: p.seo?.twitterCard || "summary_large_image" },
+            { name: "twitter:title", content: p.seo?.ogTitle || pageTitle },
+            { name: "twitter:description", content: p.seo?.ogDescription || pageDescription },
+            ...(ogImage ? [{ name: "twitter:image", content: ogImage }] : []),
+            ...(p.publishedAt
+                ? [
+                      {
+                          property: "article:published_time",
+                          content: new Date(p.publishedAt).toISOString(),
+                      },
+                  ]
+                : []),
+            ...(p.updatedAt
+                ? [
+                      {
+                          property: "article:modified_time",
+                          content: new Date(p.updatedAt).toISOString(),
+                      },
+                  ]
+                : []),
+            ...(typeof p.author === "object" && p.author?.name
+                ? [{ property: "article:author", content: p.author.name }]
+                : []),
+            ...(getCategoryName(p.category)
+                ? [{ property: "article:section", content: getCategoryName(p.category) }]
+                : []),
+        ],
+        link: [{ rel: "canonical", href: canonicalUrl }],
+        script: [
+            {
+                type: "application/ld+json",
+                innerHTML: JSON.stringify(
+                    generateJsonLd("Article", {
+                        title: p.title,
+                        description: p.excerpt,
+                        url: canonicalUrl,
+                        image: ogImage,
+                        datePublished: p.publishedAt
+                            ? new Date(p.publishedAt).toISOString()
+                            : new Date(p.createdAt).toISOString(),
+                        dateModified: new Date(p.updatedAt).toISOString(),
+                        authorName:
+                            typeof p.author === "object" ? p.author?.name || "Pickbox" : "Pickbox",
+                        authorImage: typeof p.author === "object" ? p.author?.avatar : undefined,
+                        section: getCategoryName(p.category) || undefined,
+                    }),
+                ),
+            },
+        ],
+    });
 </script>
 
 <template>

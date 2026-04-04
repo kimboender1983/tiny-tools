@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ChevronRight, Home } from 'lucide-vue-next';
+    import { ChevronRight, Home } from "lucide-vue-next";
 
-defineProps<{
-  title: string;
-  description: string;
-  category: string;
-  /** When true, the tool gets full viewport width (no sidebar, no max-w constraint). Use for code-heavy tools like JSON formatter/diff. */
-  fullWidth?: boolean;
-}>();
+    defineProps<{
+        title: string;
+        description: string;
+        category: string;
+        /** When true, the tool gets full viewport width (no sidebar, no max-w constraint). Use for code-heavy tools like JSON formatter/diff. */
+        fullWidth?: boolean;
+    }>();
 
-const { isEnabled: adsEnabled } = useAds();
+    const { isEnabled: adsEnabled } = useAds();
 </script>
 
 <template>

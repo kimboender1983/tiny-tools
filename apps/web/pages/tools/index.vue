@@ -1,26 +1,36 @@
 <script setup lang="ts">
-import { TOOLS, TOOL_CATEGORIES } from '@tiny-tools/shared';
+    import { TOOL_CATEGORIES, TOOLS } from "@tiny-tools/shared";
 
-const siteUrl = useRuntimeConfig().public.siteUrl as string;
+    const siteUrl = useRuntimeConfig().public.siteUrl as string;
 
-useHead({
-  title: 'Free Developer Tools | Pickbox',
-  meta: [
-    { name: 'description', content: 'Free, fast developer tools that run entirely in your browser. JSON formatter, JSON diff, JWT decoder, image compressor and more.' },
-    { property: 'og:title', content: 'Free Developer Tools | Pickbox' },
-    { property: 'og:description', content: 'Free, fast developer tools that run entirely in your browser.' },
-    { property: 'og:url', content: `${siteUrl}/tools` },
-  ],
-  link: [{ rel: 'canonical', href: `${siteUrl}/tools` }],
-});
+    useHead({
+        title: "Free Developer Tools | Pickbox",
+        meta: [
+            {
+                name: "description",
+                content:
+                    "Free, fast developer tools that run entirely in your browser. JSON formatter, JSON diff, JWT decoder, image compressor and more.",
+            },
+            { property: "og:title", content: "Free Developer Tools | Pickbox" },
+            {
+                property: "og:description",
+                content: "Free, fast developer tools that run entirely in your browser.",
+            },
+            { property: "og:url", content: `${siteUrl}/tools` },
+        ],
+        link: [{ rel: "canonical", href: `${siteUrl}/tools` }],
+    });
 
-const toolsByCategory = computed(() => {
-  const map = new Map<string, typeof TOOLS>();
-  for (const cat of TOOL_CATEGORIES) {
-    map.set(cat, TOOLS.filter(t => t.category === cat));
-  }
-  return map;
-});
+    const toolsByCategory = computed(() => {
+        const map = new Map<string, typeof TOOLS>();
+        for (const cat of TOOL_CATEGORIES) {
+            map.set(
+                cat,
+                TOOLS.filter((t) => t.category === cat),
+            );
+        }
+        return map;
+    });
 </script>
 
 <template>

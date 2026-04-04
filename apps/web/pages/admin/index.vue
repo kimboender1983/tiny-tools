@@ -1,76 +1,83 @@
 <script setup lang="ts">
-import { FileText, BookOpen, FolderOpen, Image, Plus } from 'lucide-vue-next';
-import type { IPage, IBlogPost } from '@tiny-tools/shared';
+    import type { IBlogPost, IPage } from "@tiny-tools/shared";
+    import { BookOpen, FileText, FolderOpen, Image, Plus } from "lucide-vue-next";
 
-definePageMeta({ layout: 'admin', middleware: ['admin'] });
+    definePageMeta({ layout: "admin", middleware: ["admin"] });
 
-const cms = useCms();
+    const cms = useCms();
 
-const loading = ref(true);
-const error = ref('');
+    const loading = ref(true);
+    const error = ref("");
 
-const stats = reactive({
-  pages: 0,
-  blogPosts: 0,
-  categories: 0,
-  media: 0,
-});
+    const stats = reactive({
+        pages: 0,
+        blogPosts: 0,
+        categories: 0,
+        media: 0,
+    });
 
-const recentItems = ref<Array<{ type: 'page' | 'post'; title: string; id: string; updatedAt: Date }>>([]);
+    const recentItems = ref<
+        Array<{ type: "page" | "post"; title: string; id: string; updatedAt: Date }>
+    >([]);
 
-async function loadDashboard() {
-  loading.value = true;
-  error.value = '';
+    async function loadDashboard() {
+        loading.value = true;
+        error.value = "";
 
-  try {
-    const [pagesRes, postsRes, catsRes, mediaRes] = await Promise.all([
-      cms.pages.list({ pageSize: 5 }),
-      cms.blogPosts.list({ pageSize: 5 }),
-      cms.categories.list({ pageSize: 1 }),
-      cms.media.list({ pageSize: 1 }),
+        try {
+            const [pagesRes, postsRes, catsRes, mediaRes] = await Promise.all([
+                cms.pages.list({ pageSize: 5 }),
+                cms.blogPosts.list({ pageSize: 5 }),
+                cms.categories.list({ pageSize: 1 }),
+                cms.media.list({ pageSize: 1 }),
+            ]);
+
+            stats.pages = pagesRes.total;
+            stats.blogPosts = postsRes.total;
+            stats.categories = catsRes.total;
+            stats.media = mediaRes.total;
+
+            const pageItems = pagesRes.items.map((p: IPage) => ({
+                type: "page" as const,
+                title: p.title,
+                id: p._id,
+                updatedAt: new Date(p.updatedAt),
+            }));
+
+            const postItems = postsRes.items.map((p: IBlogPost) => ({
+                type: "post" as const,
+                title: p.title,
+                id: p._id,
+                updatedAt: new Date(p.updatedAt),
+            }));
+
+            recentItems.value = [...pageItems, ...postItems]
+                .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+                .slice(0, 5);
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to load dashboard data.";
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    const statCards = computed(() => [
+        { label: "Pages", value: stats.pages, icon: FileText, to: "/admin/pages" },
+        { label: "Blog Posts", value: stats.blogPosts, icon: BookOpen, to: "/admin/blog" },
+        { label: "Categories", value: stats.categories, icon: FolderOpen, to: "/admin/categories" },
+        { label: "Media", value: stats.media, icon: Image, to: "/admin/media" },
     ]);
 
-    stats.pages = pagesRes.total;
-    stats.blogPosts = postsRes.total;
-    stats.categories = catsRes.total;
-    stats.media = mediaRes.total;
+    function formatDate(date: Date): string {
+        return date.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+    }
 
-    const pageItems = pagesRes.items.map((p: IPage) => ({
-      type: 'page' as const,
-      title: p.title,
-      id: p._id,
-      updatedAt: new Date(p.updatedAt),
-    }));
-
-    const postItems = postsRes.items.map((p: IBlogPost) => ({
-      type: 'post' as const,
-      title: p.title,
-      id: p._id,
-      updatedAt: new Date(p.updatedAt),
-    }));
-
-    recentItems.value = [...pageItems, ...postItems]
-      .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-      .slice(0, 5);
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : 'Failed to load dashboard data.';
-  } finally {
-    loading.value = false;
-  }
-}
-
-const statCards = computed(() => [
-  { label: 'Pages', value: stats.pages, icon: FileText, to: '/admin/pages' },
-  { label: 'Blog Posts', value: stats.blogPosts, icon: BookOpen, to: '/admin/blog' },
-  { label: 'Categories', value: stats.categories, icon: FolderOpen, to: '/admin/categories' },
-  { label: 'Media', value: stats.media, icon: Image, to: '/admin/media' },
-]);
-
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-}
-
-onMounted(loadDashboard);
+    onMounted(loadDashboard);
 </script>
 
 <template>
