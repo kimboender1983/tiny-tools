@@ -11,6 +11,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
 
     const loading = ref(true);
     const error = ref("");
@@ -74,9 +75,10 @@
             newForm.icon = "";
             newForm.order = 0;
             showAddForm.value = false;
+            toast.success("Category created");
             await loadCategories();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to create category.";
+            toast.error(e instanceof Error ? e.message : "Failed to create category.");
         }
     }
 
@@ -103,9 +105,10 @@
                 order: editForm.order,
             });
             editingId.value = null;
+            toast.success("Category updated");
             await loadCategories();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to update category.";
+            toast.error(e instanceof Error ? e.message : "Failed to update category.");
         }
     }
 
@@ -115,9 +118,10 @@
         try {
             await cms.categories.delete(id);
             deleteConfirmId.value = null;
+            toast.success("Category deleted");
             await loadCategories();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to delete category.";
+            toast.error(e instanceof Error ? e.message : "Failed to delete category.");
         }
     }
 

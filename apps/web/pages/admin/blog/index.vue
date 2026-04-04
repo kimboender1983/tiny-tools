@@ -5,6 +5,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
 
     const loading = ref(true);
     const error = ref("");
@@ -94,9 +95,10 @@
         try {
             await cms.blogPosts.delete(id);
             deleteConfirmId.value = null;
+            toast.success("Blog post deleted");
             await loadPosts();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to delete post.";
+            toast.error(e instanceof Error ? e.message : "Failed to delete post.");
         }
     }
 
@@ -105,8 +107,9 @@
             await cms.blogPosts.toggleFeatured(id);
             const post = posts.value.find((p) => p._id === id);
             if (post) post.featured = !post.featured;
+            toast.success("Featured status updated");
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to toggle featured.";
+            toast.error(e instanceof Error ? e.message : "Failed to toggle featured.");
         }
     }
 
@@ -115,8 +118,9 @@
             await cms.blogPosts.toggleFeaturedHomepage(id);
             const post = posts.value.find((p) => p._id === id);
             if (post) post.featuredHomepage = !post.featuredHomepage;
+            toast.success("Homepage featured updated");
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to toggle homepage featured.";
+            toast.error(e instanceof Error ? e.message : "Failed to toggle homepage featured.");
         }
     }
 
@@ -134,8 +138,9 @@
                 }
                 toggled.homepageHero = newValue;
             }
+            toast.success("Homepage hero updated");
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to toggle homepage hero.";
+            toast.error(e instanceof Error ? e.message : "Failed to toggle homepage hero.");
         }
     }
 

@@ -5,6 +5,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
 
     const loading = ref(true);
     const error = ref("");
@@ -55,9 +56,10 @@
             newForm.bio = "";
             newForm.avatar = "";
             showAddForm.value = false;
+            toast.success("Author created");
             await loadAuthors();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to create author.";
+            toast.error(e instanceof Error ? e.message : "Failed to create author.");
         }
     }
 
@@ -82,9 +84,10 @@
                 avatar: editForm.avatar || undefined,
             });
             editingId.value = null;
+            toast.success("Author updated");
             await loadAuthors();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to update author.";
+            toast.error(e instanceof Error ? e.message : "Failed to update author.");
         }
     }
 
@@ -94,9 +97,10 @@
         try {
             await cms.authors.delete(id);
             deleteConfirmId.value = null;
+            toast.success("Author deleted");
             await loadAuthors();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to delete author.";
+            toast.error(e instanceof Error ? e.message : "Failed to delete author.");
         }
     }
 

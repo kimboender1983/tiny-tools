@@ -1,10 +1,11 @@
 <script setup lang="ts">
     import type { IPage } from "@tiny-tools/shared";
-    import { Search, Trash2 } from "lucide-vue-next";
+    import { Plus, Search, Trash2 } from "lucide-vue-next";
 
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
 
     const loading = ref(true);
     const error = ref("");
@@ -62,9 +63,10 @@
         try {
             await cms.pages.delete(id);
             deleteConfirmId.value = null;
+            toast.success("Tool page deleted");
             await loadPages();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to delete tool page.";
+            toast.error(e instanceof Error ? e.message : "Failed to delete tool page.");
         }
     }
 
@@ -89,6 +91,13 @@
   <div>
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-content">Tools</h1>
+      <NuxtLink
+        to="/admin/pages/new?template=tool"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors"
+      >
+        <Plus :size="16" />
+        New Tool
+      </NuxtLink>
     </div>
 
     <div v-if="error" class="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm dark:bg-red-900/20 dark:border-red-800 dark:text-red-400">

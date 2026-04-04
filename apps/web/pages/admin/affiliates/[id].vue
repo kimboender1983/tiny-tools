@@ -4,6 +4,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
     const route = useRoute();
     const id = route.params.id as string;
 
@@ -61,8 +62,9 @@
                 status: form.status,
             });
             error.value = "";
+            toast.success("Affiliate saved");
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to update affiliate.";
+            toast.error(e instanceof Error ? e.message : "Failed to update affiliate.");
         } finally {
             saving.value = false;
         }

@@ -11,6 +11,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
     const route = useRoute();
     const id = route.params.id as string;
 
@@ -156,8 +157,9 @@
 
             await cms.blogPosts.update(id, data);
             error.value = "";
+            toast.success(publish ? "Blog post published" : "Blog post saved");
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to update post.";
+            toast.error(e instanceof Error ? e.message : "Failed to update post.");
         } finally {
             saving.value = false;
         }

@@ -11,6 +11,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
     const router = useRouter();
 
     const saving = ref(false);
@@ -129,9 +130,10 @@
             };
 
             const created = await cms.blogPosts.create(data);
+            toast.success(publish ? "Blog post published" : "Blog post created");
             await router.push(`/admin/blog/${created._id}`);
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to save post.";
+            toast.error(e instanceof Error ? e.message : "Failed to save post.");
         } finally {
             saving.value = false;
         }

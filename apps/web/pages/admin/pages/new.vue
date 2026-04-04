@@ -5,7 +5,9 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
     const router = useRouter();
+    const route = useRoute();
 
     const saving = ref(false);
     const error = ref("");
@@ -13,13 +15,15 @@
     const allPages = ref<IPage[]>([]);
     const seoOpen = ref(false);
 
+    const initialTemplate = (route.query.template === "tool" ? "tool" : "static") as PageTemplate;
+
     const form = reactive({
         title: "",
         slug: "",
         content: "",
         excerpt: "",
         status: "draft" as PageStatus,
-        template: "static" as PageTemplate,
+        template: initialTemplate,
         category: "",
         publishedAt: "",
         seo: {
@@ -122,9 +126,10 @@
             };
 
             const created = await cms.pages.create(data);
+            toast.success(publish ? "Page published" : "Page created");
             await router.push(`/admin/pages/${created._id}`);
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to save page.";
+            toast.error(e instanceof Error ? e.message : "Failed to save page.");
         } finally {
             saving.value = false;
         }

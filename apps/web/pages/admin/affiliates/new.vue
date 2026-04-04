@@ -2,6 +2,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
     const router = useRouter();
 
     const saving = ref(false);
@@ -55,9 +56,10 @@
                 programInfo: form.programInfo || undefined,
                 status: form.status,
             });
+            toast.success("Affiliate created");
             await router.push(`/admin/affiliates/${created._id}`);
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to create affiliate.";
+            toast.error(e instanceof Error ? e.message : "Failed to create affiliate.");
         } finally {
             saving.value = false;
         }

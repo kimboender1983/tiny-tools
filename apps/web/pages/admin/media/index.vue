@@ -5,6 +5,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
 
     const loading = ref(true);
     const error = ref("");
@@ -46,9 +47,10 @@
             for (const file of files) {
                 await cms.media.upload(file);
             }
+            toast.success("Media uploaded");
             await loadMedia();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to upload file.";
+            toast.error(e instanceof Error ? e.message : "Failed to upload file.");
         } finally {
             uploading.value = false;
         }
@@ -109,6 +111,7 @@
             item.alt = editingAltText.value;
         }
         editingAltId.value = null;
+        toast.success("Alt text updated");
     }
 
     async function deleteMedia(id: string) {
@@ -117,9 +120,10 @@
         try {
             await cms.media.delete(id);
             deleteConfirmId.value = null;
+            toast.success("Media deleted");
             await loadMedia();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to delete media.";
+            toast.error(e instanceof Error ? e.message : "Failed to delete media.");
         }
     }
 

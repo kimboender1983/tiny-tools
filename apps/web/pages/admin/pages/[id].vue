@@ -5,6 +5,7 @@
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
     const cms = useCms();
+    const toast = useToast();
     const route = useRoute();
     const id = route.params.id as string;
 
@@ -153,9 +154,10 @@
             };
 
             await cms.pages.update(id, data);
-            error.value = ""; // clear any previous error
+            error.value = "";
+            toast.success(publish ? "Page published" : "Page saved");
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to update page.";
+            toast.error(e instanceof Error ? e.message : "Failed to update page.");
         } finally {
             saving.value = false;
         }

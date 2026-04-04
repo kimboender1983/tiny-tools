@@ -15,6 +15,7 @@
     }
 
     const cms = useCms();
+    const toast = useToast();
 
     const loading = ref(true);
     const error = ref("");
@@ -78,9 +79,10 @@
             newForm.name = "";
             newForm.role = "admin";
             showAddForm.value = false;
+            toast.success("User created");
             await loadUsers();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to create user.";
+            toast.error(e instanceof Error ? e.message : "Failed to create user.");
         }
     }
 
@@ -104,9 +106,10 @@
                 role: editForm.role,
             });
             editingId.value = null;
+            toast.success("User updated");
             await loadUsers();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to update user.";
+            toast.error(e instanceof Error ? e.message : "Failed to update user.");
         }
     }
 
@@ -133,15 +136,14 @@
 
         try {
             await cms.users.changePassword(id, passwordForm.password);
-            passwordSuccess.value = "Password changed successfully.";
+            toast.success("Password updated");
             passwordForm.password = "";
             passwordForm.confirm = "";
             setTimeout(() => {
                 passwordChangeId.value = null;
-                passwordSuccess.value = "";
             }, 1500);
         } catch (e: unknown) {
-            passwordError.value = e instanceof Error ? e.message : "Failed to change password.";
+            toast.error(e instanceof Error ? e.message : "Failed to change password.");
         }
     }
 
@@ -150,9 +152,10 @@
         try {
             await cms.users.delete(id);
             deleteConfirmId.value = null;
+            toast.success("User deleted");
             await loadUsers();
         } catch (e: unknown) {
-            error.value = e instanceof Error ? e.message : "Failed to delete user.";
+            toast.error(e instanceof Error ? e.message : "Failed to delete user.");
         }
     }
 
