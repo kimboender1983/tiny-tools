@@ -42,6 +42,8 @@ export function useCms() {
             api.patch<IBlogPost>(`/cms/blog-posts/${id}/featured`, {}, AUTH),
         toggleFeaturedHomepage: (id: string) =>
             api.patch<IBlogPost>(`/cms/blog-posts/${id}/featured-homepage`, {}, AUTH),
+        toggleHomepageHero: (id: string) =>
+            api.patch<IBlogPost>(`/cms/blog-posts/${id}/homepage-hero`, {}, AUTH),
     };
 
     const categories = {

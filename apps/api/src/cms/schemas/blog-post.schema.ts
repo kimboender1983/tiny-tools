@@ -50,6 +50,9 @@ export class BlogPost {
     @Prop({ default: false })
     featuredHomepage!: boolean;
 
+    @Prop({ default: false })
+    homepageHero!: boolean;
+
     @Prop()
     readingTime?: number;
 

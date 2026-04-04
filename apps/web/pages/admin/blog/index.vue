@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import type { IBlogPost, ICategory } from "@tiny-tools/shared";
-    import { Home, Plus, Search, Star, Trash2 } from "lucide-vue-next";
+    import { Crown, Home, Plus, Search, Star, Trash2 } from "lucide-vue-next";
 
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
@@ -117,6 +117,25 @@
             if (post) post.featuredHomepage = !post.featuredHomepage;
         } catch (e: unknown) {
             error.value = e instanceof Error ? e.message : "Failed to toggle homepage featured.";
+        }
+    }
+
+    async function toggleHomepageHero(id: string) {
+        try {
+            await cms.blogPosts.toggleHomepageHero(id);
+            const toggled = posts.value.find((p) => p._id === id);
+            if (toggled) {
+                const newValue = !toggled.homepageHero;
+                // Only one hero at a time — unset others locally
+                if (newValue) {
+                    for (const p of posts.value) {
+                        p.homepageHero = false;
+                    }
+                }
+                toggled.homepageHero = newValue;
+            }
+        } catch (e: unknown) {
+            error.value = e instanceof Error ? e.message : "Failed to toggle homepage hero.";
         }
     }
 
@@ -242,6 +261,14 @@
                   @click="toggleFeaturedHomepage(post._id)"
                 >
                   <Home :size="16" :fill="post.featuredHomepage ? 'currentColor' : 'none'" />
+                </button>
+                <button
+                  class="p-1 transition-colors"
+                  :class="post.homepageHero ? 'text-purple-500 hover:text-purple-600' : 'text-gray-400 hover:text-purple-500'"
+                  :title="post.homepageHero ? 'Remove as homepage hero' : 'Set as homepage hero (big card)'"
+                  @click="toggleHomepageHero(post._id)"
+                >
+                  <Crown :size="16" :fill="post.homepageHero ? 'currentColor' : 'none'" />
                 </button>
                 <button
                   class="p-1 text-gray-500 hover:text-red-500 transition-colors"

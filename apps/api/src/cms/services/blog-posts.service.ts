@@ -172,6 +172,28 @@ export class BlogPostsService {
         return updated;
     }
 
+    async toggleHomepageHero(idOrSlug: string): Promise<BlogPostDocument> {
+        const id = await this.resolveId(idOrSlug);
+        const post = await this.findById(id);
+        const newValue = !post.homepageHero;
+
+        // Only one post can be the homepage hero at a time
+        if (newValue) {
+            await this.blogPostModel.updateMany(
+                { homepageHero: true, _id: { $ne: id } },
+                { $set: { homepageHero: false } },
+            );
+        }
+
+        const updated = await this.blogPostModel
+            .findByIdAndUpdate(id, { $set: { homepageHero: newValue } }, { new: true })
+            .exec();
+        if (!updated) {
+            throw new NotFoundException(`Blog post with id "${id}" not found`);
+        }
+        return updated;
+    }
+
     async delete(idOrSlug: string): Promise<void> {
         const id = await this.resolveId(idOrSlug);
         const result = await this.blogPostModel.findByIdAndDelete(id).exec();

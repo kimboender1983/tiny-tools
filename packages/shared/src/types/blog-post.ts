@@ -20,6 +20,7 @@ export interface IBlogPost {
     faq?: IFaqItem[];
     featured?: boolean;
     featuredHomepage?: boolean;
+    homepageHero?: boolean;
     readingTime?: number;
     relatedPosts?: string[];
     publishedAt?: Date;

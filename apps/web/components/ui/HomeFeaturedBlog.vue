@@ -39,7 +39,15 @@
         }),
     );
 
-    const posts = computed(() => postsData.value?.items ?? []);
+    const posts = computed(() => {
+        const items = postsData.value?.items ?? [];
+        // Sort hero post first, then by publishedAt
+        return [...items].sort((a, b) => {
+            if (a.homepageHero && !b.homepageHero) return -1;
+            if (!a.homepageHero && b.homepageHero) return 1;
+            return 0;
+        });
+    });
     const heroPost = computed(() => posts.value[0]);
     const sidePosts = computed(() => posts.value.slice(1, 4));
 </script>
@@ -163,6 +171,15 @@
               {{ post.title }}
             </h3>
             <div class="mt-1.5 flex items-center gap-3 text-[11px] text-content-muted">
+              <span v-if="post.author && typeof post.author === 'object'" class="inline-flex items-center gap-1.5">
+                <img
+                  v-if="post.author.avatar"
+                  :src="post.author.avatar"
+                  :alt="post.author.name"
+                  class="w-4 h-4 rounded-full object-cover"
+                />
+                {{ post.author.name }}
+              </span>
               <span v-if="post.publishedAt" class="inline-flex items-center gap-1">
                 <Calendar :size="10" />
                 {{ formatDate(post.publishedAt) }}
