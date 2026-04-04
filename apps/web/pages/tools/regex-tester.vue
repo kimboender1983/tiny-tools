@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { TOOLS } from '@tiny-tools/shared';
 import { generateJsonLd } from '~/utils/seo';
-import { ExternalLink, ChevronRight, BookOpen, Code, ArrowRight, Braces, Fingerprint } from 'lucide-vue-next';
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'regex-tester')!;
@@ -29,6 +28,15 @@ const faqItems = [
     question: 'Why does my regex work differently in different languages?',
     answer: 'Regex flavors vary between languages. JavaScript\'s regex engine does not support lookbehind in older browsers, possessive quantifiers, or atomic groups. Features like \\b word boundaries, Unicode categories (\\p{L}), and backreferences may behave differently. This tester uses JavaScript\'s native RegExp, so results match what you\'d get in Node.js or browser JavaScript.',
   },
+];
+
+const navLinks = [
+  { id: 'what-is-regex', label: 'What is Regex' },
+  { id: 'syntax-guide', label: 'Syntax Guide' },
+  { id: 'common-patterns', label: 'Common Patterns' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'built-with', label: 'Built With' },
+  { id: 'related-tools', label: 'Related Tools' },
 ];
 
 useHead({
@@ -87,33 +95,10 @@ onMounted(() => {
 
     <template #seo-content>
       <article class="max-w-4xl mx-auto">
-        <!-- Quick links -->
-        <nav class="mb-6 flex flex-wrap gap-2">
-          <a
-            v-for="link in [
-              { id: 'what-is-regex', label: 'What is Regex' },
-              { id: 'syntax-guide', label: 'Syntax Guide' },
-              { id: 'common-patterns', label: 'Common Patterns' },
-              { id: 'faq', label: 'FAQ' },
-              { id: 'built-with', label: 'Built With' },
-              { id: 'related-tools', label: 'Related Tools' },
-            ]"
-            :key="link.id"
-            :href="`#${link.id}`"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-secondary text-content-secondary hover:bg-brand-50 hover:text-brand-accent transition-colors scroll-smooth"
-          >
-            <ChevronRight :size="14" />
-            {{ link.label }}
-          </a>
-        </nav>
+        <SeoNav :links="navLinks" />
 
         <div class="space-y-6">
-          <!-- What is Regex -->
-          <section id="what-is-regex" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              What is a Regular Expression?
-            </h2>
+          <SeoSection id="what-is-regex" title="What is a Regular Expression?">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 A regular expression (regex or regexp) is a pattern that describes a set of strings. Originally developed
@@ -122,75 +107,53 @@ onMounted(() => {
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 In JavaScript, regular expressions are created with the
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">RegExp</code> constructor or
-                literal syntax <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">/pattern/flags</code>.
-                They power methods like <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">.match()</code>,
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">.replace()</code>,
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">.test()</code>, and
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">.split()</code>.
+                <code class="code-inline">RegExp</code> constructor or
+                literal syntax <code class="code-inline">/pattern/flags</code>.
+                They power methods like <code class="code-inline">.match()</code>,
+                <code class="code-inline">.replace()</code>,
+                <code class="code-inline">.test()</code>, and
+                <code class="code-inline">.split()</code>.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Syntax Guide -->
-          <section id="syntax-guide" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Regex Syntax Guide
-            </h2>
+          <SeoSection id="syntax-guide" title="Regex Syntax Guide" icon="code">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 Regular expressions are built from literal characters and metacharacters. Here are the key building blocks:
               </p>
               <ul class="space-y-3">
-                <li class="flex items-start gap-3">
-                  <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                  <span class="text-content-tertiary leading-relaxed">
-                    <strong class="text-content">Character classes</strong> like
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">\d</code> (digit),
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">\w</code> (word character), and
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">[a-z]</code> (ranges) match categories of characters.
-                  </span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                  <span class="text-content-tertiary leading-relaxed">
-                    <strong class="text-content">Quantifiers</strong> like
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">*</code>,
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">+</code>,
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">?</code>, and
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">{n,m}</code> control how many times a pattern repeats.
-                    Append <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">?</code> for lazy (non-greedy) matching.
-                  </span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                  <span class="text-content-tertiary leading-relaxed">
-                    <strong class="text-content">Groups and backreferences</strong> use
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">(pattern)</code> to capture submatches and
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">\1</code> or
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">$1</code> to reference them in replacements.
-                  </span>
-                </li>
-                <li class="flex items-start gap-3">
-                  <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                  <span class="text-content-tertiary leading-relaxed">
-                    <strong class="text-content">Lookahead and lookbehind</strong> —
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">(?=...)</code> and
-                    <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">(?&lt;=...)</code> — assert that what follows or precedes
-                    the current position matches a pattern, without including it in the match.
-                  </span>
-                </li>
+                <SeoBullet>
+                  <strong class="text-content">Character classes</strong> like
+                  <code class="code-inline">\d</code> (digit),
+                  <code class="code-inline">\w</code> (word character), and
+                  <code class="code-inline">[a-z]</code> (ranges) match categories of characters.
+                </SeoBullet>
+                <SeoBullet>
+                  <strong class="text-content">Quantifiers</strong> like
+                  <code class="code-inline">*</code>,
+                  <code class="code-inline">+</code>,
+                  <code class="code-inline">?</code>, and
+                  <code class="code-inline">{n,m}</code> control how many times a pattern repeats.
+                  Append <code class="code-inline">?</code> for lazy (non-greedy) matching.
+                </SeoBullet>
+                <SeoBullet>
+                  <strong class="text-content">Groups and backreferences</strong> use
+                  <code class="code-inline">(pattern)</code> to capture submatches and
+                  <code class="code-inline">\1</code> or
+                  <code class="code-inline">$1</code> to reference them in replacements.
+                </SeoBullet>
+                <SeoBullet>
+                  <strong class="text-content">Lookahead and lookbehind</strong> —
+                  <code class="code-inline">(?=...)</code> and
+                  <code class="code-inline">(?&lt;=...)</code> — assert that what follows or precedes
+                  the current position matches a pattern, without including it in the match.
+                </SeoBullet>
               </ul>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Common Patterns -->
-          <section id="common-patterns" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Common Regex Patterns
-            </h2>
+          <SeoSection id="common-patterns" title="Common Regex Patterns" icon="code">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div
                 v-for="p in [
@@ -210,103 +173,46 @@ onMounted(() => {
                 <code class="block mt-1.5 text-xs font-mono text-brand-accent break-all">{{ p.pattern }}</code>
               </div>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- FAQ -->
-          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Frequently Asked Questions
-            </h2>
-            <div class="space-y-3">
-              <details
-                v-for="(faq, index) in faqItems"
-                :key="index"
-                class="group rounded-lg border border-surface-border bg-surface-secondary overflow-hidden"
-              >
-                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-content hover:bg-surface-secondary transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
-                  <span>{{ faq.question }}</span>
-                  <span class="shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none font-light">+</span>
-                </summary>
-                <p class="px-4 pb-4 text-content-tertiary leading-relaxed">
-                  {{ faq.answer }}
-                </p>
-              </details>
-            </div>
-          </section>
+          <SeoSection id="faq" title="Frequently Asked Questions">
+            <SeoFaq :items="faqItems" />
+          </SeoSection>
 
-          <!-- Built with -->
-          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Built With
-            </h2>
+          <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
               This tester uses JavaScript's native RegExp engine — the same engine your code runs against.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <a
+              <SeoExternalLink
                 href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">MDN RegExp</div>
-                  <div class="text-xs text-content-muted">Complete JS regex reference</div>
-                </div>
-              </a>
-              <a
+                title="MDN RegExp"
+                description="Complete JS regex reference"
+              />
+              <SeoExternalLink
                 href="https://262.ecma-international.org/15.0/#sec-regexp-regular-expression-objects"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">ECMAScript Spec</div>
-                  <div class="text-xs text-content-muted">RegExp specification</div>
-                </div>
-              </a>
+                title="ECMAScript Spec"
+                description="RegExp specification"
+              />
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Related Tools -->
-          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Related Tools
-            </h2>
+          <SeoSection id="related-tools" title="Related Tools">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <NuxtLink
+              <SeoRelatedTool
                 to="/tools/json-formatter"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <Braces :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JSON Formatter</div>
-                  <div class="text-xs text-content-muted">Format, validate, and beautify JSON</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
-              <NuxtLink
+                icon="Braces"
+                title="JSON Formatter"
+                description="Format, validate, and beautify JSON"
+              />
+              <SeoRelatedTool
                 to="/tools/uuid-generator"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <Fingerprint :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">UUID Generator</div>
-                  <div class="text-xs text-content-muted">Generate UUID v4 and v7 identifiers</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
+                icon="Fingerprint"
+                title="UUID Generator"
+                description="Generate UUID v4 and v7 identifiers"
+              />
             </div>
-          </section>
+          </SeoSection>
         </div>
       </article>
     </template>

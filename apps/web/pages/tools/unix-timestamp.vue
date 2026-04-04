@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { TOOLS } from '@tiny-tools/shared';
 import { generateJsonLd } from '~/utils/seo';
-import { ExternalLink, ChevronRight, BookOpen, Code, ArrowRight, Regex, Fingerprint } from 'lucide-vue-next';
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'unix-timestamp')!;
@@ -29,6 +28,16 @@ const faqItems = [
     question: 'How does this converter handle timezones?',
     answer: 'Unix timestamps are always in UTC by definition. When converting to a human-readable date, our tool shows both UTC and your local timezone (detected from your browser). When converting a date string to a timestamp, the string is parsed by your browser\'s Date engine, which applies local timezone if no timezone is specified in the input.',
   },
+];
+
+const navLinks = [
+  { id: 'what-is-unix', label: 'What is Unix Time' },
+  { id: 'how-it-works', label: 'How It Works' },
+  { id: 'common-timestamps', label: 'Notable Timestamps' },
+  { id: 'languages', label: 'By Language' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'built-with', label: 'Built With' },
+  { id: 'related-tools', label: 'Related Tools' },
 ];
 
 useHead({
@@ -87,34 +96,10 @@ onMounted(() => {
 
     <template #seo-content>
       <article class="max-w-4xl mx-auto">
-        <!-- Quick links -->
-        <nav class="mb-6 flex flex-wrap gap-2">
-          <a
-            v-for="link in [
-              { id: 'what-is-unix', label: 'What is Unix Time' },
-              { id: 'how-it-works', label: 'How It Works' },
-              { id: 'common-timestamps', label: 'Notable Timestamps' },
-              { id: 'languages', label: 'By Language' },
-              { id: 'faq', label: 'FAQ' },
-              { id: 'built-with', label: 'Built With' },
-              { id: 'related-tools', label: 'Related Tools' },
-            ]"
-            :key="link.id"
-            :href="`#${link.id}`"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-secondary text-content-secondary hover:bg-brand-50 hover:text-brand-accent transition-colors scroll-smooth"
-          >
-            <ChevronRight :size="14" />
-            {{ link.label }}
-          </a>
-        </nav>
+        <SeoNav :links="navLinks" />
 
         <div class="space-y-6">
-          <!-- What is Unix Timestamp -->
-          <section id="what-is-unix" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              What is a Unix Timestamp?
-            </h2>
+          <SeoSection id="what-is-unix" title="What is a Unix Timestamp?">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 A Unix timestamp is the number of seconds elapsed since the <strong class="text-content">Unix Epoch</strong> —
@@ -127,14 +112,9 @@ onMounted(() => {
                 and storable across any programming language or database.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- How It Works -->
-          <section id="how-it-works" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Seconds vs Milliseconds
-            </h2>
+          <SeoSection id="how-it-works" title="Seconds vs Milliseconds" icon="code">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="rounded-lg border border-surface-border p-4 space-y-2">
                 <div class="flex items-center justify-between">
@@ -153,14 +133,9 @@ onMounted(() => {
                 <p class="text-xs text-content-muted">Used by: JavaScript, Java, Dart, Elasticsearch, MongoDB</p>
               </div>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Notable Timestamps -->
-          <section id="common-timestamps" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Notable Timestamps
-            </h2>
+          <SeoSection id="common-timestamps" title="Notable Timestamps">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div
                 v-for="ts in [
@@ -181,14 +156,9 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- By Language -->
-          <section id="languages" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Get Current Timestamp by Language
-            </h2>
+          <SeoSection id="languages" title="Get Current Timestamp by Language" icon="code">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div
                 v-for="lang in [
@@ -213,103 +183,46 @@ onMounted(() => {
                 <code class="block text-xs font-mono text-content-secondary break-all">{{ lang.code }}</code>
               </div>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- FAQ -->
-          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Frequently Asked Questions
-            </h2>
-            <div class="space-y-3">
-              <details
-                v-for="(faq, index) in faqItems"
-                :key="index"
-                class="group rounded-lg border border-surface-border bg-surface-secondary overflow-hidden"
-              >
-                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-content hover:bg-surface-secondary transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
-                  <span>{{ faq.question }}</span>
-                  <span class="shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none font-light">+</span>
-                </summary>
-                <p class="px-4 pb-4 text-content-tertiary leading-relaxed">
-                  {{ faq.answer }}
-                </p>
-              </details>
-            </div>
-          </section>
+          <SeoSection id="faq" title="Frequently Asked Questions">
+            <SeoFaq :items="faqItems" />
+          </SeoSection>
 
-          <!-- Built with -->
-          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Built With
-            </h2>
+          <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
               This tool uses JavaScript's native Date API — no external date libraries needed.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a
+              <SeoExternalLink
                 href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">MDN Date</div>
-                  <div class="text-xs text-content-muted">JavaScript Date reference</div>
-                </div>
-              </a>
-              <a
+                title="MDN Date"
+                description="JavaScript Date reference"
+              />
+              <SeoExternalLink
                 href="https://en.wikipedia.org/wiki/Unix_time"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">Wikipedia: Unix time</div>
-                  <div class="text-xs text-content-muted">History and specification</div>
-                </div>
-              </a>
+                title="Wikipedia: Unix time"
+                description="History and specification"
+              />
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Related Tools -->
-          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Related Tools
-            </h2>
+          <SeoSection id="related-tools" title="Related Tools">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <NuxtLink
+              <SeoRelatedTool
                 to="/tools/uuid-generator"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <Fingerprint :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">UUID Generator</div>
-                  <div class="text-xs text-content-muted">UUID v7 uses Unix timestamps</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
-              <NuxtLink
+                icon="Fingerprint"
+                title="UUID Generator"
+                description="UUID v7 uses Unix timestamps"
+              />
+              <SeoRelatedTool
                 to="/tools/regex-tester"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <Regex :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">Regex Tester</div>
-                  <div class="text-xs text-content-muted">Parse timestamps from logs with regex</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
+                icon="Regex"
+                title="Regex Tester"
+                description="Parse timestamps from logs with regex"
+              />
             </div>
-          </section>
+          </SeoSection>
         </div>
       </article>
     </template>

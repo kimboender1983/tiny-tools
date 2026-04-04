@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { TOOLS } from '@tiny-tools/shared';
 import { generateJsonLd } from '~/utils/seo';
-import { ExternalLink, ChevronRight, BookOpen, Code, Braces, KeyRound, ArrowRight } from 'lucide-vue-next';
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'json-diff')!;
@@ -25,6 +24,15 @@ const faqItems = [
     question: 'Is my data safe when using this comparison tool?',
     answer: 'Absolutely. The entire comparison runs in your browser using JavaScript. No data is transmitted to any server. Your API responses, configuration files, and database exports stay entirely on your device throughout the process.',
   },
+];
+
+const navLinks = [
+  { id: 'why-compare', label: 'Why Compare' },
+  { id: 'how-it-works', label: 'How It Works' },
+  { id: 'use-cases', label: 'Use Cases' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'built-with', label: 'Built With' },
+  { id: 'related-tools', label: 'Related Tools' },
 ];
 
 useHead({
@@ -84,33 +92,10 @@ onMounted(() => {
 
     <template #seo-content>
       <article class="max-w-4xl mx-auto">
-        <!-- Quick links -->
-        <nav class="mb-6 flex flex-wrap gap-2">
-          <a
-            v-for="link in [
-              { id: 'why-compare', label: 'Why Compare' },
-              { id: 'how-it-works', label: 'How It Works' },
-              { id: 'use-cases', label: 'Use Cases' },
-              { id: 'faq', label: 'FAQ' },
-              { id: 'built-with', label: 'Built With' },
-              { id: 'related-tools', label: 'Related Tools' },
-            ]"
-            :key="link.id"
-            :href="`#${link.id}`"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-secondary text-content-secondary hover:bg-brand-50 hover:text-brand-accent transition-colors scroll-smooth"
-          >
-            <ChevronRight :size="14" />
-            {{ link.label }}
-          </a>
-        </nav>
+        <SeoNav :links="navLinks" />
 
         <div class="space-y-6">
-          <!-- Why Compare JSON Files -->
-          <section id="why-compare" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Why Compare JSON Files?
-            </h2>
+          <SeoSection id="why-compare" title="Why Compare JSON Files?">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 Comparing JSON data is one of the most common tasks in modern software development. Whether you are debugging
@@ -121,18 +106,13 @@ onMounted(() => {
               <p class="text-content-tertiary leading-relaxed">
                 Unlike plain text diffs, a proper JSON comparison understands the structure of the data. It knows that
                 reordering keys in an object does not change its meaning, and it can distinguish between a missing key and a
-                key with a <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">null</code> value. This structural awareness produces far more accurate and useful results
+                key with a <code class="code-inline">null</code> value. This structural awareness produces far more accurate and useful results
                 than line-by-line text comparison.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- How Deep JSON Comparison Works -->
-          <section id="how-it-works" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              How Deep JSON Comparison Works
-            </h2>
+          <SeoSection id="how-it-works" title="How Deep JSON Comparison Works" icon="code">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 A deep comparison algorithm recursively walks both JSON trees simultaneously. At each level, it categorizes
@@ -150,144 +130,70 @@ onMounted(() => {
                 far more informative than a generic text diff that simply highlights different lines.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Common Use Cases -->
-          <section id="use-cases" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Common Use Cases for JSON Diff
-            </h2>
+          <SeoSection id="use-cases" title="Common Use Cases for JSON Diff">
             <p class="text-content-tertiary leading-relaxed mb-4">
               Developers and teams rely on JSON comparison in a wide range of scenarios:
             </p>
             <ul class="space-y-3">
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">API debugging:</strong> Compare expected versus actual API responses to pinpoint discrepancies
-                  in field values, missing properties, or unexpected type changes.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Configuration auditing:</strong> Review changes to JSON configuration files (Terraform state,
-                  <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">tsconfig.json</code>, ESLint configs) before merging pull requests.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Data migration verification:</strong> Confirm that records exported from one system match those
-                  imported into another, catching any transformation errors.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Schema evolution:</strong> Track how API response shapes change between versions to maintain
-                  backward compatibility and update client code accordingly.
-                </span>
-              </li>
+              <SeoBullet>
+                <strong class="text-content">API debugging:</strong> Compare expected versus actual API responses to pinpoint discrepancies
+                in field values, missing properties, or unexpected type changes.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Configuration auditing:</strong> Review changes to JSON configuration files (Terraform state,
+                <code class="code-inline">tsconfig.json</code>, ESLint configs) before merging pull requests.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Data migration verification:</strong> Confirm that records exported from one system match those
+                imported into another, catching any transformation errors.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Schema evolution:</strong> Track how API response shapes change between versions to maintain
+                backward compatibility and update client code accordingly.
+              </SeoBullet>
             </ul>
-          </section>
+          </SeoSection>
 
-          <!-- FAQ -->
-          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Frequently Asked Questions
-            </h2>
-            <div class="space-y-3">
-              <details
-                v-for="(faq, index) in faqItems"
-                :key="index"
-                class="group rounded-lg border border-surface-border bg-surface-secondary overflow-hidden"
-              >
-                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-content hover:bg-surface-secondary transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
-                  <span>{{ faq.question }}</span>
-                  <span class="shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none font-light">+</span>
-                </summary>
-                <p class="px-4 pb-4 text-content-tertiary leading-relaxed">
-                  {{ faq.answer }}
-                </p>
-              </details>
-            </div>
-          </section>
+          <SeoSection id="faq" title="Frequently Asked Questions">
+            <SeoFaq :items="faqItems" />
+          </SeoSection>
 
-          <!-- Built with -->
-          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Built With
-            </h2>
+          <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
-              This tool uses the <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">diff</code> package for accurate line-level comparison — the same engine used by Jest, Mocha, and thousands of other projects.
+              This tool uses the <code class="code-inline">diff</code> package for accurate line-level comparison — the same engine used by Jest, Mocha, and thousands of other projects.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a
+              <SeoExternalLink
                 href="https://github.com/kpdecker/jsdiff"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">jsdiff on GitHub</div>
-                  <div class="text-xs text-content-muted">kpdecker/jsdiff — JavaScript text diff library</div>
-                </div>
-              </a>
-              <a
+                title="jsdiff on GitHub"
+                description="kpdecker/jsdiff — JavaScript text diff library"
+              />
+              <SeoExternalLink
                 href="https://www.npmjs.com/package/diff"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">diff on npm</div>
-                  <div class="text-xs text-content-muted">~50M weekly downloads</div>
-                </div>
-              </a>
+                title="diff on npm"
+                description="~50M weekly downloads"
+              />
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Related Tools -->
-          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Related Tools
-            </h2>
+          <SeoSection id="related-tools" title="Related Tools">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <NuxtLink
+              <SeoRelatedTool
                 to="/tools/json-formatter"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <Braces :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JSON Formatter</div>
-                  <div class="text-xs text-content-muted">Format, validate, and beautify JSON instantly</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
-              <NuxtLink
+                icon="Braces"
+                title="JSON Formatter"
+                description="Format, validate, and beautify JSON instantly"
+              />
+              <SeoRelatedTool
                 to="/tools/jwt-decoder"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <KeyRound :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JWT Decoder</div>
-                  <div class="text-xs text-content-muted">Decode and inspect JWT tokens instantly</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
+                icon="KeyRound"
+                title="JWT Decoder"
+                description="Decode and inspect JWT tokens instantly"
+              />
             </div>
-          </section>
+          </SeoSection>
         </div>
       </article>
     </template>

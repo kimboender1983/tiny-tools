@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { TOOLS } from '@tiny-tools/shared';
 import { generateJsonLd } from '~/utils/seo';
-import { ExternalLink, ChevronRight, BookOpen, Code, GitCompare, ArrowRight } from 'lucide-vue-next';
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'json-formatter')!;
@@ -29,6 +28,15 @@ const faqItems = [
     question: 'Can I convert JSON to YAML or other formats?',
     answer: 'Our JSON formatter focuses on formatting and validating JSON. For converting between JSON, YAML, TOML, and other serialization formats, we plan to add dedicated converter tools in the future. In the meantime, you can validate your JSON here before converting it elsewhere.',
   },
+];
+
+const navLinks = [
+  { id: 'what-is-json', label: 'What is JSON' },
+  { id: 'common-errors', label: 'Syntax Errors' },
+  { id: 'json-vs-yaml', label: 'JSON vs YAML' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'built-with', label: 'Built With' },
+  { id: 'related-tools', label: 'Related Tools' },
 ];
 
 useHead({
@@ -88,33 +96,10 @@ onMounted(() => {
 
     <template #seo-content>
       <article class="max-w-4xl mx-auto">
-        <!-- Quick links -->
-        <nav class="mb-6 flex flex-wrap gap-2">
-          <a
-            v-for="link in [
-              { id: 'what-is-json', label: 'What is JSON' },
-              { id: 'common-errors', label: 'Syntax Errors' },
-              { id: 'json-vs-yaml', label: 'JSON vs YAML' },
-              { id: 'faq', label: 'FAQ' },
-              { id: 'built-with', label: 'Built With' },
-              { id: 'related-tools', label: 'Related Tools' },
-            ]"
-            :key="link.id"
-            :href="`#${link.id}`"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-secondary text-content-secondary hover:bg-brand-50 hover:text-brand-accent transition-colors scroll-smooth"
-          >
-            <ChevronRight :size="14" />
-            {{ link.label }}
-          </a>
-        </nav>
+        <SeoNav :links="navLinks" />
 
         <div class="space-y-6">
-          <!-- What is JSON -->
-          <section id="what-is-json" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              What is JSON?
-            </h2>
+          <SeoSection id="what-is-json" title="What is JSON?">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 JSON (JavaScript Object Notation) is a lightweight, text-based data interchange format that has become the
@@ -125,78 +110,53 @@ onMounted(() => {
               <p class="text-content-tertiary leading-relaxed">
                 A JSON document consists of two fundamental structures: objects (unordered collections of key-value pairs
                 wrapped in curly braces) and arrays (ordered lists of values wrapped in square brackets). Values can be
-                strings, numbers, booleans (<code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">true</code> or <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">false</code>), <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">null</code>, or nested objects
+                strings, numbers, booleans (<code class="code-inline">true</code> or <code class="code-inline">false</code>), <code class="code-inline">null</code>, or nested objects
                 and arrays. This simplicity is what makes JSON so widely adopted — it is human-readable yet easy for machines
                 to parse and generate.
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 Developers encounter JSON daily when working with REST APIs, GraphQL responses, package manifests like
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">package.json</code>, infrastructure-as-code templates, and NoSQL databases such as MongoDB and
+                <code class="code-inline">package.json</code>, infrastructure-as-code templates, and NoSQL databases such as MongoDB and
                 CouchDB. Understanding JSON structure is a foundational skill for modern software development.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Common JSON Syntax Errors -->
-          <section id="common-errors" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Common JSON Syntax Errors
-            </h2>
+          <SeoSection id="common-errors" title="Common JSON Syntax Errors" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
               Despite its simplicity, JSON has strict syntax rules that trip up even experienced developers. The most
               frequent mistakes include:
             </p>
             <ul class="space-y-3">
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Trailing commas:</strong> Unlike JavaScript objects, JSON does not allow a comma after the last
-                  element in an object or array. <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">{"a": 1, "b": 2,}</code> is invalid.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Single quotes:</strong> JSON requires double quotes for all strings and property names. Using
-                  single quotes like <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">{'name': 'value'}</code> will fail parsing.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Unquoted keys:</strong> Every key in a JSON object must be a double-quoted string.
-                  <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">{name: "value"}</code> is valid JavaScript but invalid JSON.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Comments:</strong> JSON does not support comments of any kind — no <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">//</code> line comments
-                  and no <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">/* */</code> block comments. If you need comments, consider JSONC or JSON5.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Special number formats:</strong> Hexadecimal (<code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">0xFF</code>), leading zeros (<code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">07</code>),
-                  and positive sign prefixes (<code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">+1</code>) are all invalid in JSON. Only standard decimal notation and
-                  scientific notation (e.g., <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">1.5e10</code>) are allowed.
-                </span>
-              </li>
+              <SeoBullet>
+                <strong class="text-content">Trailing commas:</strong> Unlike JavaScript objects, JSON does not allow a comma after the last
+                element in an object or array. <code class="code-inline">{"a": 1, "b": 2,}</code> is invalid.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Single quotes:</strong> JSON requires double quotes for all strings and property names. Using
+                single quotes like <code class="code-inline">{'name': 'value'}</code> will fail parsing.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Unquoted keys:</strong> Every key in a JSON object must be a double-quoted string.
+                <code class="code-inline">{name: "value"}</code> is valid JavaScript but invalid JSON.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Comments:</strong> JSON does not support comments of any kind — no <code class="code-inline">//</code> line comments
+                and no <code class="code-inline">/* */</code> block comments. If you need comments, consider JSONC or JSON5.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Special number formats:</strong> Hexadecimal (<code class="code-inline">0xFF</code>), leading zeros (<code class="code-inline">07</code>),
+                and positive sign prefixes (<code class="code-inline">+1</code>) are all invalid in JSON. Only standard decimal notation and
+                scientific notation (e.g., <code class="code-inline">1.5e10</code>) are allowed.
+              </SeoBullet>
             </ul>
             <p class="text-content-tertiary leading-relaxed mt-4">
               Our JSON formatter catches all of these errors and reports the exact line and character position, so you can
               fix problems in seconds instead of hunting through hundreds of lines of data.
             </p>
-          </section>
+          </SeoSection>
 
-          <!-- JSON vs YAML -->
-          <section id="json-vs-yaml" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              JSON vs YAML
-            </h2>
+          <SeoSection id="json-vs-yaml" title="JSON vs YAML">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 JSON and YAML are both popular serialization formats, but they serve somewhat different use cases. JSON is
@@ -211,83 +171,40 @@ onMounted(() => {
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 One key advantage of JSON is its round-trip safety: parsing and re-serializing JSON always produces the same
-                output. YAML's flexibility can introduce subtle bugs — for instance, the string <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">no</code> may be
-                interpreted as a boolean <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">false</code>, and <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">3.10</code> may be parsed as the number
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">3.1</code>. These gotchas make JSON the safer choice for machine-to-machine communication.
+                output. YAML's flexibility can introduce subtle bugs — for instance, the string <code class="code-inline">no</code> may be
+                interpreted as a boolean <code class="code-inline">false</code>, and <code class="code-inline">3.10</code> may be parsed as the number
+                <code class="code-inline">3.1</code>. These gotchas make JSON the safer choice for machine-to-machine communication.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- FAQ -->
-          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Frequently Asked Questions
-            </h2>
-            <div class="space-y-3">
-              <details
-                v-for="(faq, index) in faqItems"
-                :key="index"
-                class="group rounded-lg border border-surface-border bg-surface-secondary overflow-hidden"
-              >
-                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-content hover:bg-surface-secondary transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
-                  <span>{{ faq.question }}</span>
-                  <span class="shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none font-light">+</span>
-                </summary>
-                <p class="px-4 pb-4 text-content-tertiary leading-relaxed">
-                  {{ faq.answer }}
-                </p>
-              </details>
-            </div>
-          </section>
+          <SeoSection id="faq" title="Frequently Asked Questions">
+            <SeoFaq :items="faqItems" />
+          </SeoSection>
 
-          <!-- Built with -->
-          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Built With
-            </h2>
+          <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
               This tool uses no external packages — just built-in browser APIs.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a
+              <SeoExternalLink
                 href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">MDN JSON Reference</div>
-                  <div class="text-xs text-content-muted">JSON.parse / JSON.stringify docs</div>
-                </div>
-              </a>
+                title="MDN JSON Reference"
+                description="JSON.parse / JSON.stringify docs"
+              />
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Related Tools -->
-          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Related Tools
-            </h2>
+          <SeoSection id="related-tools" title="Related Tools">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <NuxtLink
+              <SeoRelatedTool
                 to="/tools/json-diff"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <GitCompare :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JSON Diff</div>
-                  <div class="text-xs text-content-muted">Compare and find differences between JSON objects</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
+                icon="GitCompare"
+                title="JSON Diff"
+                description="Compare and find differences between JSON objects"
+              />
             </div>
-          </section>
+          </SeoSection>
         </div>
       </article>
     </template>

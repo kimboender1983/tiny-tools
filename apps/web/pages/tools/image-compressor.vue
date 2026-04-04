@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { TOOLS } from '@tiny-tools/shared';
 import { generateJsonLd } from '~/utils/seo';
-import { ExternalLink, ChevronRight, BookOpen, Code, Braces, GitCompare, KeyRound, ArrowRight } from 'lucide-vue-next';
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'image-compressor')!;
@@ -29,6 +28,15 @@ const faqItems = [
     question: 'Can I compress multiple images at once?',
     answer: 'Yes. Our bulk compression feature lets you drag and drop or select multiple images simultaneously. Each image is processed independently with the same quality settings, and you can download all compressed images at once as a ZIP archive or individually.',
   },
+];
+
+const navLinks = [
+  { id: 'lossy-vs-lossless', label: 'Lossy vs Lossless' },
+  { id: 'format-comparison', label: 'WebP vs PNG vs JPEG' },
+  { id: 'when-to-use', label: 'When to Use Each' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'built-with', label: 'Built With' },
+  { id: 'related-tools', label: 'Related Tools' },
 ];
 
 useHead({
@@ -87,33 +95,10 @@ onMounted(() => {
 
     <template #seo-content>
       <article class="max-w-4xl mx-auto">
-        <!-- Quick links -->
-        <nav class="mb-6 flex flex-wrap gap-2">
-          <a
-            v-for="link in [
-              { id: 'lossy-vs-lossless', label: 'Lossy vs Lossless' },
-              { id: 'format-comparison', label: 'WebP vs PNG vs JPEG' },
-              { id: 'when-to-use', label: 'When to Use Each' },
-              { id: 'faq', label: 'FAQ' },
-              { id: 'built-with', label: 'Built With' },
-              { id: 'related-tools', label: 'Related Tools' },
-            ]"
-            :key="link.id"
-            :href="`#${link.id}`"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-secondary text-content-secondary hover:bg-brand-50 hover:text-brand-accent transition-colors scroll-smooth"
-          >
-            <ChevronRight :size="14" />
-            {{ link.label }}
-          </a>
-        </nav>
+        <SeoNav :links="navLinks" />
 
         <div class="space-y-6">
-          <!-- Lossy vs Lossless Compression -->
-          <section id="lossy-vs-lossless" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Lossy vs Lossless Compression
-            </h2>
+          <SeoSection id="lossy-vs-lossless" title="Lossy vs Lossless Compression">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 Image compression falls into two broad categories, each with distinct trade-offs. Understanding the
@@ -140,225 +125,120 @@ onMounted(() => {
                 lossless compression (or lossy at very high quality) preserves the crisp details that matter.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- WebP vs PNG vs JPEG -->
-          <section id="format-comparison" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              WebP vs PNG vs JPEG
-            </h2>
+          <SeoSection id="format-comparison" title="WebP vs PNG vs JPEG" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
               Choosing the right image format has a significant impact on page load times and user experience. Here is
               how the three most common web formats compare:
             </p>
             <ul class="space-y-3">
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">JPEG:</strong> Best for photographs and images with complex color gradients. Supports lossy
-                  compression only. Does not support transparency. Universal browser support. Typical use: hero images,
-                  product photos, backgrounds.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">PNG:</strong> Best for images requiring transparency or pixel-perfect reproduction. Supports
-                  lossless compression and an alpha channel for transparency. Files are larger than JPEG for photographic
-                  content. Typical use: logos, icons, screenshots, UI elements.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">WebP:</strong> A modern format that supports both lossy and lossless compression, plus
-                  transparency and animation. Produces significantly smaller files than both JPEG and PNG at comparable
-                  quality. Supported by all modern browsers (Chrome, Firefox, Safari, Edge). Typical use: any web image
-                  where you want the best compression with broad compatibility.
-                </span>
-              </li>
+              <SeoBullet>
+                <strong class="text-content">JPEG:</strong> Best for photographs and images with complex color gradients. Supports lossy
+                compression only. Does not support transparency. Universal browser support. Typical use: hero images,
+                product photos, backgrounds.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">PNG:</strong> Best for images requiring transparency or pixel-perfect reproduction. Supports
+                lossless compression and an alpha channel for transparency. Files are larger than JPEG for photographic
+                content. Typical use: logos, icons, screenshots, UI elements.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">WebP:</strong> A modern format that supports both lossy and lossless compression, plus
+                transparency and animation. Produces significantly smaller files than both JPEG and PNG at comparable
+                quality. Supported by all modern browsers (Chrome, Firefox, Safari, Edge). Typical use: any web image
+                where you want the best compression with broad compatibility.
+              </SeoBullet>
             </ul>
             <p class="text-content-tertiary leading-relaxed mt-4">
               For new projects, WebP is generally the recommended default. It combines the best qualities of JPEG and
               PNG — lossy efficiency for photos, lossless option for graphics, and transparency support — in a single
-              format. Use the <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">&lt;picture&gt;</code> element with a JPEG or PNG fallback if you need to support
+              format. Use the <code class="code-inline">&lt;picture&gt;</code> element with a JPEG or PNG fallback if you need to support
               legacy browsers.
             </p>
-          </section>
+          </SeoSection>
 
-          <!-- When to Use Each Format -->
-          <section id="when-to-use" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              When to Use Each Format
-            </h2>
+          <SeoSection id="when-to-use" title="When to Use Each Format">
             <p class="text-content-tertiary leading-relaxed mb-4">
               Making the right format decision comes down to understanding your content and audience:
             </p>
             <ul class="space-y-3">
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Photographs and complex imagery:</strong> Use WebP lossy (preferred) or JPEG. Target quality
-                  75-85% for a good balance. Avoid PNG for photos — file sizes will be unnecessarily large.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Screenshots and UI mockups:</strong> Use WebP lossless or PNG. These images contain sharp text
-                  and UI elements that degrade visibly with lossy compression.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Logos and icons:</strong> Use SVG when possible (infinitely scalable, tiny file size). For
-                  raster logos, use WebP lossless or PNG with transparency.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Animated content:</strong> Use WebP animated or, for short clips, consider a muted video
-                  element with MP4/WebM. Avoid animated GIF — it produces large files with limited color depth.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Thumbnails and social media previews:</strong> Use WebP lossy or JPEG at moderate quality
-                  (60-75%). Small display sizes are forgiving of compression artifacts, so you can optimize aggressively.
-                </span>
-              </li>
+              <SeoBullet>
+                <strong class="text-content">Photographs and complex imagery:</strong> Use WebP lossy (preferred) or JPEG. Target quality
+                75-85% for a good balance. Avoid PNG for photos — file sizes will be unnecessarily large.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Screenshots and UI mockups:</strong> Use WebP lossless or PNG. These images contain sharp text
+                and UI elements that degrade visibly with lossy compression.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Logos and icons:</strong> Use SVG when possible (infinitely scalable, tiny file size). For
+                raster logos, use WebP lossless or PNG with transparency.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Animated content:</strong> Use WebP animated or, for short clips, consider a muted video
+                element with MP4/WebM. Avoid animated GIF — it produces large files with limited color depth.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Thumbnails and social media previews:</strong> Use WebP lossy or JPEG at moderate quality
+                (60-75%). Small display sizes are forgiving of compression artifacts, so you can optimize aggressively.
+              </SeoBullet>
             </ul>
             <p class="text-content-tertiary leading-relaxed mt-4">
               Our compressor tool lets you experiment with different formats and quality levels side by side, so you can
               find the optimal setting for each image before downloading.
             </p>
-          </section>
+          </SeoSection>
 
-          <!-- FAQ -->
-          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Frequently Asked Questions
-            </h2>
-            <div class="space-y-3">
-              <details
-                v-for="(faq, index) in faqItems"
-                :key="index"
-                class="group rounded-lg border border-surface-border bg-surface-secondary overflow-hidden"
-              >
-                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-content hover:bg-surface-secondary transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
-                  <span>{{ faq.question }}</span>
-                  <span class="shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none font-light">+</span>
-                </summary>
-                <p class="px-4 pb-4 text-content-tertiary leading-relaxed">
-                  {{ faq.answer }}
-                </p>
-              </details>
-            </div>
-          </section>
+          <SeoSection id="faq" title="Frequently Asked Questions">
+            <SeoFaq :items="faqItems" />
+          </SeoSection>
 
-          <!-- Built with -->
-          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Built With
-            </h2>
+          <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
               This tool leverages modern browser APIs and one open-source library for ZIP packaging.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <a
+              <SeoExternalLink
                 href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">Canvas API</div>
-                  <div class="text-xs text-content-muted">MDN - Image drawing and export</div>
-                </div>
-              </a>
-              <a
+                title="Canvas API"
+                description="MDN - Image drawing and export"
+              />
+              <SeoExternalLink
                 href="https://github.com/Stuk/jszip"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">JSZip</div>
-                  <div class="text-xs text-content-muted">GitHub - ZIP file creation</div>
-                </div>
-              </a>
-              <a
+                title="JSZip"
+                description="GitHub - ZIP file creation"
+              />
+              <SeoExternalLink
                 href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">Web Workers</div>
-                  <div class="text-xs text-content-muted">MDN - Background processing</div>
-                </div>
-              </a>
+                title="Web Workers"
+                description="MDN - Background processing"
+              />
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Related Tools -->
-          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Related Tools
-            </h2>
+          <SeoSection id="related-tools" title="Related Tools">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <NuxtLink
+              <SeoRelatedTool
                 to="/tools/json-formatter"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <Braces :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JSON Formatter</div>
-                  <div class="text-xs text-content-muted">Format, validate, and beautify JSON instantly</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
-              <NuxtLink
+                icon="Braces"
+                title="JSON Formatter"
+                description="Format, validate, and beautify JSON instantly"
+              />
+              <SeoRelatedTool
                 to="/tools/json-diff"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <GitCompare :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JSON Diff</div>
-                  <div class="text-xs text-content-muted">Compare and find differences between JSON objects</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
-              <NuxtLink
+                icon="GitCompare"
+                title="JSON Diff"
+                description="Compare and find differences between JSON objects"
+              />
+              <SeoRelatedTool
                 to="/tools/jwt-decoder"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <KeyRound :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JWT Decoder</div>
-                  <div class="text-xs text-content-muted">Decode and inspect JWT tokens instantly</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
+                icon="KeyRound"
+                title="JWT Decoder"
+                description="Decode and inspect JWT tokens instantly"
+              />
             </div>
-          </section>
+          </SeoSection>
         </div>
       </article>
     </template>

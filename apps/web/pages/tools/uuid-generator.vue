@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { TOOLS } from '@tiny-tools/shared';
 import { generateJsonLd } from '~/utils/seo';
-import { ExternalLink, ChevronRight, BookOpen, Code, ArrowRight, Binary, KeyRound } from 'lucide-vue-next';
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'uuid-generator')!;
@@ -29,6 +28,16 @@ const faqItems = [
     question: 'What is the difference between UUID and GUID?',
     answer: 'UUID and GUID (Globally Unique Identifier) are essentially the same thing. GUID is the term used by Microsoft (used in Windows, .NET, SQL Server), while UUID is the standard term used by the IETF RFC and most other platforms. They use the same format and are interchangeable.',
   },
+];
+
+const navLinks = [
+  { id: 'what-is-uuid', label: 'What is a UUID' },
+  { id: 'uuid-versions', label: 'UUID Versions' },
+  { id: 'v4-vs-v7', label: 'v4 vs v7' },
+  { id: 'database-keys', label: 'Database Keys' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'built-with', label: 'Built With' },
+  { id: 'related-tools', label: 'Related Tools' },
 ];
 
 useHead({
@@ -87,34 +96,10 @@ onMounted(() => {
 
     <template #seo-content>
       <article class="max-w-4xl mx-auto">
-        <!-- Quick links -->
-        <nav class="mb-6 flex flex-wrap gap-2">
-          <a
-            v-for="link in [
-              { id: 'what-is-uuid', label: 'What is a UUID' },
-              { id: 'uuid-versions', label: 'UUID Versions' },
-              { id: 'v4-vs-v7', label: 'v4 vs v7' },
-              { id: 'database-keys', label: 'Database Keys' },
-              { id: 'faq', label: 'FAQ' },
-              { id: 'built-with', label: 'Built With' },
-              { id: 'related-tools', label: 'Related Tools' },
-            ]"
-            :key="link.id"
-            :href="`#${link.id}`"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-secondary text-content-secondary hover:bg-brand-50 hover:text-brand-accent transition-colors scroll-smooth"
-          >
-            <ChevronRight :size="14" />
-            {{ link.label }}
-          </a>
-        </nav>
+        <SeoNav :links="navLinks" />
 
         <div class="space-y-6">
-          <!-- What is a UUID -->
-          <section id="what-is-uuid" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              What is a UUID?
-            </h2>
+          <SeoSection id="what-is-uuid" title="What is a UUID?">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 A UUID (Universally Unique Identifier) is a 128-bit label used to uniquely identify information in
@@ -123,19 +108,14 @@ onMounted(() => {
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 UUIDs are represented as 32 hexadecimal digits, displayed in five groups separated by hyphens in the
-                form <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx</code>,
-                where <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">M</code> indicates
-                the version and <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">N</code> indicates the variant.
+                form <code class="code-inline">xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx</code>,
+                where <code class="code-inline">M</code> indicates
+                the version and <code class="code-inline">N</code> indicates the variant.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- UUID Versions -->
-          <section id="uuid-versions" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              UUID Versions Explained
-            </h2>
+          <SeoSection id="uuid-versions" title="UUID Versions Explained" icon="code">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div class="rounded-lg border border-surface-border p-4 space-y-2">
                 <div class="flex items-center justify-between">
@@ -192,14 +172,9 @@ onMounted(() => {
                 </p>
               </div>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- v4 vs v7 -->
-          <section id="v4-vs-v7" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              UUID v4 vs v7: When to Use Which
-            </h2>
+          <SeoSection id="v4-vs-v7" title="UUID v4 vs v7: When to Use Which" icon="code">
             <div class="overflow-x-auto">
               <table class="w-full text-sm">
                 <thead>
@@ -238,14 +213,9 @@ onMounted(() => {
                 </tbody>
               </table>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Database Keys -->
-          <section id="database-keys" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              UUIDs as Database Primary Keys
-            </h2>
+          <SeoSection id="database-keys" title="UUIDs as Database Primary Keys">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 Using UUIDs as primary keys allows generating IDs client-side without a database round-trip, simplifies
@@ -258,109 +228,52 @@ onMounted(() => {
                 of the index — just like auto-increment integers — while retaining all the benefits of distributed ID generation.
               </p>
               <p class="text-content-tertiary leading-relaxed">
-                For PostgreSQL, store UUIDs as the native <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">uuid</code> type
-                (16 bytes) rather than <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">varchar(36)</code> (37 bytes).
-                For MySQL 8+, use <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">BINARY(16)</code> with
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">UUID_TO_BIN()</code> for optimal storage.
+                For PostgreSQL, store UUIDs as the native <code class="code-inline">uuid</code> type
+                (16 bytes) rather than <code class="code-inline">varchar(36)</code> (37 bytes).
+                For MySQL 8+, use <code class="code-inline">BINARY(16)</code> with
+                <code class="code-inline">UUID_TO_BIN()</code> for optimal storage.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- FAQ -->
-          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Frequently Asked Questions
-            </h2>
-            <div class="space-y-3">
-              <details
-                v-for="(faq, index) in faqItems"
-                :key="index"
-                class="group rounded-lg border border-surface-border bg-surface-secondary overflow-hidden"
-              >
-                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-content hover:bg-surface-secondary transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
-                  <span>{{ faq.question }}</span>
-                  <span class="shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none font-light">+</span>
-                </summary>
-                <p class="px-4 pb-4 text-content-tertiary leading-relaxed">
-                  {{ faq.answer }}
-                </p>
-              </details>
-            </div>
-          </section>
+          <SeoSection id="faq" title="Frequently Asked Questions">
+            <SeoFaq :items="faqItems" />
+          </SeoSection>
 
-          <!-- Built with -->
-          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Built With
-            </h2>
+          <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
               This generator uses the Web Crypto API for cryptographically secure random bytes — no external UUID libraries.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <a
+              <SeoExternalLink
                 href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">crypto.getRandomValues()</div>
-                  <div class="text-xs text-content-muted">CSPRNG for random bytes</div>
-                </div>
-              </a>
-              <a
+                title="crypto.getRandomValues()"
+                description="CSPRNG for random bytes"
+              />
+              <SeoExternalLink
                 href="https://www.rfc-editor.org/rfc/rfc9562"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">RFC 9562</div>
-                  <div class="text-xs text-content-muted">UUID specification (2024)</div>
-                </div>
-              </a>
+                title="RFC 9562"
+                description="UUID specification (2024)"
+              />
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Related Tools -->
-          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Related Tools
-            </h2>
+          <SeoSection id="related-tools" title="Related Tools">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <NuxtLink
+              <SeoRelatedTool
                 to="/tools/jwt-decoder"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <KeyRound :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JWT Decoder</div>
-                  <div class="text-xs text-content-muted">Decode and inspect JWT tokens</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
-              <NuxtLink
+                icon="KeyRound"
+                title="JWT Decoder"
+                description="Decode and inspect JWT tokens"
+              />
+              <SeoRelatedTool
                 to="/tools/base64-encode-decode"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <Binary :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">Base64 Encoder/Decoder</div>
-                  <div class="text-xs text-content-muted">Encode and decode Base64 strings</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
+                icon="Binary"
+                title="Base64 Encoder/Decoder"
+                description="Encode and decode Base64 strings"
+              />
             </div>
-          </section>
+          </SeoSection>
         </div>
       </article>
     </template>

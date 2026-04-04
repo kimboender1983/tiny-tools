@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { TOOLS } from '@tiny-tools/shared';
 import { generateJsonLd } from '~/utils/seo';
-import { ExternalLink, ChevronRight, BookOpen, Code, ArrowRight, KeyRound, Braces, Binary } from 'lucide-vue-next';
 
 const appStore = useAppStore();
 const tool = TOOLS.find((t) => t.slug === 'base64-encode-decode')!;
@@ -29,6 +28,16 @@ const faqItems = [
     question: 'Is it safe to decode Base64 in the browser?',
     answer: 'Yes. Our Base64 tool runs entirely in your browser using JavaScript\'s built-in btoa() and atob() functions combined with the TextEncoder/TextDecoder APIs for proper UTF-8 support. No data is ever sent to a server.',
   },
+];
+
+const navLinks = [
+  { id: 'what-is-base64', label: 'What is Base64' },
+  { id: 'how-it-works', label: 'How It Works' },
+  { id: 'common-uses', label: 'Common Uses' },
+  { id: 'url-safe', label: 'URL-Safe Base64' },
+  { id: 'faq', label: 'FAQ' },
+  { id: 'built-with', label: 'Built With' },
+  { id: 'related-tools', label: 'Related Tools' },
 ];
 
 useHead({
@@ -87,34 +96,10 @@ onMounted(() => {
 
     <template #seo-content>
       <article class="max-w-4xl mx-auto">
-        <!-- Quick links -->
-        <nav class="mb-6 flex flex-wrap gap-2">
-          <a
-            v-for="link in [
-              { id: 'what-is-base64', label: 'What is Base64' },
-              { id: 'how-it-works', label: 'How It Works' },
-              { id: 'common-uses', label: 'Common Uses' },
-              { id: 'url-safe', label: 'URL-Safe Base64' },
-              { id: 'faq', label: 'FAQ' },
-              { id: 'built-with', label: 'Built With' },
-              { id: 'related-tools', label: 'Related Tools' },
-            ]"
-            :key="link.id"
-            :href="`#${link.id}`"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-surface-secondary text-content-secondary hover:bg-brand-50 hover:text-brand-accent transition-colors scroll-smooth"
-          >
-            <ChevronRight :size="14" />
-            {{ link.label }}
-          </a>
-        </nav>
+        <SeoNav :links="navLinks" />
 
         <div class="space-y-6">
-          <!-- What is Base64 -->
-          <section id="what-is-base64" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              What is Base64 Encoding?
-            </h2>
+          <SeoSection id="what-is-base64" title="What is Base64 Encoding?">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 Base64 is a group of binary-to-text encoding schemes that represent binary data as a string of printable
@@ -123,26 +108,21 @@ onMounted(() => {
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 The name "Base64" comes from the 64 characters used in the encoding alphabet:
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">A-Z</code>,
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">a-z</code>,
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">0-9</code>,
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">+</code>, and
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">/</code>,
-                plus <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">=</code> for padding.
+                <code class="code-inline">A-Z</code>,
+                <code class="code-inline">a-z</code>,
+                <code class="code-inline">0-9</code>,
+                <code class="code-inline">+</code>, and
+                <code class="code-inline">/</code>,
+                plus <code class="code-inline">=</code> for padding.
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 Today, Base64 is used everywhere in web development — from data URIs in CSS and HTML, to encoding
                 authentication tokens, API payloads, and file uploads in JSON requests.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- How It Works -->
-          <section id="how-it-works" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              How Base64 Encoding Works
-            </h2>
+          <SeoSection id="how-it-works" title="How Base64 Encoding Works" icon="code">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 The encoding process converts every 3 bytes (24 bits) of input into 4 Base64 characters (6 bits each):
@@ -169,69 +149,44 @@ onMounted(() => {
                 <li class="flex items-start gap-3">
                   <span class="flex items-center justify-center w-6 h-6 rounded-full bg-brand-50 text-brand-accent text-xs font-bold shrink-0 mt-0.5">4</span>
                   <span class="text-content-tertiary leading-relaxed">
-                    If the input length isn't divisible by 3, pad the output with <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">=</code> characters
+                    If the input length isn't divisible by 3, pad the output with <code class="code-inline">=</code> characters
                   </span>
                 </li>
               </ol>
               <p class="text-content-tertiary leading-relaxed">
-                For example, the text <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">Hi</code> (2 bytes: 0x48, 0x69) becomes
-                <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">SGk=</code>. The <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">=</code> indicates one byte of padding was needed.
+                For example, the text <code class="code-inline">Hi</code> (2 bytes: 0x48, 0x69) becomes
+                <code class="code-inline">SGk=</code>. The <code class="code-inline">=</code> indicates one byte of padding was needed.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Common Uses -->
-          <section id="common-uses" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Common Uses of Base64
-            </h2>
+          <SeoSection id="common-uses" title="Common Uses of Base64">
             <ul class="space-y-3">
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Data URIs:</strong> Embed images, fonts, and other assets directly in CSS or HTML using
-                  <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">data:image/png;base64,...</code> syntax, eliminating extra HTTP requests.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">API Payloads:</strong> Send binary files (images, PDFs, documents) as JSON string fields in REST APIs, since JSON doesn't support raw binary data.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Authentication:</strong> HTTP Basic authentication encodes
-                  <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">username:password</code> as Base64 in the
-                  <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">Authorization</code> header. JWT tokens also use Base64url encoding for their header and payload segments.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Email (MIME):</strong> Email protocols were designed for ASCII text. MIME uses Base64 to encode binary attachments so they can be transmitted over SMTP.
-                </span>
-              </li>
-              <li class="flex items-start gap-3">
-                <span class="mt-2 h-2 w-2 rounded-full bg-brand-500 shrink-0"></span>
-                <span class="text-content-tertiary leading-relaxed">
-                  <strong class="text-content">Cryptographic Keys:</strong> SSH keys, SSL certificates, and PGP keys are commonly stored in PEM format, which is Base64-encoded DER data wrapped with header/footer lines.
-                </span>
-              </li>
+              <SeoBullet>
+                <strong class="text-content">Data URIs:</strong> Embed images, fonts, and other assets directly in CSS or HTML using
+                <code class="code-inline">data:image/png;base64,...</code> syntax, eliminating extra HTTP requests.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">API Payloads:</strong> Send binary files (images, PDFs, documents) as JSON string fields in REST APIs, since JSON doesn't support raw binary data.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Authentication:</strong> HTTP Basic authentication encodes
+                <code class="code-inline">username:password</code> as Base64 in the
+                <code class="code-inline">Authorization</code> header. JWT tokens also use Base64url encoding for their header and payload segments.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Email (MIME):</strong> Email protocols were designed for ASCII text. MIME uses Base64 to encode binary attachments so they can be transmitted over SMTP.
+              </SeoBullet>
+              <SeoBullet>
+                <strong class="text-content">Cryptographic Keys:</strong> SSH keys, SSL certificates, and PGP keys are commonly stored in PEM format, which is Base64-encoded DER data wrapped with header/footer lines.
+              </SeoBullet>
             </ul>
-          </section>
+          </SeoSection>
 
-          <!-- URL-Safe Base64 -->
-          <section id="url-safe" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              URL-Safe Base64 (base64url)
-            </h2>
+          <SeoSection id="url-safe" title="URL-Safe Base64 (base64url)" icon="code">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
-                Standard Base64 uses <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">+</code> and <code class="bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono">/</code> characters that have special meaning in URLs and filenames. RFC 4648 defines an alternative "URL and Filename Safe" alphabet:
+                Standard Base64 uses <code class="code-inline">+</code> and <code class="code-inline">/</code> characters that have special meaning in URLs and filenames. RFC 4648 defines an alternative "URL and Filename Safe" alphabet:
               </p>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div class="rounded-lg border border-surface-border p-4 text-center">
@@ -254,115 +209,51 @@ onMounted(() => {
                 This variant is used extensively in JWTs, OAuth tokens, and anywhere Base64 data appears in URLs or query parameters. Toggle the <strong class="text-content">URL-safe</strong> switch in our tool to use this encoding.
               </p>
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- FAQ -->
-          <section id="faq" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Frequently Asked Questions
-            </h2>
-            <div class="space-y-3">
-              <details
-                v-for="(faq, index) in faqItems"
-                :key="index"
-                class="group rounded-lg border border-surface-border bg-surface-secondary overflow-hidden"
-              >
-                <summary class="cursor-pointer flex items-center justify-between gap-2 p-4 font-medium text-content hover:bg-surface-secondary transition-colors select-none [&::-webkit-details-marker]:hidden list-none">
-                  <span>{{ faq.question }}</span>
-                  <span class="shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45 text-xl leading-none font-light">+</span>
-                </summary>
-                <p class="px-4 pb-4 text-content-tertiary leading-relaxed">
-                  {{ faq.answer }}
-                </p>
-              </details>
-            </div>
-          </section>
+          <SeoSection id="faq" title="Frequently Asked Questions">
+            <SeoFaq :items="faqItems" />
+          </SeoSection>
 
-          <!-- Built with -->
-          <section id="built-with" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <Code :size="20" class="text-brand-500" />
-              Built With
-            </h2>
+          <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
               This tool uses native browser APIs — no external encoding libraries needed.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              <a
+              <SeoExternalLink
                 href="https://developer.mozilla.org/en-US/docs/Web/API/btoa"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">btoa() / atob()</div>
-                  <div class="text-xs text-content-muted">Native Base64 encode/decode</div>
-                </div>
-              </a>
-              <a
+                title="btoa() / atob()"
+                description="Native Base64 encode/decode"
+              />
+              <SeoExternalLink
                 href="https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">TextEncoder / TextDecoder</div>
-                  <div class="text-xs text-content-muted">UTF-8 text handling</div>
-                </div>
-              </a>
-              <a
+                title="TextEncoder / TextDecoder"
+                description="UTF-8 text handling"
+              />
+              <SeoExternalLink
                 href="https://datatracker.ietf.org/doc/html/rfc4648"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <ExternalLink :size="16" class="text-gray-400 group-hover:text-brand-500 shrink-0" />
-                <div>
-                  <div class="text-sm font-medium text-content group-hover:text-brand-accent">RFC 4648</div>
-                  <div class="text-xs text-content-muted">Base Encodings specification</div>
-                </div>
-              </a>
+                title="RFC 4648"
+                description="Base Encodings specification"
+              />
             </div>
-          </section>
+          </SeoSection>
 
-          <!-- Related Tools -->
-          <section id="related-tools" class="bg-surface rounded-xl border border-surface-border p-6 sm:p-8">
-            <h2 class="text-xl font-bold text-content mb-4 border-l-4 border-brand-500 pl-4 flex items-center gap-2">
-              <BookOpen :size="20" class="text-brand-500" />
-              Related Tools
-            </h2>
+          <SeoSection id="related-tools" title="Related Tools">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <NuxtLink
+              <SeoRelatedTool
                 to="/tools/jwt-decoder"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <KeyRound :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JWT Decoder</div>
-                  <div class="text-xs text-content-muted">Decode and inspect JWT tokens (uses Base64url)</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
-              <NuxtLink
+                icon="KeyRound"
+                title="JWT Decoder"
+                description="Decode and inspect JWT tokens (uses Base64url)"
+              />
+              <SeoRelatedTool
                 to="/tools/json-formatter"
-                class="flex items-center gap-3 p-4 rounded-lg border border-surface-border bg-surface-secondary hover:border-brand-300 hover:bg-brand-50 transition-colors group"
-              >
-                <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-brand-50 text-brand-accent shrink-0">
-                  <Braces :size="18" />
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors">JSON Formatter</div>
-                  <div class="text-xs text-content-muted">Format and validate JSON data</div>
-                </div>
-                <ArrowRight :size="16" class="text-content-faint group-hover:text-brand-500 ml-auto shrink-0 transition-colors" />
-              </NuxtLink>
+                icon="Braces"
+                title="JSON Formatter"
+                description="Format and validate JSON data"
+              />
             </div>
-          </section>
+          </SeoSection>
         </div>
       </article>
     </template>

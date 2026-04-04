@@ -161,6 +161,10 @@
 }
 
 @layer components {
+  .code-inline {
+    @apply bg-surface-secondary text-brand-accent px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
   .tool-card {
     @apply bg-surface rounded-xl border border-surface-border shadow-tool-card
            transition-all duration-200 ease-out
