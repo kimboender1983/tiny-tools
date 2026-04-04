@@ -32,6 +32,10 @@ export class QueryFilterDto {
 
     @IsOptional()
     @IsString()
+    template?: string;
+
+    @IsOptional()
+    @IsString()
     sortBy?: string = "createdAt";
 
     @IsOptional()

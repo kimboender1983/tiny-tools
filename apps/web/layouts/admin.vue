@@ -9,6 +9,7 @@
         LogOut,
         UserCog,
         Users,
+        Wrench,
     } from "lucide-vue-next";
 
     const { logout } = useAuth();
@@ -20,6 +21,7 @@
     const navItems = [
         { label: "Dashboard", to: "/admin", icon: LayoutDashboard },
         { label: "Pages", to: "/admin/pages", icon: FileText },
+        { label: "Tools", to: "/admin/tools", icon: Wrench },
         { label: "Blog Posts", to: "/admin/blog", icon: BookOpen },
         { label: "Categories", to: "/admin/categories", icon: FolderOpen },
         { label: "Authors", to: "/admin/authors", icon: Users },

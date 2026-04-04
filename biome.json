@@ -50,6 +50,16 @@
             }
         },
         {
+            "includes": ["**/*.css"],
+            "linter": {
+                "rules": {
+                    "suspicious": {
+                        "noUnknownAtRules": "off"
+                    }
+                }
+            }
+        },
+        {
             "includes": ["**/*.vue"],
             "linter": {
                 "rules": {

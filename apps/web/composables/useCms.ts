@@ -13,6 +13,7 @@ interface ListParams {
     status?: string;
     category?: string;
     search?: string;
+    template?: string;
 }
 
 const AUTH = { authenticated: true } as const;

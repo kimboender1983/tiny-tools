@@ -45,6 +45,9 @@ export class PagesService {
         if (query.category) {
             filter.category = query.category;
         }
+        if (query.template) {
+            filter.template = query.template;
+        }
         if (query.search) {
             filter.$or = [
                 { title: { $regex: query.search, $options: "i" } },
