@@ -267,11 +267,19 @@
         <Globe :size="14" class="text-brand-500" />
         <span class="text-sm font-semibold text-content">World Clock</span>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 divide-surface-border/50">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         <div
-          v-for="tz in timezoneResults"
+          v-for="(tz, i) in timezoneResults"
           :key="tz.id"
-          class="flex items-center gap-3 px-4 py-3 sm:border-b sm:border-r border-surface-border/50"
+          class="flex items-center gap-3 px-4 py-3 border-surface-border/50"
+          :class="[
+            i < timezoneResults.length - 1 ? 'border-b' : '',
+            'sm:border-b',
+            (i + 1) % 2 !== 0 ? 'sm:border-r' : '',
+            (i + 1) % 4 !== 0 ? 'lg:border-r' : '',
+            i >= timezoneResults.length - 4 ? 'lg:border-b-0' : '',
+            i >= timezoneResults.length - 2 ? 'sm:max-lg:border-b-0' : '',
+          ]"
         >
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">

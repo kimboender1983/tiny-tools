@@ -26,23 +26,27 @@ export interface TimezoneEntry {
 }
 
 export const TIMEZONES = [
-    { id: "Pacific/Auckland", label: "NZST", city: "Auckland" },
-    { id: "Australia/Sydney", label: "AEST", city: "Sydney" },
-    { id: "Asia/Tokyo", label: "JST", city: "Tokyo" },
-    { id: "Asia/Shanghai", label: "CST", city: "Shanghai" },
-    { id: "Asia/Kolkata", label: "IST", city: "Mumbai" },
-    { id: "Asia/Dubai", label: "GST", city: "Dubai" },
-    { id: "Europe/Moscow", label: "MSK", city: "Moscow" },
-    { id: "Europe/Istanbul", label: "TRT", city: "Istanbul" },
-    { id: "Europe/Amsterdam", label: "CET", city: "Amsterdam" },
-    { id: "Europe/Berlin", label: "CET", city: "Berlin" },
-    { id: "Europe/London", label: "GMT", city: "London" },
-    { id: "America/Sao_Paulo", label: "BRT", city: "São Paulo" },
-    { id: "America/New_York", label: "EST", city: "New York" },
-    { id: "America/Chicago", label: "CST", city: "Chicago" },
-    { id: "America/Denver", label: "MST", city: "Denver" },
-    { id: "America/Los_Angeles", label: "PST", city: "Los Angeles" },
-    { id: "Pacific/Honolulu", label: "HST", city: "Honolulu" },
+    { id: "Pacific/Honolulu", label: "HST", city: "Honolulu" }, // UTC-10
+    { id: "America/Anchorage", label: "AKST", city: "Anchorage" }, // UTC-9
+    { id: "America/Los_Angeles", label: "PST", city: "Los Angeles" }, // UTC-8
+    { id: "America/Denver", label: "MST", city: "Denver" }, // UTC-7
+    { id: "America/Chicago", label: "CST", city: "Chicago" }, // UTC-6
+    { id: "America/New_York", label: "EST", city: "New York" }, // UTC-5
+    { id: "America/Santiago", label: "CLT", city: "Santiago" }, // UTC-4
+    { id: "America/Sao_Paulo", label: "BRT", city: "São Paulo" }, // UTC-3
+    { id: "Europe/London", label: "GMT", city: "London" }, // UTC+0
+    { id: "Europe/Amsterdam", label: "CET", city: "Amsterdam" }, // UTC+1
+    { id: "Africa/Cairo", label: "EET", city: "Cairo" }, // UTC+2
+    { id: "Europe/Moscow", label: "MSK", city: "Moscow" }, // UTC+3
+    { id: "Asia/Dubai", label: "GST", city: "Dubai" }, // UTC+4
+    { id: "Asia/Karachi", label: "PKT", city: "Karachi" }, // UTC+5
+    { id: "Asia/Kolkata", label: "IST", city: "Mumbai" }, // UTC+5:30
+    { id: "Asia/Dhaka", label: "BST", city: "Dhaka" }, // UTC+6
+    { id: "Asia/Bangkok", label: "ICT", city: "Bangkok" }, // UTC+7
+    { id: "Asia/Shanghai", label: "CST", city: "Shanghai" }, // UTC+8
+    { id: "Asia/Tokyo", label: "JST", city: "Tokyo" }, // UTC+9
+    { id: "Australia/Sydney", label: "AEST", city: "Sydney" }, // UTC+10
+    { id: "Pacific/Auckland", label: "NZST", city: "Auckland" }, // UTC+12
 ];
 
 export interface TimestampError {
@@ -107,7 +111,7 @@ function isLeapYear(year: number): boolean {
     return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 }
 
-function formatLocal(date: Date): string {
+function formatDateTime(date: Date, timeZone?: string): string {
     return date.toLocaleString(undefined, {
         year: "numeric",
         month: "long",
@@ -116,19 +120,7 @@ function formatLocal(date: Date): string {
         minute: "2-digit",
         second: "2-digit",
         timeZoneName: "short",
-    });
-}
-
-function formatUtc(date: Date): string {
-    return date.toLocaleString(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        timeZone: "UTC",
-        timeZoneName: "short",
+        ...(timeZone && { timeZone }),
     });
 }
 
@@ -233,8 +225,8 @@ export function useUnixTimestamp() {
     function buildParsed(date: Date) {
         const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
         parsed.value = {
-            local: formatLocal(date),
-            utc: formatUtc(date),
+            local: formatDateTime(date),
+            utc: formatDateTime(date, "UTC"),
             iso: date.toISOString(),
             relative: getRelativeTime(date),
             dayOfWeek: days[date.getDay()],
@@ -266,7 +258,7 @@ export function useUnixTimestamp() {
                 timeZoneName: "shortOffset",
             }).formatToParts(date);
             const offsetPart = parts.find((p) => p.type === "timeZoneName");
-            const offset = offsetPart?.value || "";
+            const offset = (offsetPart?.value || "").replace("GMT", "UTC");
             const abbrParts = new Intl.DateTimeFormat("en-US", {
                 timeZone: tz,
                 timeZoneName: "short",
