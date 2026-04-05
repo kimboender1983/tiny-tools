@@ -10,6 +10,25 @@ import {
 } from "class-validator";
 import { SeoFieldsDto } from "./seo-fields.dto";
 
+class AffiliateCtaDto {
+    @IsString()
+    affiliate!: string;
+
+    @IsString()
+    headline!: string;
+
+    @IsOptional()
+    @IsString()
+    body?: string;
+
+    @IsString()
+    buttonText!: string;
+
+    @IsOptional()
+    @IsString()
+    disclaimer?: string;
+}
+
 class FaqItemDto {
     @IsString()
     question!: string;
@@ -81,6 +100,11 @@ export class CreateBlogPostDto {
     @IsOptional()
     @IsString()
     techLogoTitleColor?: string;
+
+    @IsOptional()
+    @ValidateNested()
+    @Type(() => AffiliateCtaDto)
+    affiliateCta?: AffiliateCtaDto;
 
     @IsOptional()
     @IsArray()

@@ -1,6 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { AppModule } from "./app.module";
 
 async function bootstrap() {
@@ -22,6 +23,20 @@ async function bootstrap() {
         origin: frontendUrl,
         credentials: true,
     });
+
+    // Swagger API docs
+    const swaggerConfig = new DocumentBuilder()
+        .setTitle("Pickbox API")
+        .setDescription("Blog post creation API for external integrations")
+        .setVersion("1.0")
+        .addBearerAuth({ type: "http", scheme: "bearer", description: "API key (pb_xxx...)" }, "api-key")
+        .addTag("Blog API", "Create and manage blog posts via API key")
+        .build();
+    const document = SwaggerModule.createDocument(app, swaggerConfig, {
+        include: [],
+        deepScanRoutes: true,
+    });
+    SwaggerModule.setup("docs", app, document);
 
     app.useGlobalPipes(
         new ValidationPipe({

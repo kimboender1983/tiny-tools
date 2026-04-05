@@ -1,4 +1,4 @@
-import type { IAffiliate, IAuthor, IBlogPost, ICategory, IMedia, IPage, ITechLogo } from "@tiny-tools/shared";
+import type { IAffiliate, IApiKey, IAuthor, IBlogPost, ICategory, IMedia, IPage, ITechLogo } from "@tiny-tools/shared";
 
 interface PaginatedResponse<T> {
     items: T[];
@@ -138,5 +138,13 @@ export function useCms() {
         delete: (id: string) => api.delete<void>(`/cms/tech-logos/${id}`, AUTH),
     };
 
-    return { pages, blogPosts, categories, media, authors, affiliates, users, techLogos };
+    const apiKeys = {
+        list: () => api.get<IApiKey[]>("/cms/api-keys", AUTH),
+        create: (name: string, permissions?: string[]) =>
+            api.post<IApiKey>("/cms/api-keys", { name, permissions }, AUTH),
+        toggle: (id: string) => api.patch<IApiKey>(`/cms/api-keys/${id}/toggle`, {}, AUTH),
+        delete: (id: string) => api.delete<void>(`/cms/api-keys/${id}`, AUTH),
+    };
+
+    return { pages, blogPosts, categories, media, authors, affiliates, users, techLogos, apiKeys };
 }

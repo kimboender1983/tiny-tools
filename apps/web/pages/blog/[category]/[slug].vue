@@ -337,7 +337,8 @@
     const bgParam = p.techLogoBgColor ? `&bg=${encodeURIComponent(p.techLogoBgColor)}` : "";
     const bgToParam = p.techLogoBgColorTo ? `&bgTo=${encodeURIComponent(p.techLogoBgColorTo)}` : "";
     const pickboxParam = p.techLogoPickboxColor ? `&pickboxColor=${encodeURIComponent(p.techLogoPickboxColor)}` : "";
-    const ogImageFallback = `${siteUrl}/og-image.png?title=${encodeURIComponent(p.title)}&category=${encodeURIComponent(getCategoryName(p.category))}${logoParam}${colorParam}${bgParam}${bgToParam}${pickboxParam}`;
+    const titleColorParam = p.techLogoTitleColor ? `&titleColor=${encodeURIComponent(p.techLogoTitleColor)}` : "";
+    const ogImageFallback = `${siteUrl}/og-image.png?title=${encodeURIComponent(p.title)}&category=${encodeURIComponent(getCategoryName(p.category))}${logoParam}${colorParam}${bgParam}${bgToParam}${pickboxParam}${titleColorParam}`;
     const ogImage = p.seo?.ogImage || p.coverImage || ogImageFallback;
     const coverImage = p.coverImage || ogImageFallback;
 
@@ -573,6 +574,38 @@
           </div>
         </div>
       </aside>
+    </div>
+
+    <!-- Affiliate CTA -->
+    <div
+      v-if="post!.affiliateCta?.affiliate && post!.affiliateCta?.headline"
+      class="mt-12 relative rounded-2xl overflow-hidden border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-blue-50 dark:from-brand-900/20 dark:via-surface dark:to-blue-900/10 dark:border-brand-800/40"
+    >
+      <div class="absolute inset-0 bg-gradient-to-r from-brand-500/5 to-transparent" />
+      <div class="relative p-8 sm:p-10">
+        <h3 class="text-xl sm:text-2xl font-bold text-content mb-3">
+          {{ post!.affiliateCta.headline }}
+        </h3>
+        <div
+          v-if="post!.affiliateCta.body"
+          class="prose prose-sm dark:prose-invert mb-6 text-content-secondary max-w-none"
+          v-html="renderMarkdown(post!.affiliateCta.body)"
+        />
+        <a
+          :href="`/go/${post!.affiliateCta.affiliate}`"
+          target="_blank"
+          rel="noopener sponsored"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-500 text-white font-semibold text-sm sm:text-base hover:bg-brand-600 transition-all hover:shadow-lg hover:shadow-brand-500/25 hover:-translate-y-0.5"
+        >
+          {{ post!.affiliateCta.buttonText || 'Learn More' }}
+        </a>
+        <p
+          v-if="post!.affiliateCta.disclaimer"
+          class="mt-4 text-xs text-content-faint"
+        >
+          {{ post!.affiliateCta.disclaimer }}
+        </p>
+      </div>
     </div>
 
     <!-- Related posts -->

@@ -25,6 +25,9 @@ import { SlugService } from "./services/slug.service";
 import { TechLogosController } from "./controllers/tech-logos.controller";
 import { TechLogosService } from "./services/tech-logos.service";
 import { TechLogosSeedService } from "./services/tech-logos-seed.service";
+import { ApiKey, ApiKeySchema } from "./schemas/api-key.schema";
+import { ApiKeysController } from "./controllers/api-keys.controller";
+import { ApiKeysService } from "./services/api-keys.service";
 
 @Module({
     imports: [
@@ -37,6 +40,7 @@ import { TechLogosSeedService } from "./services/tech-logos-seed.service";
             { name: Affiliate.name, schema: AffiliateSchema },
             { name: AffiliateClick.name, schema: AffiliateClickSchema },
             { name: TechLogo.name, schema: TechLogoSchema },
+            { name: ApiKey.name, schema: ApiKeySchema },
         ]),
         AuthModule,
     ],
@@ -48,6 +52,7 @@ import { TechLogosSeedService } from "./services/tech-logos-seed.service";
         AuthorsController,
         AffiliatesController,
         TechLogosController,
+        ApiKeysController,
     ],
     providers: [
         SlugService,
@@ -59,7 +64,8 @@ import { TechLogosSeedService } from "./services/tech-logos-seed.service";
         AffiliatesService,
         TechLogosService,
         TechLogosSeedService,
+        ApiKeysService,
     ],
-    exports: [PagesService, BlogPostsService, CategoriesService, MediaService, AffiliatesService, TechLogosService],
+    exports: [PagesService, BlogPostsService, CategoriesService, MediaService, AffiliatesService, TechLogosService, ApiKeysService],
 })
 export class CmsModule {}

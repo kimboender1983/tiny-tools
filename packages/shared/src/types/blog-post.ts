@@ -6,6 +6,14 @@ import type { ITechLogo } from "./tech-logo";
 
 export type BlogPostStatus = "draft" | "published" | "archived";
 
+export interface IAffiliateCta {
+    affiliate: string;
+    headline: string;
+    body?: string;
+    buttonText: string;
+    disclaimer?: string;
+}
+
 export interface IBlogPost {
     _id: string;
     title: string;
@@ -24,6 +32,7 @@ export interface IBlogPost {
     techLogoBgColorTo?: string;
     techLogoPickboxColor?: string;
     techLogoTitleColor?: string;
+    affiliateCta?: IAffiliateCta;
     faq?: IFaqItem[];
     featured?: boolean;
     featuredHomepage?: boolean;

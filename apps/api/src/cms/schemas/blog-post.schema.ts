@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
+import { AffiliateCta, AffiliateCtaSchema } from "./affiliate-cta.schema";
 import { FaqItem, FaqItemSchema } from "./page.schema";
 import { SeoFields, SeoFieldsSchema } from "./seo-fields.schema";
 
@@ -58,6 +59,9 @@ export class BlogPost {
 
     @Prop()
     techLogoTitleColor?: string;
+
+    @Prop({ type: AffiliateCtaSchema })
+    affiliateCta?: AffiliateCta;
 
     @Prop({ type: [FaqItemSchema] })
     faq?: FaqItem[];

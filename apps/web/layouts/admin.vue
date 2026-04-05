@@ -9,6 +9,7 @@
         LogOut,
         UserCog,
         Users,
+        Key,
         Palette,
         Wrench,
     } from "lucide-vue-next";
@@ -29,19 +30,20 @@
         { label: "Affiliates", to: "/admin/affiliates", icon: Link },
         { label: "Tech Logos", to: "/admin/tech-logos", icon: Palette },
         { label: "Media", to: "/admin/media", icon: Image },
+        { label: "API Keys", to: "/admin/api-keys", icon: Key },
         { label: "Users", to: "/admin/users", icon: UserCog },
     ];
 </script>
 
 <template>
   <div class="min-h-screen flex bg-page">
-    <aside class="w-64 bg-surface border-r border-surface-border flex flex-col">
-      <div class="p-4 border-b border-surface-border">
+    <aside class="w-64 bg-surface border-r border-surface-border flex flex-col sticky top-0 h-screen overflow-y-auto">
+      <div class="p-4 border-b border-surface-border flex-shrink-0">
         <NuxtLink to="/admin" class="text-lg font-bold text-brand-500">
           Pickbox Admin
         </NuxtLink>
       </div>
-      <nav class="flex-1 p-3 space-y-1">
+      <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
         <NuxtLink
           v-for="item in navItems"
           :key="item.to"
@@ -53,7 +55,7 @@
           {{ item.label }}
         </NuxtLink>
       </nav>
-      <div class="p-3 border-t border-surface-border">
+      <div class="p-3 border-t border-surface-border flex-shrink-0">
         <button
           class="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium text-content-tertiary hover:bg-red-50 hover:text-red-600 transition-colors"
           @click="logout"

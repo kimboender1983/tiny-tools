@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import type {
         BlogPostStatus,
+        IAffiliate,
         IAuthor,
         IBlogPost,
         ICategory,
@@ -20,7 +21,9 @@
     const error = ref("");
     const categories = ref<ICategory[]>([]);
     const authors = ref<IAuthor[]>([]);
+    const affiliates = ref<IAffiliate[]>([]);
     const seoOpen = ref(false);
+    const ctaOpen = ref(false);
 
     const form = reactive({
         title: "",
@@ -45,6 +48,13 @@
             focusKeyword: "",
             ogImage: "",
             noIndex: false,
+        },
+        affiliateCta: {
+            affiliate: "",
+            headline: "",
+            body: "",
+            buttonText: "",
+            disclaimer: "",
         },
         faq: [] as IFaqItem[],
     });
@@ -77,14 +87,16 @@
         error.value = "";
 
         try {
-            const [post, catsRes, authorsRes] = await Promise.all([
+            const [post, catsRes, authorsRes, affiliatesRes] = await Promise.all([
                 cms.blogPosts.get(id),
                 cms.categories.list({ pageSize: 100 }),
                 cms.authors.list(),
+                cms.affiliates.list({ pageSize: 100 }),
             ]);
 
             categories.value = catsRes.items;
             authors.value = authorsRes;
+            affiliates.value = affiliatesRes.items;
 
             form.title = post.title;
             form.slug = post.slug;
@@ -101,6 +113,14 @@
             form.techLogoBgColorTo = post.techLogoBgColorTo || "";
             form.techLogoPickboxColor = post.techLogoPickboxColor || "";
             form.techLogoTitleColor = post.techLogoTitleColor || "";
+            if (post.affiliateCta) {
+                form.affiliateCta.affiliate = post.affiliateCta.affiliate || "";
+                form.affiliateCta.headline = post.affiliateCta.headline || "";
+                form.affiliateCta.body = post.affiliateCta.body || "";
+                form.affiliateCta.buttonText = post.affiliateCta.buttonText || "";
+                form.affiliateCta.disclaimer = post.affiliateCta.disclaimer || "";
+                ctaOpen.value = true;
+            }
             form.publishedAt = formatDateForInput(post.publishedAt);
             form.seo.metaTitle = post.seo?.metaTitle || "";
             form.seo.metaDescription = post.seo?.metaDescription || "";
@@ -159,6 +179,15 @@
                 techLogoBgColorTo: form.techLogoBgColorTo || undefined,
                 techLogoPickboxColor: form.techLogoPickboxColor || undefined,
                 techLogoTitleColor: form.techLogoTitleColor || undefined,
+                affiliateCta: form.affiliateCta.affiliate && form.affiliateCta.headline && form.affiliateCta.buttonText
+                    ? {
+                          affiliate: form.affiliateCta.affiliate,
+                          headline: form.affiliateCta.headline,
+                          body: form.affiliateCta.body || undefined,
+                          buttonText: form.affiliateCta.buttonText,
+                          disclaimer: form.affiliateCta.disclaimer || undefined,
+                      }
+                    : undefined,
                 readingTime: readingTime.value,
                 publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
                 seo:
@@ -305,6 +334,67 @@
                 <input v-model="form.seo.noIndex" type="checkbox" class="rounded border-gray-300 text-brand-500 focus:ring-brand-500" />
                 noIndex (hide from search engines)
               </label>
+            </div>
+          </div>
+
+          <!-- Affiliate CTA -->
+          <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
+            <button
+              type="button"
+              class="w-full flex items-center justify-between p-5"
+              @click="ctaOpen = !ctaOpen"
+            >
+              <h3 class="text-sm font-semibold text-content">Affiliate CTA</h3>
+              <ChevronDown v-if="!ctaOpen" :size="16" class="text-content-muted" />
+              <ChevronUp v-else :size="16" class="text-content-muted" />
+            </button>
+            <div v-if="ctaOpen" class="px-5 pb-5 space-y-3">
+              <div>
+                <label class="block text-sm font-medium text-content-secondary mb-1">Affiliate</label>
+                <select
+                  v-model="form.affiliateCta.affiliate"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+                >
+                  <option value="">None</option>
+                  <option v-for="aff in affiliates" :key="aff._id" :value="aff.slug">{{ aff.name }} ({{ aff.slug }})</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-content-secondary mb-1">Headline</label>
+                <input
+                  v-model="form.affiliateCta.headline"
+                  type="text"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+                  placeholder="Try Vultr Free"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-content-secondary mb-1">Body (Markdown)</label>
+                <textarea
+                  v-model="form.affiliateCta.body"
+                  rows="3"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+                  placeholder="Get $100 free credit when you sign up..."
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-content-secondary mb-1">Button Text</label>
+                <input
+                  v-model="form.affiliateCta.buttonText"
+                  type="text"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+                  placeholder="Get Started Free →"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-content-secondary mb-1">Disclaimer (optional)</label>
+                <input
+                  v-model="form.affiliateCta.disclaimer"
+                  type="text"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+                  placeholder="We may earn a commission at no extra cost to you."
+                />
+              </div>
             </div>
           </div>
 
