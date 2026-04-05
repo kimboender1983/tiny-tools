@@ -41,6 +41,21 @@ export class BlogPost {
     @Prop({ default: undefined })
     author?: string;
 
+    @Prop()
+    techLogo?: string;
+
+    @Prop()
+    techLogoColor?: string;
+
+    @Prop()
+    techLogoBgColor?: string;
+
+    @Prop()
+    techLogoBgColorTo?: string;
+
+    @Prop()
+    techLogoPickboxColor?: string;
+
     @Prop({ type: [FaqItemSchema] })
     faq?: FaqItem[];
 

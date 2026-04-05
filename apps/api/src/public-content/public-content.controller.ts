@@ -9,6 +9,7 @@ import { Author, AuthorDocument } from "../cms/schemas/author.schema";
 import { BlogPost, BlogPostDocument } from "../cms/schemas/blog-post.schema";
 import { Category, CategoryDocument } from "../cms/schemas/category.schema";
 import { Page, PageDocument } from "../cms/schemas/page.schema";
+import { TechLogo, TechLogoDocument } from "../cms/schemas/tech-logo.schema";
 
 @Controller("content")
 export class PublicContentController {
@@ -24,6 +25,8 @@ export class PublicContentController {
         private readonly affiliateModel: Model<AffiliateDocument>,
         @InjectModel(AffiliateClick.name)
         readonly _affiliateClickModel: Model<AffiliateClickDocument>,
+        @InjectModel(TechLogo.name)
+        private readonly techLogoModel: Model<TechLogoDocument>,
     ) {}
 
     private async resolvePostRefs(post: BlogPostDocument) {
@@ -50,6 +53,19 @@ export class PublicContentController {
                     .lean()
                     .exec();
                 if (category) obj.category = category;
+            } catch {
+                /* invalid id */
+            }
+        }
+
+        if (obj.techLogo) {
+            try {
+                const logo = await this.techLogoModel
+                    .findById(String(obj.techLogo))
+                    .select("name slug paths color bgColor viewBox fillRule")
+                    .lean()
+                    .exec();
+                if (logo) obj.techLogo = logo;
             } catch {
                 /* invalid id */
             }
@@ -207,6 +223,20 @@ export class PublicContentController {
                 updatedAt: c.updatedAt,
             })),
         };
+    }
+
+    @Get("tech-logos")
+    async getTechLogos() {
+        return this.techLogoModel.find().sort({ name: 1 }).lean().exec();
+    }
+
+    @Get("tech-logos/:slug")
+    async getTechLogoBySlug(@Param("slug") slug: string) {
+        const logo = await this.techLogoModel.findOne({ slug }).lean().exec();
+        if (!logo) {
+            throw new NotFoundException(`Tech logo "${slug}" not found`);
+        }
+        return logo;
     }
 
     @Get("affiliates")

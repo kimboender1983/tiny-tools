@@ -14,6 +14,7 @@ import { BlogPost, BlogPostSchema } from "./schemas/blog-post.schema";
 import { Category, CategorySchema } from "./schemas/category.schema";
 import { Media, MediaSchema } from "./schemas/media.schema";
 import { Page, PageSchema } from "./schemas/page.schema";
+import { TechLogo, TechLogoSchema } from "./schemas/tech-logo.schema";
 import { AffiliatesService } from "./services/affiliates.service";
 import { AuthorsService } from "./services/authors.service";
 import { BlogPostsService } from "./services/blog-posts.service";
@@ -21,6 +22,9 @@ import { CategoriesService } from "./services/categories.service";
 import { MediaService } from "./services/media.service";
 import { PagesService } from "./services/pages.service";
 import { SlugService } from "./services/slug.service";
+import { TechLogosController } from "./controllers/tech-logos.controller";
+import { TechLogosService } from "./services/tech-logos.service";
+import { TechLogosSeedService } from "./services/tech-logos-seed.service";
 
 @Module({
     imports: [
@@ -32,6 +36,7 @@ import { SlugService } from "./services/slug.service";
             { name: Author.name, schema: AuthorSchema },
             { name: Affiliate.name, schema: AffiliateSchema },
             { name: AffiliateClick.name, schema: AffiliateClickSchema },
+            { name: TechLogo.name, schema: TechLogoSchema },
         ]),
         AuthModule,
     ],
@@ -42,6 +47,7 @@ import { SlugService } from "./services/slug.service";
         MediaController,
         AuthorsController,
         AffiliatesController,
+        TechLogosController,
     ],
     providers: [
         SlugService,
@@ -51,7 +57,9 @@ import { SlugService } from "./services/slug.service";
         MediaService,
         AuthorsService,
         AffiliatesService,
+        TechLogosService,
+        TechLogosSeedService,
     ],
-    exports: [PagesService, BlogPostsService, CategoriesService, MediaService, AffiliatesService],
+    exports: [PagesService, BlogPostsService, CategoriesService, MediaService, AffiliatesService, TechLogosService],
 })
 export class CmsModule {}

@@ -5,5 +5,6 @@ export * from "./category";
 export * from "./media";
 export * from "./page";
 export * from "./seo";
+export * from "./tech-logo";
 export * from "./tool";
 export * from "./user";

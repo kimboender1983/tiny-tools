@@ -31,6 +31,18 @@
         return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
     }
 
+    function getCardImageUrl(post: IBlogPost): string {
+        const logoSlug = post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
+        const params = new URLSearchParams();
+        if (logoSlug) params.set("logo", logoSlug);
+        if (post.techLogoColor) params.set("color", post.techLogoColor);
+        if (post.techLogoBgColor) params.set("bg", post.techLogoBgColor);
+        if (post.techLogoBgColorTo) params.set("bgTo", post.techLogoBgColorTo);
+        if (post.techLogoPickboxColor) params.set("pickboxColor", post.techLogoPickboxColor);
+        const qs = params.toString();
+        return `/card-image.png${qs ? `?${qs}` : ""}`;
+    }
+
     const route = useRoute();
     const config = useRuntimeConfig();
     const api = useApi();
@@ -319,8 +331,15 @@
     const pageDescription = p.seo?.metaDescription || p.excerpt;
     const canonicalUrl =
         p.seo?.canonicalUrl || `${siteUrl}/blog/${getCategorySlug(p.category)}/${p.slug}`;
-    const ogImageFallback = `${siteUrl}/og-image.png?title=${encodeURIComponent(p.title)}&category=${encodeURIComponent(getCategoryName(p.category))}`;
+    const techLogoSlug = p.techLogo && typeof p.techLogo === "object" ? p.techLogo.slug : "";
+    const logoParam = techLogoSlug ? `&logo=${encodeURIComponent(techLogoSlug)}` : "";
+    const colorParam = p.techLogoColor ? `&color=${encodeURIComponent(p.techLogoColor)}` : "";
+    const bgParam = p.techLogoBgColor ? `&bg=${encodeURIComponent(p.techLogoBgColor)}` : "";
+    const bgToParam = p.techLogoBgColorTo ? `&bgTo=${encodeURIComponent(p.techLogoBgColorTo)}` : "";
+    const pickboxParam = p.techLogoPickboxColor ? `&pickboxColor=${encodeURIComponent(p.techLogoPickboxColor)}` : "";
+    const ogImageFallback = `${siteUrl}/og-image.png?title=${encodeURIComponent(p.title)}&category=${encodeURIComponent(getCategoryName(p.category))}${logoParam}${colorParam}${bgParam}${bgToParam}${pickboxParam}`;
     const ogImage = p.seo?.ogImage || p.coverImage || ogImageFallback;
+    const coverImage = p.coverImage || ogImageFallback;
 
     useHead({
         title: pageTitle,
@@ -461,12 +480,9 @@
         </header>
 
         <!-- Cover image -->
-        <div
-          v-if="post!.coverImage"
-          class="mb-10 rounded-xl overflow-hidden"
-        >
+        <div class="mb-10 rounded-xl overflow-hidden">
           <img
-            :src="post!.coverImage"
+            :src="coverImage"
             :alt="post!.title"
             class="w-full aspect-video object-cover"
           />
@@ -579,21 +595,11 @@
             class="aspect-video bg-surface-secondary overflow-hidden"
           >
             <img
-              v-if="related.coverImage"
-              :src="related.coverImage"
+              :src="related.coverImage || getCardImageUrl(related)"
               :alt="related.title"
               class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
             />
-            <div
-              v-else
-              class="w-full h-full flex items-center justify-center"
-            >
-              <BookOpen
-                :size="32"
-                class="text-content-faint"
-              />
-            </div>
           </div>
           <div class="p-4">
             <h3

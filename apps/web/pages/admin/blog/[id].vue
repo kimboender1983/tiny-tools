@@ -32,6 +32,11 @@
         tags: "",
         coverImage: "",
         author: "",
+        techLogo: "",
+        techLogoColor: "",
+        techLogoBgColor: "",
+        techLogoBgColorTo: "",
+        techLogoPickboxColor: "",
         publishedAt: "",
         seo: {
             metaTitle: "",
@@ -42,6 +47,10 @@
         },
         faq: [] as IFaqItem[],
     });
+
+    const selectedCategoryName = computed(() =>
+        categories.value.find((c) => c._id === form.category)?.name || "",
+    );
 
     const readingTime = computed(() => {
         const words = form.content.trim().split(/\s+/).filter(Boolean).length;
@@ -85,6 +94,11 @@
             form.tags = post.tags?.join(", ") || "";
             form.coverImage = post.coverImage || "";
             form.author = (post.author as string) || "";
+            form.techLogo = (post.techLogo as string) || "";
+            form.techLogoColor = post.techLogoColor || "";
+            form.techLogoBgColor = post.techLogoBgColor || "";
+            form.techLogoBgColorTo = post.techLogoBgColorTo || "";
+            form.techLogoPickboxColor = post.techLogoPickboxColor || "";
             form.publishedAt = formatDateForInput(post.publishedAt);
             form.seo.metaTitle = post.seo?.metaTitle || "";
             form.seo.metaDescription = post.seo?.metaDescription || "";
@@ -135,8 +149,13 @@
                 status: publish ? "published" : form.status,
                 category: form.category || undefined,
                 tags: tags.length > 0 ? tags : undefined,
-                coverImage: form.coverImage || undefined,
+                coverImage: form.coverImage || "",
                 author: form.author || undefined,
+                techLogo: form.techLogo || undefined,
+                techLogoColor: form.techLogoColor || undefined,
+                techLogoBgColor: form.techLogoBgColor || undefined,
+                techLogoBgColorTo: form.techLogoBgColorTo || undefined,
+                techLogoPickboxColor: form.techLogoPickboxColor || undefined,
                 readingTime: readingTime.value,
                 publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
                 seo:
@@ -374,7 +393,20 @@
 
             <div>
               <AdminMediaPicker v-model="form.coverImage" label="Cover Image" />
+              <div class="mt-2 p-3 rounded-lg bg-blue-50 border border-blue-200 text-xs text-blue-800">
+                If no cover image is uploaded, the auto-generated cover below is used.
+              </div>
             </div>
+
+            <AdminCoverEditor
+              v-model:tech-logo="form.techLogo"
+              v-model:logo-color="form.techLogoColor"
+              v-model:bg-color="form.techLogoBgColor"
+              v-model:bg-color-to="form.techLogoBgColorTo"
+              v-model:pickbox-color="form.techLogoPickboxColor"
+              :title="form.title"
+              :category="selectedCategoryName"
+            />
 
             <div>
               <label class="block text-sm font-medium text-content-secondary mb-1">Published Date</label>

@@ -2,6 +2,7 @@ import type { IAuthor } from "./author";
 import type { ICategory } from "./category";
 import type { IFaqItem } from "./page";
 import type { ISeoFields } from "./seo";
+import type { ITechLogo } from "./tech-logo";
 
 export type BlogPostStatus = "draft" | "published" | "archived";
 
@@ -17,6 +18,11 @@ export interface IBlogPost {
     status: BlogPostStatus;
     seo: ISeoFields;
     author?: string | IAuthor;
+    techLogo?: string | ITechLogo;
+    techLogoColor?: string;
+    techLogoBgColor?: string;
+    techLogoBgColorTo?: string;
+    techLogoPickboxColor?: string;
     faq?: IFaqItem[];
     featured?: boolean;
     featuredHomepage?: boolean;

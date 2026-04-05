@@ -9,6 +9,7 @@
         LogOut,
         UserCog,
         Users,
+        Palette,
         Wrench,
     } from "lucide-vue-next";
 
@@ -26,6 +27,7 @@
         { label: "Categories", to: "/admin/categories", icon: FolderOpen },
         { label: "Authors", to: "/admin/authors", icon: Users },
         { label: "Affiliates", to: "/admin/affiliates", icon: Link },
+        { label: "Tech Logos", to: "/admin/tech-logos", icon: Palette },
         { label: "Media", to: "/admin/media", icon: Image },
         { label: "Users", to: "/admin/users", icon: UserCog },
     ];

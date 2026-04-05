@@ -1,4 +1,4 @@
-import type { IAffiliate, IAuthor, IBlogPost, ICategory, IMedia, IPage } from "@tiny-tools/shared";
+import type { IAffiliate, IAuthor, IBlogPost, ICategory, IMedia, IPage, ITechLogo } from "@tiny-tools/shared";
 
 interface PaginatedResponse<T> {
     items: T[];
@@ -129,5 +129,14 @@ export function useCms() {
         delete: (id: string) => api.delete<void>(`/cms/users/${id}`, AUTH),
     };
 
-    return { pages, blogPosts, categories, media, authors, affiliates, users };
+    const techLogos = {
+        list: () => api.get<ITechLogo[]>("/cms/tech-logos", AUTH),
+        get: (id: string) => api.get<ITechLogo>(`/cms/tech-logos/${id}`, AUTH),
+        create: (data: Partial<ITechLogo>) => api.post<ITechLogo>("/cms/tech-logos", data, AUTH),
+        update: (id: string, data: Partial<ITechLogo>) =>
+            api.put<ITechLogo>(`/cms/tech-logos/${id}`, data, AUTH),
+        delete: (id: string) => api.delete<void>(`/cms/tech-logos/${id}`, AUTH),
+    };
+
+    return { pages, blogPosts, categories, media, authors, affiliates, users, techLogos };
 }

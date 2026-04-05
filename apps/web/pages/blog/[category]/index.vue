@@ -29,6 +29,18 @@
         return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
     }
 
+    function getCardImageUrl(post: IBlogPost): string {
+        const logoSlug = post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
+        const params = new URLSearchParams();
+        if (logoSlug) params.set("logo", logoSlug);
+        if (post.techLogoColor) params.set("color", post.techLogoColor);
+        if (post.techLogoBgColor) params.set("bg", post.techLogoBgColor);
+        if (post.techLogoBgColorTo) params.set("bgTo", post.techLogoBgColorTo);
+        if (post.techLogoPickboxColor) params.set("pickboxColor", post.techLogoPickboxColor);
+        const qs = params.toString();
+        return `/card-image.png${qs ? `?${qs}` : ""}`;
+    }
+
     const route = useRoute();
     const config = useRuntimeConfig();
     const api = useApi();
@@ -145,19 +157,11 @@
       >
         <div class="aspect-video overflow-hidden">
           <img
-            v-if="post.coverImage"
-            :src="post.coverImage"
+            :src="post.coverImage || getCardImageUrl(post)"
             :alt="post.title"
             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
-          <div v-else class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-50 via-blue-50 to-indigo-100">
-            <div class="w-14 h-14 rounded-2xl bg-white/80 flex items-center justify-center shadow-sm mb-2">
-              <component :is="getCategoryIcon(post.category)" v-if="getCategoryIcon(post.category)" :size="24" class="text-brand-accent" />
-              <BookOpen v-else :size="24" class="text-brand-accent" />
-            </div>
-            <span class="text-xs font-medium text-brand-accent/60">{{ getCategoryName(post.category) || 'Article' }}</span>
-          </div>
         </div>
 
         <div class="flex flex-col flex-1 p-5">
