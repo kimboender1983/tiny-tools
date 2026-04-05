@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -76,6 +76,27 @@ export class ApiBlogController {
                 createdAt: saved.createdAt,
             },
         };
+    }
+
+    @Get("blog")
+    @RequireApiKeyPermission("blog:create")
+    @ApiOperation({ summary: "List blog posts", description: "Returns all blog posts (title, slug, status, tags, publishedAt). Use to check for duplicates before creating." })
+    async listBlogPosts(
+        @Query("status") status?: string,
+        @Query("limit") limit = 50,
+    ) {
+        const filter: Record<string, unknown> = {};
+        if (status) filter.status = status;
+
+        const posts = await this.blogPostModel
+            .find(filter)
+            .select("title slug status tags category publishedAt createdAt")
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .lean()
+            .exec();
+
+        return { posts, total: posts.length };
     }
 
     @Get("blog/schema")
