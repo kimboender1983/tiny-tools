@@ -319,7 +319,8 @@
     const pageDescription = p.seo?.metaDescription || p.excerpt;
     const canonicalUrl =
         p.seo?.canonicalUrl || `${siteUrl}/blog/${getCategorySlug(p.category)}/${p.slug}`;
-    const ogImage = p.seo?.ogImage || p.coverImage;
+    const ogImageFallback = `${siteUrl}/og-image.png?title=${encodeURIComponent(p.title)}&category=${encodeURIComponent(getCategoryName(p.category))}`;
+    const ogImage = p.seo?.ogImage || p.coverImage || ogImageFallback;
 
     useHead({
         title: pageTitle,
