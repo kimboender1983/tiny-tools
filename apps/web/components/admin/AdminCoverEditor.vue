@@ -10,6 +10,7 @@
         bgColor: string;
         bgColorTo: string;
         pickboxColor: string;
+        titleColor: string;
     }>();
 
     const emit = defineEmits<{
@@ -18,6 +19,7 @@
         "update:bgColor": [value: string];
         "update:bgColorTo": [value: string];
         "update:pickboxColor": [value: string];
+        "update:titleColor": [value: string];
     }>();
 
     const cms = useCms();
@@ -41,6 +43,7 @@
     const resolvedBgFrom = computed(() => props.bgColor || selectedLogo.value?.bgColor || "#1e3a5f");
     const resolvedBgTo = computed(() => props.bgColorTo || adjustColor(resolvedBgFrom.value, -20));
     const resolvedPickbox = computed(() => props.pickboxColor || "#ffffff");
+    const resolvedTitle = computed(() => props.titleColor || "#ffffff");
 
     function fixPath(d: string): string {
         return /^[Mm]/.test(d.trim()) ? d : `M${d}`;
@@ -75,6 +78,7 @@
         emit("update:bgColor", "");
         emit("update:bgColorTo", "");
         emit("update:pickboxColor", "");
+        emit("update:titleColor", "");
     }
 </script>
 
@@ -97,9 +101,22 @@
     <AdminLogoPicker :model-value="props.techLogo" label="Tech Logo" @update:model-value="emit('update:techLogo', $event)" />
 
     <!-- Color controls -->
-    <div class="grid grid-cols-2 gap-2">
+    <div class="grid grid-cols-3 gap-2">
       <div>
-        <label class="block text-xs text-content-muted mb-1">Logo Color</label>
+        <label class="block text-xs text-content-muted mb-1">Title</label>
+        <div class="flex items-center gap-1">
+          <input :value="resolvedTitle" type="color" class="w-6 h-6 rounded border border-gray-300 cursor-pointer" @input="emit('update:titleColor', ($event.target as HTMLInputElement).value)" />
+          <input
+            :value="props.titleColor"
+            type="text"
+            class="flex-1 w-0 px-1.5 py-1 rounded border border-gray-300 bg-white text-gray-900 text-xs outline-none"
+            placeholder="#ffffff"
+            @input="emit('update:titleColor', ($event.target as HTMLInputElement).value)"
+          />
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs text-content-muted mb-1">Logo</label>
         <div class="flex items-center gap-1">
           <input :value="resolvedLogoColor" type="color" class="w-6 h-6 rounded border border-gray-300 cursor-pointer" @input="emit('update:logoColor', ($event.target as HTMLInputElement).value)" />
           <input
@@ -181,7 +198,7 @@
         <!-- Title row -->
         <div class="flex items-center gap-2 relative z-10">
           <div v-if="selectedLogo" v-html="renderTechLogo(24)" />
-          <span class="text-white font-bold text-sm leading-tight line-clamp-2" style="max-width: 85%">
+          <span class="font-bold text-sm leading-tight line-clamp-2" :style="{ color: resolvedTitle, maxWidth: '85%' }">
             {{ title || 'Blog Post Title' }}
           </span>
         </div>

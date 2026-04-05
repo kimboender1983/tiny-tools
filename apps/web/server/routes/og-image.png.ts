@@ -82,6 +82,7 @@ export default defineEventHandler(async (event) => {
     const bgOverride = (query.bg as string) || "";
     const bgToOverride = (query.bgTo as string) || "";
     const pickboxColor = (query.pickboxColor as string) || "white";
+    const titleColor = (query.titleColor as string) || "#ffffff";
 
     const logo = logoSlug ? await fetchLogo(logoSlug) : null;
     const fonts = await getFonts();
@@ -152,7 +153,7 @@ export default defineEventHandler(async (event) => {
                         style: {
                             fontSize: title.length > 60 ? "42px" : title.length > 40 ? "52px" : "60px",
                             fontWeight: 700,
-                            color: "#ffffff",
+                            color: titleColor,
                             lineHeight: 1.2,
                             letterSpacing: "-0.03em",
                         },

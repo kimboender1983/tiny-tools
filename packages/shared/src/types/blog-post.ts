@@ -23,6 +23,7 @@ export interface IBlogPost {
     techLogoBgColor?: string;
     techLogoBgColorTo?: string;
     techLogoPickboxColor?: string;
+    techLogoTitleColor?: string;
     faq?: IFaqItem[];
     featured?: boolean;
     featuredHomepage?: boolean;

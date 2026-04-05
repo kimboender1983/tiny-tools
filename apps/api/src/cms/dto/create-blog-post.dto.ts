@@ -79,6 +79,10 @@ export class CreateBlogPostDto {
     techLogoPickboxColor?: string;
 
     @IsOptional()
+    @IsString()
+    techLogoTitleColor?: string;
+
+    @IsOptional()
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() => FaqItemDto)

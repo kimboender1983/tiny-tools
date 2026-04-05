@@ -37,6 +37,7 @@
         techLogoBgColor: "",
         techLogoBgColorTo: "",
         techLogoPickboxColor: "",
+        techLogoTitleColor: "",
         publishedAt: "",
         seo: {
             metaTitle: "",
@@ -99,6 +100,7 @@
             form.techLogoBgColor = post.techLogoBgColor || "";
             form.techLogoBgColorTo = post.techLogoBgColorTo || "";
             form.techLogoPickboxColor = post.techLogoPickboxColor || "";
+            form.techLogoTitleColor = post.techLogoTitleColor || "";
             form.publishedAt = formatDateForInput(post.publishedAt);
             form.seo.metaTitle = post.seo?.metaTitle || "";
             form.seo.metaDescription = post.seo?.metaDescription || "";
@@ -156,6 +158,7 @@
                 techLogoBgColor: form.techLogoBgColor || undefined,
                 techLogoBgColorTo: form.techLogoBgColorTo || undefined,
                 techLogoPickboxColor: form.techLogoPickboxColor || undefined,
+                techLogoTitleColor: form.techLogoTitleColor || undefined,
                 readingTime: readingTime.value,
                 publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
                 seo:
@@ -404,6 +407,7 @@
               v-model:bg-color="form.techLogoBgColor"
               v-model:bg-color-to="form.techLogoBgColorTo"
               v-model:pickbox-color="form.techLogoPickboxColor"
+              v-model:title-color="form.techLogoTitleColor"
               :title="form.title"
               :category="selectedCategoryName"
             />

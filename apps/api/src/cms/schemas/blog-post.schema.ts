@@ -56,6 +56,9 @@ export class BlogPost {
     @Prop()
     techLogoPickboxColor?: string;
 
+    @Prop()
+    techLogoTitleColor?: string;
+
     @Prop({ type: [FaqItemSchema] })
     faq?: FaqItem[];
 
