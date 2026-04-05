@@ -1,6 +1,23 @@
 import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 
+let fontCache: ArrayBuffer | null = null;
+
+async function getFont() {
+    if (!fontCache) {
+        const url = "https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap";
+        const cssRes = await fetch(url, {
+            headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36" },
+        });
+        const css = await cssRes.text();
+        const match = css.match(/src:\s*url\(([^)]+)\)/);
+        if (!match) throw new Error("Could not extract font URL");
+        const fontRes = await fetch(match[1]);
+        fontCache = await fontRes.arrayBuffer();
+    }
+    return [{ name: "Inter", data: fontCache, weight: 400 as const, style: "normal" as const }];
+}
+
 interface LogoData {
     name: string;
     slug: string;
@@ -145,7 +162,7 @@ export default defineEventHandler(async (event) => {
                 children,
             },
         },
-        { width: 600, height: 315, fonts: [] },
+        { width: 600, height: 315, fonts: await getFont() },
     );
 
     const resvg = new Resvg(svg, { fitTo: { mode: "width", value: 600 } });
