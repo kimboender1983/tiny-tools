@@ -6,6 +6,7 @@ import {
     HttpCode,
     HttpStatus,
     Param,
+    Patch,
     Post,
     Put,
     Query,
@@ -42,6 +43,11 @@ export class PagesController {
     @Put(":id")
     update(@Param("id") id: string, @Body() dto: UpdatePageDto) {
         return this.pagesService.update(id, dto);
+    }
+
+    @Patch("batch/status")
+    async batchUpdateStatus(@Body() dto: { ids: string[]; status: string }) {
+        return this.pagesService.batchUpdateStatus(dto.ids, dto.status);
     }
 
     @Delete(":id")

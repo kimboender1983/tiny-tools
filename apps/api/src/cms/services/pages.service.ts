@@ -117,6 +117,13 @@ export class PagesService {
         return updated;
     }
 
+    async batchUpdateStatus(ids: string[], status: string): Promise<{ modifiedCount: number }> {
+        const result = await this.pageModel
+            .updateMany({ _id: { $in: ids } }, { $set: { status } })
+            .exec();
+        return { modifiedCount: result.modifiedCount };
+    }
+
     async delete(id: string): Promise<void> {
         const result = await this.pageModel.findByIdAndDelete(id).exec();
         if (!result) {

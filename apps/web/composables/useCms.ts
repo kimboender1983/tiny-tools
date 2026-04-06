@@ -32,6 +32,8 @@ export function useCms() {
         update: (id: string, data: Partial<IPage>) =>
             api.put<IPage>(`/cms/pages/${id}`, data, AUTH),
         delete: (id: string) => api.delete<void>(`/cms/pages/${id}`, AUTH),
+        batchUpdateStatus: (ids: string[], status: string) =>
+            api.patch<{ modifiedCount: number }>("/cms/pages/batch/status", { ids, status }, AUTH),
     };
 
     const blogPosts = {
