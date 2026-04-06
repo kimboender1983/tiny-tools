@@ -107,7 +107,7 @@ export const TOOLS: IToolMeta[] = [
     },
     {
         name: "Unix Timestamp Converter",
-        slug: "unix-timestamp",
+        slug: "unix-timestamp-converter",
         description: "Convert between Unix timestamps and human-readable dates",
         icon: "Clock",
         category: "Converters",
