@@ -486,11 +486,24 @@
 .prose pre {
     background: #282c34;
     padding: 1.25rem;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.prose pre code {
+    white-space: pre;
+    word-break: normal;
+    overflow-wrap: normal;
 }
 
 .prose pre code.hljs {
     background: transparent;
     padding: 0;
+}
+
+.prose {
+    min-width: 0;
+    overflow-wrap: break-word;
 }
 
 .hljs {
