@@ -60,6 +60,11 @@ export class BlogPostsController {
         return this.blogPostsService.toggleHomepageHero(id);
     }
 
+    @Patch("batch/status")
+    async batchUpdateStatus(@Body() dto: { ids: string[]; status: string }) {
+        return this.blogPostsService.batchUpdateStatus(dto.ids, dto.status);
+    }
+
     @Delete(":id")
     @HttpCode(HttpStatus.NO_CONTENT)
     async delete(@Param("id") id: string) {

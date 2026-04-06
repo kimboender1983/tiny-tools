@@ -194,6 +194,13 @@ export class BlogPostsService {
         return updated;
     }
 
+    async batchUpdateStatus(ids: string[], status: string): Promise<{ modifiedCount: number }> {
+        const result = await this.blogPostModel
+            .updateMany({ _id: { $in: ids } }, { $set: { status } })
+            .exec();
+        return { modifiedCount: result.modifiedCount };
+    }
+
     async delete(idOrSlug: string): Promise<void> {
         const id = await this.resolveId(idOrSlug);
         const result = await this.blogPostModel.findByIdAndDelete(id).exec();

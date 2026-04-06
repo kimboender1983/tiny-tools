@@ -48,6 +48,8 @@ export function useCms() {
             api.patch<IBlogPost>(`/cms/blog-posts/${id}/featured-homepage`, {}, AUTH),
         toggleHomepageHero: (id: string) =>
             api.patch<IBlogPost>(`/cms/blog-posts/${id}/homepage-hero`, {}, AUTH),
+        batchUpdateStatus: (ids: string[], status: string) =>
+            api.patch<{ modifiedCount: number }>("/cms/blog-posts/batch/status", { ids, status }, AUTH),
     };
 
     const categories = {

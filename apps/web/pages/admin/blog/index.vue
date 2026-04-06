@@ -17,6 +17,37 @@
     const statusFilter = ref<string>("");
     const categoryFilter = ref<string>("");
     const deleteConfirmId = ref<string | null>(null);
+    const selected = ref<Set<string>>(new Set());
+
+    const allSelected = computed(() => posts.value.length > 0 && selected.value.size === posts.value.length);
+    const someSelected = computed(() => selected.value.size > 0 && !allSelected.value);
+
+    function toggleAll() {
+        if (allSelected.value) {
+            selected.value = new Set();
+        } else {
+            selected.value = new Set(posts.value.map((p) => p._id));
+        }
+    }
+
+    function toggleOne(id: string) {
+        const s = new Set(selected.value);
+        if (s.has(id)) s.delete(id);
+        else s.add(id);
+        selected.value = s;
+    }
+
+    async function batchStatus(status: string) {
+        if (selected.value.size === 0) return;
+        try {
+            const result = await cms.blogPosts.batchUpdateStatus([...selected.value], status);
+            toast.success(`${result.modifiedCount} post(s) updated to ${status}`);
+            selected.value = new Set();
+            await loadPosts();
+        } catch (e: unknown) {
+            toast.error(e instanceof Error ? e.message : "Batch update failed");
+        }
+    }
 
     const categoryMap = computed(() => {
         const map = new Map<string, ICategory>();
@@ -216,6 +247,16 @@
       </div>
     </div>
 
+    <!-- Batch actions -->
+    <div v-if="selected.size > 0" class="mb-3 flex items-center gap-2 p-2 rounded-lg bg-brand-50 border border-brand-200 text-sm">
+      <span class="text-brand-700 font-medium">{{ selected.size }} selected</span>
+      <div class="flex-1" />
+      <button class="px-3 py-1 rounded-md bg-green-600 text-white text-xs font-medium hover:bg-green-700" @click="batchStatus('published')">Publish</button>
+      <button class="px-3 py-1 rounded-md bg-yellow-500 text-white text-xs font-medium hover:bg-yellow-600" @click="batchStatus('draft')">Draft</button>
+      <button class="px-3 py-1 rounded-md bg-gray-500 text-white text-xs font-medium hover:bg-gray-600" @click="batchStatus('archived')">Archive</button>
+      <button class="px-3 py-1 rounded-md border border-divider text-content-tertiary text-xs hover:bg-surface-secondary" @click="selected = new Set()">Clear</button>
+    </div>
+
     <!-- Table -->
     <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
       <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
@@ -223,6 +264,15 @@
       <table v-else class="w-full text-sm">
         <thead>
           <tr class="border-b border-surface-border text-left">
+            <th class="px-2 py-3 w-10" @click.stop>
+              <input
+                type="checkbox"
+                :checked="allSelected"
+                :indeterminate="someSelected"
+                class="rounded border-gray-300 cursor-pointer"
+                @change="toggleAll"
+              />
+            </th>
             <th class="px-4 py-3 font-medium text-content-muted">Title</th>
             <th class="px-4 py-3 font-medium text-content-muted">Slug</th>
             <th class="px-4 py-3 font-medium text-content-muted">Category</th>
@@ -238,6 +288,14 @@
             class="hover:bg-surface-secondary transition-colors cursor-pointer"
             @click="navigateTo(`/admin/blog/${post._id}`)"
           >
+            <td class="px-2 py-3" @click.stop>
+              <input
+                type="checkbox"
+                :checked="selected.has(post._id)"
+                class="rounded border-gray-300 cursor-pointer"
+                @change="toggleOne(post._id)"
+              />
+            </td>
             <td class="px-4 py-3 font-medium text-content">{{ post.title }}</td>
             <td class="px-4 py-3 text-content-muted font-mono text-xs">{{ post.slug }}</td>
             <td class="px-4 py-3 text-content-muted text-xs">
