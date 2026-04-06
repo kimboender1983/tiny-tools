@@ -20,6 +20,7 @@
         "lucide-vue-next": "^0.474.0",
         "marked": "^17.0.5",
         "md-editor-v3": "^6.4.1",
+        "mermaid": "^11.14.0",
         "pinia": "^2.3.0",
         "satori": "^0.26.0",
         "satori-html": "^0.3.2",

@@ -73,7 +73,7 @@
     );
 
     // --- Markdown rendering with syntax highlighting + affiliate links ---
-    import { processAffiliateLinks, renderMarkdown } from "~/utils/markdown";
+    import { processAffiliateLinks, processPlaygroundEmbeds, renderMarkdown } from "~/utils/markdown";
 
     // Fetch active affiliates for shortcode resolution
     const { data: affiliatesData } = await useAsyncData("affiliates-map", () =>
@@ -98,8 +98,10 @@
     // Render markdown to HTML
     const renderedHtml = computed(() => {
         if (!post.value?.content) return "";
-        const html = renderMarkdown(post.value.content);
-        return processAffiliateLinks(html, affiliatesMap.value);
+        let html = renderMarkdown(post.value.content);
+        html = processAffiliateLinks(html, affiliatesMap.value);
+        html = processPlaygroundEmbeds(html);
+        return html;
     });
 
     // Extract headings from rendered HTML for table of contents
@@ -181,6 +183,19 @@
 
             // Image lightbox — click to zoom
             initImageLightbox();
+
+            // Initialize Mermaid diagrams if any exist
+            const mermaidEls = document.querySelectorAll(".mermaid");
+            if (mermaidEls.length > 0) {
+                import("mermaid").then(({ default: mermaid }) => {
+                    mermaid.initialize({
+                        startOnLoad: false,
+                        theme: document.documentElement.classList.contains("dark") ? "dark" : "default",
+                        securityLevel: "loose",
+                    });
+                    mermaid.run({ nodes: mermaidEls as unknown as ArrayLike<HTMLElement> });
+                });
+            }
         });
     });
 

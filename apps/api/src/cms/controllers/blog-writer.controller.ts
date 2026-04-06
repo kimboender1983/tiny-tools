@@ -127,6 +127,9 @@ export class SchedulerConfigController {
         interval?: string;
         defaultTone?: string;
         model?: string;
+        includeDiagrams?: boolean;
+        includePlaygrounds?: boolean;
+        includeComparisonTables?: boolean;
         categoryRotation?: string[];
     }) {
         let config = await this.configModel.findOne().exec();
@@ -142,6 +145,9 @@ export class SchedulerConfigController {
         if (dto.interval) config.interval = dto.interval;
         if (dto.defaultTone !== undefined) config.defaultTone = dto.defaultTone;
         if (dto.model !== undefined) config.aiModel = dto.model;
+        if (dto.includeDiagrams !== undefined) config.includeDiagrams = dto.includeDiagrams;
+        if (dto.includePlaygrounds !== undefined) config.includePlaygrounds = dto.includePlaygrounds;
+        if (dto.includeComparisonTables !== undefined) config.includeComparisonTables = dto.includeComparisonTables;
         if (dto.categoryRotation) config.categoryRotation = dto.categoryRotation;
         return config.save();
     }
@@ -158,7 +164,7 @@ export class BlogWriterController {
 
     @Post("generate")
     @HttpCode(HttpStatus.CREATED)
-    async generate(@Body() dto: { topic: string; toneId?: string; categoryId?: string; type?: string; model?: string }) {
+    async generate(@Body() dto: { topic: string; toneId?: string; categoryId?: string; type?: string; model?: string; includeDiagrams?: boolean; includePlaygrounds?: boolean; includeComparisonTables?: boolean }) {
         return this.blogWriterService.generate(dto);
     }
 

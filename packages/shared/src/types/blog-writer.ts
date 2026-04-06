@@ -43,6 +43,9 @@ export interface ISchedulerConfig {
     interval: "15min" | "30min" | "hourly" | "daily" | "weekly";
     defaultTone?: string;
     aiModel?: string;
+    includeDiagrams?: boolean;
+    includePlaygrounds?: boolean;
+    includeComparisonTables?: boolean;
     categoryRotation: string[];
     lastCategoryIndex: number;
     lastRunAt?: Date;

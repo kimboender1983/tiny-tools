@@ -20,6 +20,15 @@ export class SchedulerConfig {
     @Prop({ type: [String], default: [] })
     categoryRotation!: string[];
 
+    @Prop({ default: false })
+    includeDiagrams!: boolean;
+
+    @Prop({ default: false })
+    includePlaygrounds!: boolean;
+
+    @Prop({ default: false })
+    includeComparisonTables!: boolean;
+
     @Prop({ default: 0 })
     lastCategoryIndex!: number;
 

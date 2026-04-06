@@ -19,6 +19,9 @@ interface GenerateOptions {
     categoryId?: string;
     type?: string;
     model?: string;
+    includeDiagrams?: boolean;
+    includePlaygrounds?: boolean;
+    includeComparisonTables?: boolean;
 }
 
 interface ParsedBlogPost {
@@ -89,7 +92,11 @@ export class BlogWriterService {
             ]);
 
             // 4. Build the prompt
-            const systemPrompt = this.buildSystemPrompt(tone?.content || "", categories, techLogos, authors, existingPosts);
+            const systemPrompt = this.buildSystemPrompt(tone?.content || "", categories, techLogos, authors, existingPosts, {
+                includeDiagrams: options.includeDiagrams,
+                includePlaygrounds: options.includePlaygrounds,
+                includeComparisonTables: options.includeComparisonTables,
+            });
             const userPrompt = this.buildUserPrompt(options, categories);
 
             // 5. Call Claude with tool use for structured output
@@ -230,6 +237,7 @@ export class BlogWriterService {
         techLogos: Array<{ name: string; slug: string; _id: unknown }>,
         authors: Array<{ name: string; _id: unknown }>,
         existingPosts: Array<{ title: string; slug: string; tags?: string[] }>,
+        mediaOptions?: { includeDiagrams?: boolean; includePlaygrounds?: boolean; includeComparisonTables?: boolean },
     ): string {
         const categoryList = categories.map((c) => `- ${c.name} (ID: ${c._id})`).join("\n");
         const logoList = techLogos.map((l) => `- ${l.name} / ${l.slug} (ID: ${l._id})`).join("\n");
@@ -257,7 +265,18 @@ Do NOT write about any topic that overlaps with the existing posts above. If the
 - Use fenced code blocks with language tags where appropriate
 - Status is always "draft" — do not include status in your output
 - Pick the most relevant category from the list
-- Pick a tech logo if the post is about a specific technology`;
+- Pick a tech logo if the post is about a specific technology
+${mediaOptions?.includeDiagrams ? `
+## DIAGRAMS
+Include 1-2 Mermaid diagrams where they add clarity (architecture, data flow, comparisons). Use \`\`\`mermaid code blocks. Keep diagrams simple and readable.` : ""}
+${mediaOptions?.includePlaygrounds ? `
+## CODE PLAYGROUNDS
+For key code examples, include embedded code playgrounds using this syntax in the markdown:
+<!-- stackblitz:project-id --> or <!-- codesandbox:sandbox-id -->
+Only include these for examples that benefit from being interactive. Use real project IDs from StackBlitz or CodeSandbox.` : ""}
+${mediaOptions?.includeComparisonTables ? `
+## COMPARISON TABLES
+Include at least one well-structured markdown comparison table. Use tables for feature comparisons, pros/cons, tool comparisons, or performance metrics. Format clearly with aligned columns.` : ""}`;
     }
 
     private buildUserPrompt(

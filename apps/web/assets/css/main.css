@@ -289,6 +289,112 @@
     @apply text-[0.7em] ml-0.5 opacity-50;
 }
 
+/* Callout boxes for blog content */
+.prose .callout {
+    @apply my-6 px-5 py-4 rounded-xl border-l-4 text-sm;
+    background: rgb(var(--color-surface-secondary));
+}
+
+.prose .callout p {
+    @apply m-0;
+}
+
+.prose .callout p + p {
+    @apply mt-2;
+}
+
+.prose .callout-title {
+    @apply font-semibold text-base mb-1.5 flex items-center gap-2;
+}
+
+.prose .callout-info {
+    @apply border-blue-500;
+}
+
+.prose .callout-info .callout-title {
+    @apply text-blue-600;
+}
+
+.prose .callout-info .callout-title::before {
+    content: "ℹ️";
+}
+
+.prose .callout-warning {
+    @apply border-amber-500;
+}
+
+.prose .callout-warning .callout-title {
+    @apply text-amber-600;
+}
+
+.prose .callout-warning .callout-title::before {
+    content: "⚠️";
+}
+
+.prose .callout-tip {
+    @apply border-green-500;
+}
+
+.prose .callout-tip .callout-title {
+    @apply text-green-600;
+}
+
+.prose .callout-tip .callout-title::before {
+    content: "💡";
+}
+
+.prose .callout-key-takeaway {
+    @apply border-purple-500;
+    background: rgb(var(--color-surface-secondary));
+}
+
+.prose .callout-key-takeaway .callout-title {
+    @apply text-purple-600;
+}
+
+.prose .callout-key-takeaway .callout-title::before {
+    content: "🎯";
+}
+
+:is(.dark, .vibrant) .prose .callout {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+:is(.dark, .vibrant) .prose .callout-info .callout-title {
+    @apply text-blue-400;
+}
+
+:is(.dark, .vibrant) .prose .callout-warning .callout-title {
+    @apply text-amber-400;
+}
+
+:is(.dark, .vibrant) .prose .callout-tip .callout-title {
+    @apply text-green-400;
+}
+
+:is(.dark, .vibrant) .prose .callout-key-takeaway .callout-title {
+    @apply text-purple-400;
+}
+
+/* Mermaid diagrams */
+.prose .mermaid-wrapper {
+    @apply my-8 flex justify-center;
+}
+
+.prose .mermaid-wrapper svg {
+    @apply max-w-full;
+}
+
+/* Embedded code playgrounds */
+.prose .playground-embed {
+    @apply my-8 rounded-xl overflow-hidden border border-surface-border;
+}
+
+.prose .playground-embed iframe {
+    @apply w-full border-0;
+    height: 500px;
+}
+
 /* Blog figure / image styling */
 .prose figure {
     @apply my-8 mx-0;

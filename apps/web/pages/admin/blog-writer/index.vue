@@ -32,6 +32,9 @@
         { id: "claude-haiku-4-5-20251001", label: "Haiku 4.5 (cheapest)" },
         { id: "claude-opus-4-6", label: "Opus 4.6 (best, expensive)" },
     ];
+    const genDiagrams = ref(false);
+    const genPlaygrounds = ref(false);
+    const genTables = ref(false);
     const genResult = ref<{ postId: string } | null>(null);
 
     // Topic form
@@ -72,6 +75,9 @@
                 categoryId: genCategoryId.value || undefined,
                 type: genType.value || undefined,
                 model: genModel.value || undefined,
+                includeDiagrams: genDiagrams.value || undefined,
+                includePlaygrounds: genPlaygrounds.value || undefined,
+                includeComparisonTables: genTables.value || undefined,
             });
             genResult.value = result;
             toast.success("Blog post generated! Check drafts.");
@@ -218,6 +224,22 @@
           </select>
         </div>
       </div>
+      <!-- Media options -->
+      <div class="flex flex-wrap items-center gap-4 text-sm">
+        <label class="flex items-center gap-2 text-content-secondary">
+          <input v-model="genDiagrams" type="checkbox" class="rounded border-gray-300" />
+          Include diagrams
+        </label>
+        <label class="flex items-center gap-2 text-content-secondary">
+          <input v-model="genPlaygrounds" type="checkbox" class="rounded border-gray-300" />
+          Include code playgrounds
+        </label>
+        <label class="flex items-center gap-2 text-content-secondary">
+          <input v-model="genTables" type="checkbox" class="rounded border-gray-300" />
+          Include comparison tables
+        </label>
+      </div>
+
       <button
         :disabled="generating || !genTopic.trim()"
         class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-500 text-white font-medium text-sm hover:bg-brand-600 transition-colors disabled:opacity-50"
@@ -367,6 +389,41 @@
             <option value="">Default</option>
             <option v-for="t in tones" :key="t._id" :value="t._id">{{ t.name }}</option>
           </select>
+        </div>
+
+        <!-- Media options -->
+        <div>
+          <label class="block text-sm font-medium text-content-secondary mb-1">Content Enhancements</label>
+          <p class="text-xs text-content-muted mb-2">Enable these to instruct Claude to include richer media in generated posts.</p>
+          <div class="space-y-2">
+            <label class="flex items-center gap-2 text-sm text-content">
+              <input
+                type="checkbox"
+                :checked="scheduler.includeDiagrams"
+                class="rounded border-gray-300"
+                @change="updateScheduler({ includeDiagrams: !scheduler.includeDiagrams })"
+              />
+              Mermaid diagrams (flowcharts, architecture)
+            </label>
+            <label class="flex items-center gap-2 text-sm text-content">
+              <input
+                type="checkbox"
+                :checked="scheduler.includePlaygrounds"
+                class="rounded border-gray-300"
+                @change="updateScheduler({ includePlaygrounds: !scheduler.includePlaygrounds })"
+              />
+              Code playgrounds (StackBlitz/CodeSandbox embeds)
+            </label>
+            <label class="flex items-center gap-2 text-sm text-content">
+              <input
+                type="checkbox"
+                :checked="scheduler.includeComparisonTables"
+                class="rounded border-gray-300"
+                @change="updateScheduler({ includeComparisonTables: !scheduler.includeComparisonTables })"
+              />
+              Comparison tables
+            </label>
+          </div>
         </div>
 
         <!-- Category rotation -->

@@ -80,6 +80,9 @@ export class BlogSchedulerService {
                 categoryId,
                 type: topic.type || "general",
                 model: config.aiModel,
+                includeDiagrams: config.includeDiagrams,
+                includePlaygrounds: config.includePlaygrounds,
+                includeComparisonTables: config.includeComparisonTables,
             });
 
             // Update topic
