@@ -37,7 +37,7 @@
             <UiLogo :height="24" />
           </div>
           <p class="text-sm text-content-tertiary">
-            Free, fast developer tools that run entirely in your browser. Your data never leaves your device.
+            Tutorials, opinions, and tools for modern web development. Written by a developer, for developers.
           </p>
         </div>
 

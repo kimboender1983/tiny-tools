@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { TOOLS } from "@tiny-tools/shared";
+    import * as lucideIcons from "lucide-vue-next";
     import {
         Check,
         ChevronDown,
@@ -9,18 +10,33 @@
         Palette,
         PartyPopper,
         Sun,
+        Wrench,
         X,
     } from "lucide-vue-next";
 
     const colorMode = useColorMode();
     const mobileMenuOpen = ref(false);
     const themeMenuOpen = ref(false);
-    const { data: nav } = useNavigation();
-    const headerItems = computed(() =>
-        nav.value.header.length > 0
-            ? nav.value.header
-            : TOOLS.map((t) => ({ title: t.name, slug: t.slug, path: `/tools/${t.slug}` })),
-    );
+    const toolsMenuOpen = ref(false);
+
+    function getToolIcon(iconName: string) {
+        return (lucideIcons as Record<string, unknown>)[iconName] ?? null;
+    }
+
+    function onToolsClickOutside(e: MouseEvent) {
+        const target = e.target as HTMLElement;
+        if (!target.closest("[data-tools-menu]")) {
+            toolsMenuOpen.value = false;
+        }
+    }
+
+    watch(toolsMenuOpen, (open) => {
+        if (open) {
+            document.addEventListener("click", onToolsClickOutside, { capture: true });
+        } else {
+            document.removeEventListener("click", onToolsClickOutside, { capture: true });
+        }
+    });
 
     const MAIN_MODES = ["light", "dark", "grayscale"] as const;
 
@@ -75,6 +91,7 @@
         () => {
             mobileMenuOpen.value = false;
             themeMenuOpen.value = false;
+            toolsMenuOpen.value = false;
         },
     );
 </script>
@@ -88,14 +105,65 @@
 
       <nav class="hidden md:flex items-center gap-1">
         <NuxtLink
-          v-for="item in headerItems"
-          :key="item.slug"
-          :to="item.path"
+          to="/blog"
           class="px-3 py-1.5 text-sm font-medium text-content-tertiary rounded-lg hover:bg-surface-secondary hover:text-content transition-colors"
           active-class="!bg-brand-50 !text-brand-accent"
         >
-          {{ item.title }}
+          Blog
         </NuxtLink>
+
+        <!-- Tools dropdown -->
+        <div class="relative" data-tools-menu>
+          <button
+            class="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-content-tertiary rounded-lg hover:bg-surface-secondary hover:text-content transition-colors"
+            @click.stop="toolsMenuOpen = !toolsMenuOpen"
+          >
+            Tools
+            <ChevronDown :size="12" class="transition-transform duration-150" :class="toolsMenuOpen ? 'rotate-180' : ''" />
+          </button>
+
+          <Transition
+            enter-active-class="transition-all duration-150 ease-out"
+            enter-from-class="opacity-0 scale-95 -translate-y-1"
+            enter-to-class="opacity-100 scale-100 translate-y-0"
+            leave-active-class="transition-all duration-100 ease-in"
+            leave-from-class="opacity-100 scale-100 translate-y-0"
+            leave-to-class="opacity-0 scale-95 -translate-y-1"
+          >
+            <div
+              v-if="toolsMenuOpen"
+              class="absolute left-0 top-full mt-2 w-72 rounded-xl border border-surface-border bg-surface shadow-lg overflow-hidden z-50"
+            >
+              <div class="p-2 grid grid-cols-1 gap-0.5 max-h-80 overflow-y-auto">
+                <NuxtLink
+                  v-for="tool in TOOLS"
+                  :key="tool.slug"
+                  :to="`/tools/${tool.slug}`"
+                  class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-secondary transition-colors"
+                  @click="toolsMenuOpen = false"
+                >
+                  <div class="w-8 h-8 rounded-md bg-brand-50 flex items-center justify-center flex-shrink-0">
+                    <component :is="getToolIcon(tool.icon)" v-if="getToolIcon(tool.icon)" :size="16" class="text-brand-accent" />
+                    <Wrench v-else :size="16" class="text-brand-accent" />
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-sm font-medium text-content">{{ tool.name }}</div>
+                    <div class="text-xs text-content-muted truncate">{{ tool.description }}</div>
+                  </div>
+                </NuxtLink>
+              </div>
+              <div class="border-t border-surface-border p-2">
+                <NuxtLink
+                  to="/tools"
+                  class="flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium text-brand-accent hover:bg-brand-50 transition-colors"
+                  @click="toolsMenuOpen = false"
+                >
+                  View all tools
+                </NuxtLink>
+              </div>
+            </div>
+          </Transition>
+        </div>
       </nav>
 
       <div class="flex items-center gap-2">
@@ -180,13 +248,21 @@
       >
         <nav class="p-4 space-y-1">
           <NuxtLink
-            v-for="item in headerItems"
-            :key="item.slug"
-            :to="item.path"
+            to="/blog"
             class="block px-3 py-2.5 text-sm font-medium text-content-tertiary rounded-lg hover:bg-surface-secondary hover:text-content transition-colors"
             active-class="!bg-brand-50 !text-brand-accent"
           >
-            {{ item.title }}
+            Blog
+          </NuxtLink>
+          <div class="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-content-faint">Tools</div>
+          <NuxtLink
+            v-for="tool in TOOLS"
+            :key="tool.slug"
+            :to="`/tools/${tool.slug}`"
+            class="block px-3 py-2.5 text-sm font-medium text-content-tertiary rounded-lg hover:bg-surface-secondary hover:text-content transition-colors"
+            active-class="!bg-brand-50 !text-brand-accent"
+          >
+            {{ tool.name }}
           </NuxtLink>
         </nav>
       </div>

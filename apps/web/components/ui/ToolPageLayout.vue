@@ -1,15 +1,59 @@
 <script setup lang="ts">
-    import { ChevronRight, Home } from "lucide-vue-next";
+    import type { IBlogPost, ICategory } from "@tiny-tools/shared";
+    import { ArrowRight, Calendar, ChevronRight, Clock, Home } from "lucide-vue-next";
 
-    defineProps<{
+    interface PaginatedBlogResponse {
+        items: IBlogPost[];
+        total: number;
+    }
+
+    const props = defineProps<{
         title: string;
         description: string;
         category: string;
-        /** When true, the tool gets full viewport width (no sidebar, no max-w constraint). Use for code-heavy tools like JSON formatter/diff. */
         fullWidth?: boolean;
     }>();
 
     const { isEnabled: adsEnabled } = useAds();
+
+    function getCategorySlug(cat: string | ICategory | undefined): string {
+        if (!cat) return "uncategorized";
+        return typeof cat === "object" ? cat.slug : cat;
+    }
+
+    function getCategoryName(cat: string | ICategory | undefined): string {
+        if (!cat) return "";
+        return typeof cat === "object" ? cat.name : cat;
+    }
+
+    function blogPostUrl(post: IBlogPost): string {
+        return `/blog/${getCategorySlug(post.category)}/${post.slug}`;
+    }
+
+    function getCardImageUrl(post: IBlogPost): string {
+        const logoSlug = post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
+        const params = new URLSearchParams();
+        if (logoSlug) params.set("logo", logoSlug);
+        if (post.techLogoBgColor) params.set("bg", post.techLogoBgColor);
+        return `/card-image.png${params.toString() ? `?${params}` : ""}`;
+    }
+
+    function formatDate(date: Date | string | undefined): string {
+        if (!date) return "";
+        return new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    }
+
+    // Fetch recent blog posts to show as related content on tool pages
+    const api = useApi();
+
+    const { data: relatedData } = await useAsyncData(
+        `tool-related-${props.title}`,
+        () => api.get<PaginatedBlogResponse>("/content/blog", {
+            params: { limit: 3, sortBy: "publishedAt", sortOrder: "desc" },
+        }).catch(() => ({ items: [], total: 0 })),
+    );
+
+    const relatedPosts = computed(() => relatedData.value?.items ?? []);
 </script>
 
 <template>
@@ -80,6 +124,57 @@
     <!-- SEO content -->
     <div v-if="$slots['seo-content']" class="max-w-7xl mx-auto px-4 sm:px-6 pb-12">
       <slot name="seo-content" />
+    </div>
+
+    <!-- Related blog posts -->
+    <div v-if="relatedPosts.length > 0" class="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
+      <div class="border-t border-surface-border pt-10">
+        <div class="flex items-end justify-between mb-6">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wider text-brand-accent mb-1">From the blog</p>
+            <h2 class="text-xl font-bold text-content">Related Articles</h2>
+          </div>
+          <NuxtLink
+            to="/blog"
+            class="hidden sm:inline-flex items-center gap-1 text-sm font-medium text-brand-accent hover:text-brand-600 transition-colors group"
+          >
+            More articles <ArrowRight :size="14" class="transition-transform group-hover:translate-x-0.5" />
+          </NuxtLink>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <NuxtLink
+            v-for="post in relatedPosts"
+            :key="post._id"
+            :to="blogPostUrl(post)"
+            class="group flex flex-col rounded-xl border border-surface-border bg-surface overflow-hidden transition-shadow hover:shadow-lg"
+          >
+            <div class="aspect-video overflow-hidden">
+              <img
+                :src="post.coverImage || getCardImageUrl(post)"
+                :alt="post.title"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+            <div class="p-4 flex-1 flex flex-col">
+              <span v-if="post.category" class="text-[11px] font-semibold uppercase tracking-wider text-brand-accent mb-1">
+                {{ getCategoryName(post.category) }}
+              </span>
+              <h3 class="text-sm font-semibold text-content group-hover:text-brand-accent transition-colors line-clamp-2 leading-snug">
+                {{ post.title }}
+              </h3>
+              <div class="mt-auto pt-3 flex items-center gap-3 text-[11px] text-content-muted">
+                <span v-if="post.publishedAt" class="inline-flex items-center gap-1">
+                  <Calendar :size="10" /> {{ formatDate(post.publishedAt) }}
+                </span>
+                <span v-if="post.readingTime" class="inline-flex items-center gap-1">
+                  <Clock :size="10" /> {{ post.readingTime }} min
+                </span>
+              </div>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
     </div>
   </div>
 </template>
