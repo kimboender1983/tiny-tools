@@ -1,4 +1,7 @@
-import type { IAffiliate, IApiKey, IAuthor, IBlogPost, ICategory, IMedia, IPage, ITechLogo } from "@tiny-tools/shared";
+import type {
+    IAffiliate, IApiKey, IAuthor, IBlogGeneration, IBlogPost, ICategory,
+    IMedia, IPage, ISchedulerConfig, ITechLogo, ITopicQueue, IWritingTone,
+} from "@tiny-tools/shared";
 
 interface PaginatedResponse<T> {
     items: T[];
@@ -146,5 +149,29 @@ export function useCms() {
         delete: (id: string) => api.delete<void>(`/cms/api-keys/${id}`, AUTH),
     };
 
-    return { pages, blogPosts, categories, media, authors, affiliates, users, techLogos, apiKeys };
+    const blogWriter = {
+        generate: (data: { topic: string; toneId?: string; categoryId?: string; type?: string }) =>
+            api.post<{ postId: string; generationId: string }>("/cms/blog-writer/generate", data, AUTH),
+        history: () => api.get<IBlogGeneration[]>("/cms/blog-writer/history", AUTH),
+        tones: {
+            list: () => api.get<IWritingTone[]>("/cms/blog-writer/tones", AUTH),
+            get: (id: string) => api.get<IWritingTone>(`/cms/blog-writer/tones/${id}`, AUTH),
+            create: (data: Partial<IWritingTone>) => api.post<IWritingTone>("/cms/blog-writer/tones", data, AUTH),
+            update: (id: string, data: Partial<IWritingTone>) => api.put<IWritingTone>(`/cms/blog-writer/tones/${id}`, data, AUTH),
+            delete: (id: string) => api.delete<void>(`/cms/blog-writer/tones/${id}`, AUTH),
+        },
+        topics: {
+            list: () => api.get<ITopicQueue[]>("/cms/blog-writer/topics", AUTH),
+            create: (data: Partial<ITopicQueue>) => api.post<ITopicQueue>("/cms/blog-writer/topics", data, AUTH),
+            update: (id: string, data: Partial<ITopicQueue>) => api.put<ITopicQueue>(`/cms/blog-writer/topics/${id}`, data, AUTH),
+            reset: (id: string) => api.patch<ITopicQueue>(`/cms/blog-writer/topics/${id}/reset`, {}, AUTH),
+            delete: (id: string) => api.delete<void>(`/cms/blog-writer/topics/${id}`, AUTH),
+        },
+        scheduler: {
+            get: () => api.get<ISchedulerConfig>("/cms/blog-writer/scheduler", AUTH),
+            update: (data: Partial<ISchedulerConfig>) => api.put<ISchedulerConfig>("/cms/blog-writer/scheduler", data, AUTH),
+        },
+    };
+
+    return { pages, blogPosts, categories, media, authors, affiliates, users, techLogos, apiKeys, blogWriter };
 }

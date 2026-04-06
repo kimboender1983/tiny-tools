@@ -2,6 +2,7 @@ export * from "./affiliate";
 export * from "./api-key";
 export * from "./author";
 export * from "./blog-post";
+export * from "./blog-writer";
 export * from "./category";
 export * from "./media";
 export * from "./page";

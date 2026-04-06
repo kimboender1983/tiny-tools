@@ -5,6 +5,7 @@ export default () => ({
     adminPassword: process.env.ADMIN_PASSWORD || "admin123",
     frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000",
     port: parseInt(process.env.PORT || "3001", 10),
+    anthropicApiKey: process.env.ANTHROPIC_API_KEY || "",
     r2: {
         accountId: process.env.R2_ACCOUNT_ID || "",
         accessKeyId: process.env.R2_ACCESS_KEY_ID || "",

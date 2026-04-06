@@ -70,6 +70,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@anthropic-ai/sdk@npm:^0.82.0":
+  version: 0.82.0
+  resolution: "@anthropic-ai/sdk@npm:0.82.0"
+  dependencies:
+    json-schema-to-ts: "npm:^3.1.1"
+  peerDependencies:
+    zod: ^3.25.0 || ^4.0.0
+  peerDependenciesMeta:
+    zod:
+      optional: true
+  bin:
+    anthropic-ai-sdk: bin/cli
+  checksum: 10c0/2d6b1ed34335b736a5bb794853469a76bcd223a56bbc6695b81c9ffa2b906b4a0dff44a1ab1ce5aa5795ee49ac88489eae7cb6383923256cbfff3103ebdd0737
+  languageName: node
+  linkType: hard
+
 "@apidevtools/json-schema-ref-parser@npm:^14.1.1":
   version: 14.2.1
   resolution: "@apidevtools/json-schema-ref-parser@npm:14.2.1"
@@ -990,6 +1006,13 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 10c0/72dbfd3e5f71c4e30445e610758ec0eef65347fafd72bd46f4903733df0d537663a72a81c1626f213a0feab7afc68ba83f1648ffece888dd0868115c9cb748f6
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.18.3":
+  version: 7.29.2
+  resolution: "@babel/runtime@npm:7.29.2"
+  checksum: 10c0/30b80a0140d16467792e1bbeb06f655b0dab70407da38dfac7fedae9c859f9ae9d846ef14ad77bd3814c064295fe9b1bc551f1541ea14646ae9f22b71a8bc17a
   languageName: node
   linkType: hard
 
@@ -2513,6 +2536,18 @@ __metadata:
     "@nestjs/common": ^10.0.0
     "@nestjs/core": ^10.0.0
   checksum: 10c0/7bddcba7b66d19f14fe4c15f21b21dd819fe0340fa57db35dcdcf7fb344ce682aa494363b182574885413d22c7fbee5fcef6f9d2189f419d4983cb71be1f4d28
+  languageName: node
+  linkType: hard
+
+"@nestjs/schedule@npm:^6.1.1":
+  version: 6.1.1
+  resolution: "@nestjs/schedule@npm:6.1.1"
+  dependencies:
+    cron: "npm:4.4.0"
+  peerDependencies:
+    "@nestjs/common": ^10.0.0 || ^11.0.0
+    "@nestjs/core": ^10.0.0 || ^11.0.0
+  checksum: 10c0/0185efe4824bd353fea792954ea04d2d4cb99836c93c6d42d76fe9d57a6fd97eb7ba9d874be6f7f94b6f8bbca11badab16993f30e9b1f94b4c341639407578de
   languageName: node
   linkType: hard
 
@@ -5026,6 +5061,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/luxon@npm:~3.7.0":
+  version: 3.7.1
+  resolution: "@types/luxon@npm:3.7.1"
+  checksum: 10c0/2db30c13b58adcd86daa447faa3ba59515fe907ead8ee3e6bb716d662812af0619d712f6c1eb190cdd7f9d2c00444c3ecd80af0f36e8143eb0c5e7339d6b2aca
+  languageName: node
+  linkType: hard
+
 "@types/markdown-it@npm:^14.0.1":
   version: 14.1.2
   resolution: "@types/markdown-it@npm:14.1.2"
@@ -6145,6 +6187,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "api@workspace:apps/api"
   dependencies:
+    "@anthropic-ai/sdk": "npm:^0.82.0"
     "@aws-sdk/client-s3": "npm:^3.1019.0"
     "@aws-sdk/s3-request-presigner": "npm:^3.1019.0"
     "@nestjs/cli": "npm:^10.4.9"
@@ -6156,6 +6199,7 @@ __metadata:
     "@nestjs/mongoose": "npm:^10.1.0"
     "@nestjs/passport": "npm:^10.0.3"
     "@nestjs/platform-express": "npm:^10.4.15"
+    "@nestjs/schedule": "npm:^6.1.1"
     "@nestjs/schematics": "npm:^10.2.3"
     "@nestjs/swagger": "npm:^11.2.6"
     "@tiny-tools/shared": "workspace:*"
@@ -7418,6 +7462,16 @@ __metadata:
   version: 1.0.6
   resolution: "crelt@npm:1.0.6"
   checksum: 10c0/e0fb76dff50c5eb47f2ea9b786c17f9425c66276025adee80876bdbf4a84ab72e899e56d3928431ab0cb057a105ef704df80fe5726ef0f7b1658f815521bdf09
+  languageName: node
+  linkType: hard
+
+"cron@npm:4.4.0":
+  version: 4.4.0
+  resolution: "cron@npm:4.4.0"
+  dependencies:
+    "@types/luxon": "npm:~3.7.0"
+    luxon: "npm:~3.7.0"
+  checksum: 10c0/e3762fda4a9a2404ac2e54e1104a3c6c695747e14b2321bbc5531aa1192c75a319075695fcaf68b6927e0ffd877b5454f314c680f6586db1a78b2c25b76b8a32
   languageName: node
   linkType: hard
 
@@ -9988,6 +10042,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-schema-to-ts@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "json-schema-to-ts@npm:3.1.1"
+  dependencies:
+    "@babel/runtime": "npm:^7.18.3"
+    ts-algebra: "npm:^2.0.0"
+  checksum: 10c0/609bae04aa5e860a11b6d30ccf41445fae1c7f66fb600c1d170257cf33aa468aa9d03aa046428c3688aff0ff450c2b0c76584b66fa4a5d0da8e33799e4c439a6
+  languageName: node
+  linkType: hard
+
 "json-schema-to-typescript-lite@npm:^15.0.0":
   version: 15.0.0
   resolution: "json-schema-to-typescript-lite@npm:15.0.0"
@@ -10514,6 +10578,13 @@ __metadata:
   peerDependencies:
     vue: ">=3.0.1"
   checksum: 10c0/65ea996dd2d991c524f17e9940e4e66d8822641271eabe53341def613ce584b6b9479b7ee4ac11ee491e90f5d3b21e277021d3138b37e89c59c567130581b4cb
+  languageName: node
+  linkType: hard
+
+"luxon@npm:~3.7.0":
+  version: 3.7.2
+  resolution: "luxon@npm:3.7.2"
+  checksum: 10c0/ed8f0f637826c08c343a29dd478b00628be93bba6f068417b1d8896b61cb61c6deacbe1df1e057dbd9298334044afa150f9aaabbeb3181418ac8520acfdc2ae2
   languageName: node
   linkType: hard
 
@@ -14446,6 +14517,13 @@ __metadata:
   bin:
     tree-kill: cli.js
   checksum: 10c0/7b1b7c7f17608a8f8d20a162e7957ac1ef6cd1636db1aba92f4e072dc31818c2ff0efac1e3d91064ede67ed5dc57c565420531a8134090a12ac10cf792ab14d2
+  languageName: node
+  linkType: hard
+
+"ts-algebra@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "ts-algebra@npm:2.0.0"
+  checksum: 10c0/4ae93bec1bada635bba425854eec323dad50b6ffe86bc04ad2d7f9ce3fb129d673dcf483e19a6e70d07a3a9083e6a0a7f4e004bb8d2164cddc60cc9540ba187f
   languageName: node
   linkType: hard
 
