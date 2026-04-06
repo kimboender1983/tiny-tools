@@ -54,7 +54,13 @@
     const [{ data: heroData }, { data: featuredData }, { data: recentData }, { data: categoriesData }] = await Promise.all([
         useAsyncData("home-hero", () =>
             api.get<PaginatedBlogResponse>("/content/blog", {
-                params: { featuredHomepage: "true", limit: 10 },
+                params: { homepageHero: "true", limit: 1 },
+            }).then((res) => {
+                // Fallback to featuredHomepage if no hero post
+                if (res.items.length > 0) return res;
+                return api.get<PaginatedBlogResponse>("/content/blog", {
+                    params: { featuredHomepage: "true", limit: 1 },
+                });
             }),
         ),
         useAsyncData("home-featured", () =>
@@ -72,7 +78,7 @@
 
     const heroPost = computed(() => {
         const items = heroData.value?.items ?? [];
-        return items.find((p) => p.homepageHero) || items[0] || null;
+        return items[0] || null;
     });
 
     const featuredPosts = computed(() => {
