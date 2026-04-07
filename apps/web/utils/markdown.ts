@@ -1,12 +1,21 @@
 import hljs from "highlight.js";
 import { marked } from "marked";
 
+function escapeHtml(str: string): string {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+}
+
 // Configure marked with syntax highlighting + mermaid support
 const renderer = new marked.Renderer();
 renderer.code = ({ text, lang }: { text: string; lang?: string }) => {
     // Mermaid diagrams — render as a container, initialized client-side
+    // HTML-escape so the browser doesn't mangle special chars; mermaid reads textContent which auto-decodes
     if (lang === "mermaid") {
-        return `<div class="mermaid-wrapper"><pre class="mermaid">${text}</pre></div>`;
+        return `<div class="mermaid-wrapper"><pre class="mermaid">${escapeHtml(text)}</pre></div>`;
     }
 
     const language = lang && hljs.getLanguage(lang) ? lang : undefined;
