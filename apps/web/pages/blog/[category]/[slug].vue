@@ -93,8 +93,18 @@
         return map;
     });
 
-    function slugify(text: string): string {
+    function decodeEntities(text: string): string {
         return text
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&#x27;/g, "'");
+    }
+
+    function slugify(text: string): string {
+        return decodeEntities(text)
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/(^-|-$)/g, "");
@@ -124,7 +134,7 @@
 
         while (match !== null) {
             const level = parseInt(match[1], 10);
-            const text = match[2].replace(/<[^>]+>/g, "");
+            const text = decodeEntities(match[2].replace(/<[^>]+>/g, ""));
             items.push({ id: slugify(text), text, level });
             match = headingRegex.exec(renderedHtml.value);
         }
