@@ -157,7 +157,7 @@
     // Add copy buttons to code blocks after render
     onMounted(() => {
         nextTick(() => {
-            document.querySelectorAll(".prose pre").forEach((pre) => {
+            document.querySelectorAll(".prose pre:not(.mermaid)").forEach((pre) => {
                 if (pre.querySelector(".code-copy-btn")) return;
                 const btn = document.createElement("button");
                 btn.className = "code-copy-btn";
