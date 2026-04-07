@@ -37,7 +37,7 @@
     ];
 
     useHead({
-        title: "JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox",
+        title: "JSON Diff - Free Online JSON & Text Comparison Tool | Pickbox",
         meta: [
             {
                 name: "description",
@@ -48,7 +48,7 @@
             { property: "og:type", content: "website" },
             {
                 property: "og:title",
-                content: "JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox",
+                content: "JSON Diff - Free Online JSON & Text Comparison Tool | Pickbox",
             },
             {
                 property: "og:description",
@@ -60,7 +60,7 @@
             { name: "twitter:card", content: "summary_large_image" },
             {
                 name: "twitter:title",
-                content: "JSON Diff — Free Online JSON & Text Comparison Tool | Pickbox",
+                content: "JSON Diff - Free Online JSON & Text Comparison Tool | Pickbox",
             },
             {
                 name: "twitter:description",
@@ -147,7 +147,7 @@
                 in complex JSON structures are detected and reported with their full path.
               </p>
               <p class="text-content-tertiary leading-relaxed">
-                The result is a structured diff that shows the exact location, old value, and new value for every change —
+                The result is a structured diff that shows the exact location, old value, and new value for every change,
                 far more informative than a generic text diff that simply highlights different lines.
               </p>
             </div>
@@ -183,13 +183,13 @@
 
           <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
-              This tool uses the <code class="code-inline">diff</code> package for accurate line-level comparison — the same engine used by Jest, Mocha, and thousands of other projects.
+              This tool uses the <code class="code-inline">diff</code> package for accurate line-level comparison, the same engine used by Jest, Mocha, and thousands of other projects.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <SeoExternalLink
                 href="https://github.com/kpdecker/jsdiff"
                 title="jsdiff on GitHub"
-                description="kpdecker/jsdiff — JavaScript text diff library"
+                description="kpdecker/jsdiff - JavaScript text diff library"
               />
               <SeoExternalLink
                 href="https://www.npmjs.com/package/diff"

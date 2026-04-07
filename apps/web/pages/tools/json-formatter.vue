@@ -41,7 +41,7 @@
     ];
 
     useHead({
-        title: "JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox",
+        title: "JSON Formatter - Free Online JSON Beautifier & Validator | Pickbox",
         meta: [
             {
                 name: "description",
@@ -52,7 +52,7 @@
             { property: "og:type", content: "website" },
             {
                 property: "og:title",
-                content: "JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox",
+                content: "JSON Formatter - Free Online JSON Beautifier & Validator | Pickbox",
             },
             {
                 property: "og:description",
@@ -64,7 +64,7 @@
             { name: "twitter:card", content: "summary_large_image" },
             {
                 name: "twitter:title",
-                content: "JSON Formatter — Free Online JSON Beautifier & Validator | Pickbox",
+                content: "JSON Formatter - Free Online JSON Beautifier & Validator | Pickbox",
             },
             {
                 name: "twitter:description",
@@ -132,7 +132,7 @@
                 A JSON document consists of two fundamental structures: objects (unordered collections of key-value pairs
                 wrapped in curly braces) and arrays (ordered lists of values wrapped in square brackets). Values can be
                 strings, numbers, booleans (<code class="code-inline">true</code> or <code class="code-inline">false</code>), <code class="code-inline">null</code>, or nested objects
-                and arrays. This simplicity is what makes JSON so widely adopted — it is human-readable yet easy for machines
+                and arrays. This simplicity is what makes JSON so widely adopted: it is human-readable yet easy for machines
                 to parse and generate.
               </p>
               <p class="text-content-tertiary leading-relaxed">
@@ -162,7 +162,7 @@
                 <code class="code-inline">{name: "value"}</code> is valid JavaScript but invalid JSON.
               </SeoBullet>
               <SeoBullet>
-                <strong class="text-content">Comments:</strong> JSON does not support comments of any kind — no <code class="code-inline">//</code> line comments
+                <strong class="text-content">Comments:</strong> JSON does not support comments of any kind, including <code class="code-inline">//</code> line comments
                 and no <code class="code-inline">/* */</code> block comments. If you need comments, consider JSONC or JSON5.
               </SeoBullet>
               <SeoBullet>
@@ -181,7 +181,7 @@
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
                 JSON and YAML are both popular serialization formats, but they serve somewhat different use cases. JSON is
-                stricter and more predictable — its rigid syntax means fewer ambiguities and faster parsing. YAML, on the
+                stricter and more predictable; its rigid syntax means fewer ambiguities and faster parsing. YAML, on the
                 other hand, prioritizes human readability with indentation-based nesting, support for comments, and more
                 flexible value types.
               </p>
@@ -192,7 +192,7 @@
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 One key advantage of JSON is its round-trip safety: parsing and re-serializing JSON always produces the same
-                output. YAML's flexibility can introduce subtle bugs — for instance, the string <code class="code-inline">no</code> may be
+                output. YAML's flexibility can introduce subtle bugs; for instance, the string <code class="code-inline">no</code> may be
                 interpreted as a boolean <code class="code-inline">false</code>, and <code class="code-inline">3.10</code> may be parsed as the number
                 <code class="code-inline">3.1</code>. These gotchas make JSON the safer choice for machine-to-machine communication.
               </p>
@@ -205,7 +205,7 @@
 
           <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
-              This tool uses no external packages — just built-in browser APIs.
+              This tool uses no external packages, just built-in browser APIs.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <SeoExternalLink

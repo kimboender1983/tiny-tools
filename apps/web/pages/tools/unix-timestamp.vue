@@ -11,11 +11,11 @@
     const faqItems = [
         {
             question: "What is a Unix timestamp?",
-            answer: "A Unix timestamp (also called Epoch time or POSIX time) is the number of seconds that have elapsed since January 1, 1970 00:00:00 UTC — a moment known as the Unix Epoch. It provides a single, timezone-independent number that uniquely identifies a point in time, making it ideal for storing and comparing dates across systems.",
+            answer: "A Unix timestamp (also called Epoch time or POSIX time) is the number of seconds that have elapsed since January 1, 1970 00:00:00 UTC, a moment known as the Unix Epoch. It provides a single, timezone-independent number that uniquely identifies a point in time, making it ideal for storing and comparing dates across systems.",
         },
         {
             question: "What is the difference between seconds and milliseconds?",
-            answer: "A Unix timestamp in seconds is a 10-digit number (e.g. 1712188800). JavaScript, Java, and many APIs use milliseconds — a 13-digit number (e.g. 1712188800000) that is simply the seconds value multiplied by 1000. Our tool detects and converts both formats.",
+            answer: "A Unix timestamp in seconds is a 10-digit number (e.g. 1712188800). JavaScript, Java, and many APIs use milliseconds, a 13-digit number (e.g. 1712188800000) that is simply the seconds value multiplied by 1000. Our tool detects and converts both formats.",
         },
         {
             question: "What is the Year 2038 problem?",
@@ -42,7 +42,7 @@
     ];
 
     useHead({
-        title: "Unix Timestamp Converter — Free Epoch Time Converter | Pickbox",
+        title: "Unix Timestamp Converter - Free Epoch Time Converter | Pickbox",
         meta: [
             {
                 name: "description",
@@ -53,7 +53,7 @@
             { property: "og:type", content: "website" },
             {
                 property: "og:title",
-                content: "Unix Timestamp Converter — Free Epoch Time Converter | Pickbox",
+                content: "Unix Timestamp Converter - Free Epoch Time Converter | Pickbox",
             },
             {
                 property: "og:description",
@@ -65,7 +65,7 @@
             { name: "twitter:card", content: "summary_large_image" },
             {
                 name: "twitter:title",
-                content: "Unix Timestamp Converter — Free Epoch Time Converter | Pickbox",
+                content: "Unix Timestamp Converter - Free Epoch Time Converter | Pickbox",
             },
             {
                 name: "twitter:description",
@@ -123,13 +123,13 @@
           <SeoSection id="what-is-unix" title="What is a Unix Timestamp?">
             <div class="space-y-4">
               <p class="text-content-tertiary leading-relaxed">
-                A Unix timestamp is the number of seconds elapsed since the <strong class="text-content">Unix Epoch</strong> —
+                A Unix timestamp is the number of seconds elapsed since the <strong class="text-content">Unix Epoch</strong>,
                 midnight UTC on January 1, 1970. This single integer provides a universal, timezone-independent way to
                 represent any moment in time.
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 Unix timestamps are used everywhere: database columns, API responses, log files, JWT tokens, cron jobs,
-                and file system metadata. Their simplicity — a single number — makes them trivially sortable, comparable,
+                and file system metadata. Their simplicity as a single number makes them trivially sortable, comparable,
                 and storable across any programming language or database.
               </p>
             </div>
@@ -212,7 +212,7 @@
 
           <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
-              This tool uses JavaScript's native Date API — no external date libraries needed.
+              This tool uses JavaScript's native Date API, no external date libraries needed.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <SeoExternalLink

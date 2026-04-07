@@ -15,7 +15,7 @@
         },
         {
             question: "What is the difference between UUID v4 and v7?",
-            answer: "UUID v4 generates 122 random bits, making collisions astronomically unlikely but providing no ordering. UUID v7, introduced in RFC 9562, embeds a 48-bit Unix millisecond timestamp in the first 48 bits followed by random data. This means v7 UUIDs are time-sortable — they naturally sort by creation time, which dramatically improves database index performance when used as primary keys.",
+            answer: "UUID v4 generates 122 random bits, making collisions astronomically unlikely but providing no ordering. UUID v7, introduced in RFC 9562, embeds a 48-bit Unix millisecond timestamp in the first 48 bits followed by random data. This means v7 UUIDs are time-sortable, as they naturally sort by creation time, which dramatically improves database index performance when used as primary keys.",
         },
         {
             question: "Can UUIDs collide?",
@@ -42,7 +42,7 @@
     ];
 
     useHead({
-        title: "UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox",
+        title: "UUID Generator - Free Online UUID v4 & v7 Generator | Pickbox",
         meta: [
             {
                 name: "description",
@@ -53,7 +53,7 @@
             { property: "og:type", content: "website" },
             {
                 property: "og:title",
-                content: "UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox",
+                content: "UUID Generator - Free Online UUID v4 & v7 Generator | Pickbox",
             },
             {
                 property: "og:description",
@@ -65,7 +65,7 @@
             { name: "twitter:card", content: "summary_large_image" },
             {
                 name: "twitter:title",
-                content: "UUID Generator — Free Online UUID v4 & v7 Generator | Pickbox",
+                content: "UUID Generator - Free Online UUID v4 & v7 Generator | Pickbox",
             },
             {
                 name: "twitter:description",
@@ -125,7 +125,7 @@
               <p class="text-content-tertiary leading-relaxed">
                 A UUID (Universally Unique Identifier) is a 128-bit label used to uniquely identify information in
                 computer systems. Unlike sequential integer IDs, UUIDs can be generated independently on any machine
-                without coordination — and the probability of duplicates is negligible.
+                without coordination, and the probability of duplicates is negligible.
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 UUIDs are represented as 32 hexadecimal digits, displayed in five groups separated by hyphens in the
@@ -162,7 +162,7 @@
                   <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">Name-based (SHA-1)</span>
                 </div>
                 <p class="text-xs text-content-tertiary leading-relaxed">
-                  Deterministic — same input always produces the same UUID. Useful for generating IDs from known data.
+                  Deterministic: same input always produces the same UUID. Useful for generating IDs from known data.
                 </p>
               </div>
               <div class="rounded-lg border border-brand-200 bg-brand-50/50 p-4 space-y-2">
@@ -209,7 +209,7 @@
                   <tr class="border-b border-surface-border/50">
                     <td class="py-2.5 pr-4 font-medium text-content">Sortable</td>
                     <td class="py-2.5 px-4">No</td>
-                    <td class="py-2.5 pl-4">Yes — by creation time</td>
+                    <td class="py-2.5 pl-4">Yes, by creation time</td>
                   </tr>
                   <tr class="border-b border-surface-border/50">
                     <td class="py-2.5 pr-4 font-medium text-content">DB index performance</td>
@@ -246,7 +246,7 @@
               <p class="text-content-tertiary leading-relaxed">
                 <strong class="text-content">UUID v7 solves this.</strong> Because the first 48 bits are a
                 millisecond timestamp, new UUIDs are always greater than previous ones. This means they insert at the end
-                of the index — just like auto-increment integers — while retaining all the benefits of distributed ID generation.
+                of the index, just like auto-increment integers, while retaining all the benefits of distributed ID generation.
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 For PostgreSQL, store UUIDs as the native <code class="code-inline">uuid</code> type
@@ -263,7 +263,7 @@
 
           <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
-              This generator uses the Web Crypto API for cryptographically secure random bytes — no external UUID libraries.
+              This generator uses the Web Crypto API for cryptographically secure random bytes, no external UUID libraries.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <SeoExternalLink

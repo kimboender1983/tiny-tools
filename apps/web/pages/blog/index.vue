@@ -87,7 +87,7 @@
     }
 
     // SEO
-    const title = "Developer Blog — Web Development Tips & Tutorials | Pickbox";
+    const title = "Developer Blog - Web Development Tips & Tutorials | Pickbox";
     const description =
         "Practical web development tips, tutorials, and guides. Learn about JavaScript, TypeScript, developer tools, and modern web technologies.";
     const canonicalUrl = `${siteUrl}/blog`;

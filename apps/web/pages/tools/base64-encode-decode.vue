@@ -11,7 +11,7 @@
     const faqItems = [
         {
             question: "What is Base64 encoding?",
-            answer: "Base64 is a binary-to-text encoding scheme that represents binary data using 64 printable ASCII characters (A-Z, a-z, 0-9, +, and /). It is commonly used to embed binary data — such as images, files, or cryptographic keys — into text-based formats like JSON, XML, HTML, email, and URLs.",
+            answer: "Base64 is a binary-to-text encoding scheme that represents binary data using 64 printable ASCII characters (A-Z, a-z, 0-9, +, and /). It is commonly used to embed binary data (such as images, files, or cryptographic keys) into text-based formats like JSON, XML, HTML, email, and URLs.",
         },
         {
             question: "Is Base64 encoding the same as encryption?",
@@ -42,7 +42,7 @@
     ];
 
     useHead({
-        title: "Base64 Encoder/Decoder — Free Online Base64 Tool | Pickbox",
+        title: "Base64 Encoder/Decoder - Free Online Base64 Tool | Pickbox",
         meta: [
             {
                 name: "description",
@@ -53,7 +53,7 @@
             { property: "og:type", content: "website" },
             {
                 property: "og:title",
-                content: "Base64 Encoder/Decoder — Free Online Base64 Tool | Pickbox",
+                content: "Base64 Encoder/Decoder - Free Online Base64 Tool | Pickbox",
             },
             {
                 property: "og:description",
@@ -65,7 +65,7 @@
             { name: "twitter:card", content: "summary_large_image" },
             {
                 name: "twitter:title",
-                content: "Base64 Encoder/Decoder — Free Online Base64 Tool | Pickbox",
+                content: "Base64 Encoder/Decoder - Free Online Base64 Tool | Pickbox",
             },
             {
                 name: "twitter:description",
@@ -137,7 +137,7 @@
                 plus <code class="code-inline">=</code> for padding.
               </p>
               <p class="text-content-tertiary leading-relaxed">
-                Today, Base64 is used everywhere in web development — from data URIs in CSS and HTML, to encoding
+                Today, Base64 is used everywhere in web development, from data URIs in CSS and HTML, to encoding
                 authentication tokens, API payloads, and file uploads in JSON requests.
               </p>
             </div>
@@ -238,7 +238,7 @@
 
           <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
-              This tool uses native browser APIs — no external encoding libraries needed.
+              This tool uses native browser APIs, no external encoding libraries needed.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <SeoExternalLink

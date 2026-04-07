@@ -203,7 +203,7 @@ export class BlogWriterService {
             const inputTokens = response.usage?.input_tokens || 0;
             const outputTokens = response.usage?.output_tokens || 0;
 
-            // Extract the tool use result — already parsed, no JSON parsing needed
+            // Extract the tool use result - already parsed, no JSON parsing needed
             const toolUse = response.content.find((c) => c.type === "tool_use");
             if (!toolUse || toolUse.type !== "tool_use") {
                 throw new Error("Claude did not return a tool use response");
@@ -310,7 +310,7 @@ ${categoryList}
 ## AVAILABLE TECH LOGOS (use ID if the post is about one of these)
 ${logoList}
 
-## EXISTING POSTS — DO NOT DUPLICATE
+## EXISTING POSTS - DO NOT DUPLICATE
 ${existingList || "No existing posts yet."}
 
 Do NOT write about any topic that overlaps with the existing posts above. If the requested topic overlaps, write about a related but clearly different angle.
@@ -320,9 +320,10 @@ Do NOT write about any topic that overlaps with the existing posts above. If the
 - Content should be 1000-1500+ words
 - Use Markdown with ## and ### headings
 - Use fenced code blocks with language tags where appropriate
-- Status is always "draft" — do not include status in your output
+- Status is always "draft" - do not include status in your output
 - Pick the most relevant category from the list
 - Pick a tech logo if the post is about a specific technology
+- NEVER use em dashes (—) or en dashes (–). Use hyphens (-), commas, or rewrite the sentence instead
 ${
     mediaOptions?.includeDiagrams
         ? `
@@ -344,7 +345,7 @@ Example:
 }
 \`\`\`
 
-Supported chart types: bar, line, pie, doughnut, radar, polarArea. Colors and theming are applied automatically — do NOT specify backgroundColor or borderColor.`
+Supported chart types: bar, line, pie, doughnut, radar, polarArea. Colors and theming are applied automatically -do NOT specify backgroundColor or borderColor.`
         : ""
 }
 ${
@@ -352,10 +353,10 @@ ${
         ? `
 ## DATA CHARTS
 When presenting numerical data, benchmarks, or performance comparisons, use Chart.js charts instead of plain text. Use \`\`\`chart code blocks with a valid Chart.js JSON config. Pick the chart type that best fits the data:
-- **bar** — comparing discrete categories (benchmarks, feature counts, install times)
-- **line** — showing trends over time (adoption, performance over versions)
-- **pie/doughnut** — showing proportions (market share, distribution)
-- **radar** — comparing multiple dimensions (feature comparison across tools)
+- **bar** - comparing discrete categories (benchmarks, feature counts, install times)
+- **line** - showing trends over time (adoption, performance over versions)
+- **pie/doughnut** - showing proportions (market share, distribution)
+- **radar** - comparing multiple dimensions (feature comparison across tools)
 
 Example:
 \`\`\`chart
@@ -372,7 +373,7 @@ Example:
 }
 \`\`\`
 
-Colors and theming are applied automatically — do NOT specify backgroundColor or borderColor. Keep the JSON valid and minimal.`
+Colors and theming are applied automatically - do NOT specify backgroundColor or borderColor. Keep the JSON valid and minimal.`
         : ""
 }
 ${
@@ -406,11 +407,11 @@ Include at least one well-structured markdown comparison table. Use tables for f
 
         if (options.type) {
             prompt += `\n\nPost type: ${options.type}`;
-            if (options.type === "oss") prompt += " — Focus on an open source project/tool.";
+            if (options.type === "oss") prompt += " - Focus on an open source project/tool.";
             if (options.type === "ai")
-                prompt += " — Focus on AI tools, LLMs, or AI in development.";
+                prompt += " - Focus on AI tools, LLMs, or AI in development.";
             if (options.type === "aff")
-                prompt += " — Naturally recommend relevant paid tools/services.";
+                prompt += " - Naturally recommend relevant paid tools/services.";
         }
 
         prompt += "\n\nUse the create_blog_post tool to submit the complete blog post.";

@@ -98,8 +98,8 @@
 
     const title = computed(() =>
         category.value
-            ? `${category.value.name} — Blog | Pickbox`
-            : `${categorySlug} — Blog | Pickbox`,
+            ? `${category.value.name} - Blog | Pickbox`
+            : `${categorySlug} - Blog | Pickbox`,
     );
 
     useHead({

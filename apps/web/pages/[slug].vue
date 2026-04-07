@@ -103,7 +103,7 @@
         privacy: `
 ## What Data We Collect
 
-Pickbox is designed with privacy at its core. **All tools run entirely in your browser** — no data you paste, upload, or process is ever sent to our servers.
+Pickbox is designed with privacy at its core. **All tools run entirely in your browser**, and no data you paste, upload, or process is ever sent to our servers.
 
 ### Analytics
 
@@ -123,8 +123,8 @@ Some tools persist your preferences (e.g., last-used settings) in your browser's
 
 ## Third-Party Services
 
-- **Google Fonts** — We load the Inter and JetBrains Mono typefaces from Google Fonts. Google's [privacy policy](https://policies.google.com/privacy) applies to these requests.
-- **Google AdSense** — If enabled, Google AdSense may set cookies. See [Google's privacy policy](https://policies.google.com/privacy).
+- **Google Fonts** - We load the Inter and JetBrains Mono typefaces from Google Fonts. Google's [privacy policy](https://policies.google.com/privacy) applies to these requests.
+- **Google AdSense** - If enabled, Google AdSense may set cookies. See [Google's privacy policy](https://policies.google.com/privacy).
 
 ## Data Retention
 
@@ -176,7 +176,7 @@ To the fullest extent permitted by law, Pickbox and its creators shall not be li
 
 ## Data and Privacy
 
-Your use of Pickbox is also governed by our [Privacy Policy](/privacy). All tool processing occurs in your browser — we do not collect, store, or transmit any data you process using our tools.
+Your use of Pickbox is also governed by our [Privacy Policy](/privacy). All tool processing occurs in your browser, and we do not collect, store, or transmit any data you process using our tools.
 
 ## Changes to Terms
 

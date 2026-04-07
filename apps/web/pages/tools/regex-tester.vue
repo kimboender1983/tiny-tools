@@ -11,7 +11,7 @@
     const faqItems = [
         {
             question: "What is a regular expression (regex)?",
-            answer: "A regular expression is a sequence of characters that defines a search pattern. It is used for pattern matching within strings — finding, extracting, validating, or replacing text. Regular expressions are supported in virtually every programming language and many text editors.",
+            answer: "A regular expression is a sequence of characters that defines a search pattern. It is used for pattern matching within strings, including finding, extracting, validating, or replacing text. Regular expressions are supported in virtually every programming language and many text editors.",
         },
         {
             question: "What do the flags g, i, m, s, and u mean?",
@@ -19,7 +19,7 @@
         },
         {
             question: "What is a capture group?",
-            answer: "A capture group is a portion of the regex enclosed in parentheses ( ). It captures the matched text so you can reference it later — in replacement strings as $1, $2, etc., or in code via the match array. Named groups use the syntax (?<name>...) and can be referenced as $<name> in replacements.",
+            answer: "A capture group is a portion of the regex enclosed in parentheses ( ). It captures the matched text so you can reference it later, for example in replacement strings as $1, $2, etc., or in code via the match array. Named groups use the syntax (?<name>...) and can be referenced as $<name> in replacements.",
         },
         {
             question: "Is this regex tester safe to use with sensitive data?",
@@ -41,7 +41,7 @@
     ];
 
     useHead({
-        title: "Regex Tester — Free Online Regular Expression Tester | Pickbox",
+        title: "Regex Tester - Free Online Regular Expression Tester | Pickbox",
         meta: [
             {
                 name: "description",
@@ -52,7 +52,7 @@
             { property: "og:type", content: "website" },
             {
                 property: "og:title",
-                content: "Regex Tester — Free Online Regular Expression Tester | Pickbox",
+                content: "Regex Tester - Free Online Regular Expression Tester | Pickbox",
             },
             {
                 property: "og:description",
@@ -64,7 +64,7 @@
             { name: "twitter:card", content: "summary_large_image" },
             {
                 name: "twitter:title",
-                content: "Regex Tester — Free Online Regular Expression Tester | Pickbox",
+                content: "Regex Tester - Free Online Regular Expression Tester | Pickbox",
             },
             {
                 name: "twitter:description",
@@ -165,9 +165,9 @@
                   <code class="code-inline">$1</code> to reference them in replacements.
                 </SeoBullet>
                 <SeoBullet>
-                  <strong class="text-content">Lookahead and lookbehind</strong> —
+                  <strong class="text-content">Lookahead and lookbehind:</strong>
                   <code class="code-inline">(?=...)</code> and
-                  <code class="code-inline">(?&lt;=...)</code> — assert that what follows or precedes
+                  <code class="code-inline">(?&lt;=...)</code> assert that what follows or precedes
                   the current position matches a pattern, without including it in the match.
                 </SeoBullet>
               </ul>
@@ -202,7 +202,7 @@
 
           <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
-              This tester uses JavaScript's native RegExp engine — the same engine your code runs against.
+              This tester uses JavaScript's native RegExp engine, the same engine your code runs against.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <SeoExternalLink

@@ -12,11 +12,11 @@
     const faqItems = [
         {
             question: "What is a JWT token?",
-            answer: "A JSON Web Token (JWT) is a compact, URL-safe token format defined by RFC 7519. It is used to securely transmit claims between two parties — typically a client and a server. JWTs are widely used for authentication, authorization, and information exchange in web applications and APIs.",
+            answer: "A JSON Web Token (JWT) is a compact, URL-safe token format defined by RFC 7519. It is used to securely transmit claims between two parties, typically a client and a server. JWTs are widely used for authentication, authorization, and information exchange in web applications and APIs.",
         },
         {
             question: "Is it safe to decode a JWT in the browser?",
-            answer: "Decoding a JWT simply means base64-decoding its header and payload — it does not require a secret key. This is safe because the payload of a JWT is not encrypted; it is only signed. Our decoder runs entirely in your browser and never transmits your token to any server. However, you should never share your JWTs publicly, as they may contain sensitive claims.",
+            answer: "Decoding a JWT simply means base64-decoding its header and payload, and it does not require a secret key. This is safe because the payload of a JWT is not encrypted; it is only signed. Our decoder runs entirely in your browser and never transmits your token to any server. However, you should never share your JWTs publicly, as they may contain sensitive claims.",
         },
         {
             question: "What is the difference between decoding and verifying a JWT?",
@@ -44,7 +44,7 @@
     ];
 
     useHead({
-        title: "JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox",
+        title: "JWT Decoder - Free Online JWT Token Decoder & Inspector | Pickbox",
         meta: [
             {
                 name: "description",
@@ -55,7 +55,7 @@
             { property: "og:type", content: "website" },
             {
                 property: "og:title",
-                content: "JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox",
+                content: "JWT Decoder - Free Online JWT Token Decoder & Inspector | Pickbox",
             },
             {
                 property: "og:description",
@@ -67,7 +67,7 @@
             { name: "twitter:card", content: "summary_large_image" },
             {
                 name: "twitter:title",
-                content: "JWT Decoder — Free Online JWT Token Decoder & Inspector | Pickbox",
+                content: "JWT Decoder - Free Online JWT Token Decoder & Inspector | Pickbox",
             },
             {
                 name: "twitter:description",
@@ -139,7 +139,7 @@
               <p class="text-content-tertiary leading-relaxed">
                 JWTs are signed using either a symmetric algorithm (HMAC with SHA-256, where both parties share a secret) or
                 an asymmetric algorithm (RSA or ECDSA, where the server signs with a private key and clients verify with the
-                corresponding public key). The choice depends on your architecture — symmetric is simpler for monolithic
+                corresponding public key). The choice depends on your architecture: symmetric is simpler for monolithic
                 apps, while asymmetric is preferred when multiple services need to verify tokens independently.
               </p>
             </div>
@@ -156,7 +156,7 @@
                 receiving party how to verify the signature.
               </SeoBullet>
               <SeoBullet>
-                <strong class="text-content">Payload:</strong> A JSON object containing claims — statements about the user and additional
+                <strong class="text-content">Payload:</strong> A JSON object containing claims, such as statements about the user and additional
                 metadata. Standard registered claims include <code class="code-inline">iss</code> (issuer), <code class="code-inline">sub</code> (subject),
                 <code class="code-inline">aud</code> (audience), <code class="code-inline">exp</code> (expiration), <code class="code-inline">iat</code> (issued at), and
                 <code class="code-inline">nbf</code> (not before). You can also include custom claims like user roles, permissions, or
@@ -165,7 +165,7 @@
               <SeoBullet>
                 <strong class="text-content">Signature:</strong> Created by encoding the header and payload, concatenating them with a dot,
                 and signing the result with the specified algorithm and a secret or private key. The signature ensures
-                data integrity — if anyone modifies the header or payload, the signature becomes invalid.
+                data integrity; if anyone modifies the header or payload, the signature becomes invalid.
               </SeoBullet>
             </ul>
             <p class="text-content-tertiary leading-relaxed mt-4">
@@ -258,7 +258,7 @@
                   <span class="text-[10px] font-medium px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400">Insecure</span>
                 </div>
                 <p class="text-xs text-content-tertiary leading-relaxed">
-                  Unsecured JWT — no signature at all. Should <strong>never</strong> be accepted in production. A common attack vector where an attacker modifies the payload and sets <code class="bg-surface-secondary text-brand-accent px-1 py-0.5 rounded text-xs font-mono">alg: "none"</code> to bypass verification.
+                  Unsecured JWT with no signature at all. Should <strong>never</strong> be accepted in production. A common attack vector where an attacker modifies the payload and sets <code class="bg-surface-secondary text-brand-accent px-1 py-0.5 rounded text-xs font-mono">alg: "none"</code> to bypass verification.
                 </p>
                 <a href="https://datatracker.ietf.org/doc/html/rfc7518#section-3.6" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs text-brand-500 hover:text-brand-600 transition-colors">
                   RFC 7518 <ExternalLink :size="10" />
@@ -305,7 +305,7 @@
 
           <SeoSection id="built-with" title="Built With" icon="code">
             <p class="text-content-tertiary leading-relaxed mb-4">
-              This tool uses no external JWT libraries — just pure JavaScript base64url decoding.
+              This tool uses no external JWT libraries, just pure JavaScript base64url decoding.
             </p>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               <SeoExternalLink

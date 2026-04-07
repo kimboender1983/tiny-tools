@@ -30,7 +30,8 @@
     }
 
     function getCardImageUrl(post: IBlogPost): string {
-        const logoSlug = post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
+        const logoSlug =
+            post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
         const params = new URLSearchParams();
         if (logoSlug) params.set("logo", logoSlug);
         if (post.techLogoColor) params.set("color", post.techLogoColor);
@@ -51,17 +52,24 @@
     const siteUrl = config.public.siteUrl as string;
 
     // Fetch hero + featured + recent + categories in parallel
-    const [{ data: heroData }, { data: featuredData }, { data: recentData }, { data: categoriesData }] = await Promise.all([
+    const [
+        { data: heroData },
+        { data: featuredData },
+        { data: recentData },
+        { data: categoriesData },
+    ] = await Promise.all([
         useAsyncData("home-hero", () =>
-            api.get<PaginatedBlogResponse>("/content/blog", {
-                params: { homepageHero: "true", limit: 1 },
-            }).then((res) => {
-                // Fallback to featuredHomepage if no hero post
-                if (res.items.length > 0) return res;
-                return api.get<PaginatedBlogResponse>("/content/blog", {
-                    params: { featuredHomepage: "true", limit: 1 },
-                });
-            }),
+            api
+                .get<PaginatedBlogResponse>("/content/blog", {
+                    params: { homepageHero: "true", limit: 1 },
+                })
+                .then((res) => {
+                    // Fallback to featuredHomepage if no hero post
+                    if (res.items.length > 0) return res;
+                    return api.get<PaginatedBlogResponse>("/content/blog", {
+                        params: { featuredHomepage: "true", limit: 1 },
+                    });
+                }),
         ),
         useAsyncData("home-featured", () =>
             api.get<PaginatedBlogResponse>("/content/blog", {
@@ -99,11 +107,19 @@
     const compactTools = computed(() => TOOLS.slice(0, 8));
 
     useHead({
-        title: "Pickbox — Tutorials, Opinions & Dev Tools",
+        title: "Pickbox - Tutorials, Opinions & Dev Tools",
         meta: [
-            { name: "description", content: "Honest takes on modern web development. Tutorials, tool reviews, and opinions from a freelance full-stack developer. Plus free browser-based dev tools." },
-            { property: "og:title", content: "Pickbox — Tutorials, Opinions & Dev Tools" },
-            { property: "og:description", content: "Honest takes on modern web development. Tutorials, tool reviews, and opinions." },
+            {
+                name: "description",
+                content:
+                    "Honest takes on modern web development. Tutorials, tool reviews, and opinions from a freelance full-stack developer. Plus free browser-based dev tools.",
+            },
+            { property: "og:title", content: "Pickbox - Tutorials, Opinions & Dev Tools" },
+            {
+                property: "og:description",
+                content:
+                    "Honest takes on modern web development. Tutorials, tool reviews, and opinions.",
+            },
             { property: "og:type", content: "website" },
             { name: "twitter:card", content: "summary_large_image" },
         ],

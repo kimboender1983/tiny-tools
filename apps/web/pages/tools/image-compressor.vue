@@ -11,7 +11,7 @@
     const faqItems = [
         {
             question: "How does browser-based image compression work?",
-            answer: "Our tool uses the Canvas API and modern browser codecs to re-encode your images at a lower quality setting or in a more efficient format. The image is drawn onto an HTML canvas element, and then exported using the toBlob() method with the target format and quality parameter. The entire process runs in your browser — no files are uploaded to a server.",
+            answer: "Our tool uses the Canvas API and modern browser codecs to re-encode your images at a lower quality setting or in a more efficient format. The image is drawn onto an HTML canvas element, and then exported using the toBlob() method with the target format and quality parameter. The entire process runs in your browser, and no files are uploaded to a server.",
         },
         {
             question: "What is the difference between lossy and lossless compression?",
@@ -41,7 +41,7 @@
     ];
 
     useHead({
-        title: "Image Compressor — Free Online Bulk Image Compression Tool | Pickbox",
+        title: "Image Compressor - Free Online Bulk Image Compression Tool | Pickbox",
         meta: [
             {
                 name: "description",
@@ -52,7 +52,7 @@
             { property: "og:type", content: "website" },
             {
                 property: "og:title",
-                content: "Image Compressor — Free Online Bulk Image Compression Tool | Pickbox",
+                content: "Image Compressor - Free Online Bulk Image Compression Tool | Pickbox",
             },
             {
                 property: "og:description",
@@ -64,7 +64,7 @@
             { name: "twitter:card", content: "summary_large_image" },
             {
                 name: "twitter:title",
-                content: "Image Compressor — Free Online Bulk Image Compression Tool | Pickbox",
+                content: "Image Compressor - Free Online Bulk Image Compression Tool | Pickbox",
             },
             {
                 name: "twitter:description",
@@ -127,7 +127,7 @@
               </p>
               <p class="text-content-tertiary leading-relaxed">
                 <strong class="text-content">Lossy compression</strong> analyzes the image and permanently removes data that contributes least
-                to perceived visual quality. It exploits the limitations of human vision — for example, our eyes are more
+                to perceived visual quality. It exploits the limitations of human vision; for example, our eyes are more
                 sensitive to changes in brightness than in color, so a lossy encoder can discard more chrominance data.
                 JPEG has used this approach since 1992 and remains the most widely supported lossy format. WebP lossy,
                 developed by Google, applies similar techniques with more modern algorithms, typically achieving 25-35%
@@ -173,7 +173,7 @@
             </ul>
             <p class="text-content-tertiary leading-relaxed mt-4">
               For new projects, WebP is generally the recommended default. It combines the best qualities of JPEG and
-              PNG — lossy efficiency for photos, lossless option for graphics, and transparency support — in a single
+              PNG, offering lossy efficiency for photos, lossless option for graphics, and transparency support, all in a single
               format. Use the <code class="code-inline">&lt;picture&gt;</code> element with a JPEG or PNG fallback if you need to support
               legacy browsers.
             </p>
@@ -186,7 +186,7 @@
             <ul class="space-y-3">
               <SeoBullet>
                 <strong class="text-content">Photographs and complex imagery:</strong> Use WebP lossy (preferred) or JPEG. Target quality
-                75-85% for a good balance. Avoid PNG for photos — file sizes will be unnecessarily large.
+                75-85% for a good balance. Avoid PNG for photos, as file sizes will be unnecessarily large.
               </SeoBullet>
               <SeoBullet>
                 <strong class="text-content">Screenshots and UI mockups:</strong> Use WebP lossless or PNG. These images contain sharp text
@@ -198,7 +198,7 @@
               </SeoBullet>
               <SeoBullet>
                 <strong class="text-content">Animated content:</strong> Use WebP animated or, for short clips, consider a muted video
-                element with MP4/WebM. Avoid animated GIF — it produces large files with limited color depth.
+                element with MP4/WebM. Avoid animated GIF, as it produces large files with limited color depth.
               </SeoBullet>
               <SeoBullet>
                 <strong class="text-content">Thumbnails and social media previews:</strong> Use WebP lossy or JPEG at moderate quality
