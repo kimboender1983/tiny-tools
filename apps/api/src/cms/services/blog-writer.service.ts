@@ -1,14 +1,14 @@
+import Anthropic from "@anthropic-ai/sdk";
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { InjectModel } from "@nestjs/mongoose";
-import Anthropic from "@anthropic-ai/sdk";
 import { Model } from "mongoose";
-import { BlogPost, BlogPostDocument } from "../schemas/blog-post.schema";
+import { Author, AuthorDocument } from "../schemas/author.schema";
 import { BlogGeneration, BlogGenerationDocument } from "../schemas/blog-generation.schema";
-import { WritingTone, WritingToneDocument } from "../schemas/writing-tone.schema";
+import { BlogPost, BlogPostDocument } from "../schemas/blog-post.schema";
 import { Category, CategoryDocument } from "../schemas/category.schema";
 import { TechLogo, TechLogoDocument } from "../schemas/tech-logo.schema";
-import { Author, AuthorDocument } from "../schemas/author.schema";
+import { WritingTone, WritingToneDocument } from "../schemas/writing-tone.schema";
 import { SlugService } from "./slug.service";
 
 const DEFAULT_MODEL = "claude-sonnet-4-6";
@@ -20,6 +20,7 @@ interface GenerateOptions {
     type?: string;
     model?: string;
     includeDiagrams?: boolean;
+    includeCharts?: boolean;
     includePlaygrounds?: boolean;
     includeComparisonTables?: boolean;
 }
@@ -50,7 +51,8 @@ export class BlogWriterService {
 
     constructor(
         @InjectModel(BlogPost.name) private readonly blogPostModel: Model<BlogPostDocument>,
-        @InjectModel(BlogGeneration.name) private readonly generationModel: Model<BlogGenerationDocument>,
+        @InjectModel(BlogGeneration.name)
+        private readonly generationModel: Model<BlogGenerationDocument>,
         @InjectModel(WritingTone.name) private readonly toneModel: Model<WritingToneDocument>,
         @InjectModel(Category.name) private readonly categoryModel: Model<CategoryDocument>,
         @InjectModel(TechLogo.name) private readonly techLogoModel: Model<TechLogoDocument>,
@@ -92,11 +94,19 @@ export class BlogWriterService {
             ]);
 
             // 4. Build the prompt
-            const systemPrompt = this.buildSystemPrompt(tone?.content || "", categories, techLogos, authors, existingPosts, {
-                includeDiagrams: options.includeDiagrams,
-                includePlaygrounds: options.includePlaygrounds,
-                includeComparisonTables: options.includeComparisonTables,
-            });
+            const systemPrompt = this.buildSystemPrompt(
+                tone?.content || "",
+                categories,
+                techLogos,
+                authors,
+                existingPosts,
+                {
+                    includeDiagrams: options.includeDiagrams,
+                    includeCharts: options.includeCharts,
+                    includePlaygrounds: options.includePlaygrounds,
+                    includeComparisonTables: options.includeComparisonTables,
+                },
+            );
             const userPrompt = this.buildUserPrompt(options, categories);
 
             // 5. Call Claude with tool use for structured output
@@ -109,46 +119,85 @@ export class BlogWriterService {
                 system: systemPrompt,
                 messages: [{ role: "user", content: userPrompt }],
                 tool_choice: { type: "tool", name: "create_blog_post" },
-                tools: [{
-                    name: "create_blog_post",
-                    description: "Create a blog post with all required fields",
-                    input_schema: {
-                        type: "object" as const,
-                        required: ["title", "slug", "content", "excerpt", "tags", "category", "seo", "faq"],
-                        properties: {
-                            title: { type: "string", description: "Blog post title" },
-                            slug: { type: "string", description: "URL slug, lowercase with dashes" },
-                            content: { type: "string", description: "Full blog content in Markdown" },
-                            excerpt: { type: "string", description: "1-2 sentence summary" },
-                            tags: { type: "array", items: { type: "string" }, description: "Relevant tags" },
-                            category: { type: "string", description: "Category ID from the provided list" },
-                            techLogo: { type: "string", description: "Tech logo ID if relevant" },
-                            techLogoColor: { type: "string", description: "Hex color for logo" },
-                            techLogoBgColor: { type: "string", description: "Hex gradient start color" },
-                            techLogoBgColorTo: { type: "string", description: "Hex gradient end color" },
-                            seo: {
-                                type: "object",
-                                properties: {
-                                    metaTitle: { type: "string", description: "Max 60 chars" },
-                                    metaDescription: { type: "string", description: "Max 155 chars" },
-                                    focusKeyword: { type: "string" },
+                tools: [
+                    {
+                        name: "create_blog_post",
+                        description: "Create a blog post with all required fields",
+                        input_schema: {
+                            type: "object" as const,
+                            required: [
+                                "title",
+                                "slug",
+                                "content",
+                                "excerpt",
+                                "tags",
+                                "category",
+                                "seo",
+                                "faq",
+                            ],
+                            properties: {
+                                title: { type: "string", description: "Blog post title" },
+                                slug: {
+                                    type: "string",
+                                    description: "URL slug, lowercase with dashes",
                                 },
-                            },
-                            faq: {
-                                type: "array",
-                                items: {
+                                content: {
+                                    type: "string",
+                                    description: "Full blog content in Markdown",
+                                },
+                                excerpt: { type: "string", description: "1-2 sentence summary" },
+                                tags: {
+                                    type: "array",
+                                    items: { type: "string" },
+                                    description: "Relevant tags",
+                                },
+                                category: {
+                                    type: "string",
+                                    description: "Category ID from the provided list",
+                                },
+                                techLogo: {
+                                    type: "string",
+                                    description: "Tech logo ID if relevant",
+                                },
+                                techLogoColor: {
+                                    type: "string",
+                                    description: "Hex color for logo",
+                                },
+                                techLogoBgColor: {
+                                    type: "string",
+                                    description: "Hex gradient start color",
+                                },
+                                techLogoBgColorTo: {
+                                    type: "string",
+                                    description: "Hex gradient end color",
+                                },
+                                seo: {
                                     type: "object",
                                     properties: {
-                                        question: { type: "string" },
-                                        answer: { type: "string" },
+                                        metaTitle: { type: "string", description: "Max 60 chars" },
+                                        metaDescription: {
+                                            type: "string",
+                                            description: "Max 155 chars",
+                                        },
+                                        focusKeyword: { type: "string" },
                                     },
-                                    required: ["question", "answer"],
                                 },
-                                description: "3-5 unique FAQ items",
+                                faq: {
+                                    type: "array",
+                                    items: {
+                                        type: "object",
+                                        properties: {
+                                            question: { type: "string" },
+                                            answer: { type: "string" },
+                                        },
+                                        required: ["question", "answer"],
+                                    },
+                                    description: "3-5 unique FAQ items",
+                                },
                             },
                         },
                     },
-                }],
+                ],
             });
 
             const inputTokens = response.usage?.input_tokens || 0;
@@ -163,7 +212,8 @@ export class BlogWriterService {
             const parsed = toolUse.input as ParsedBlogPost;
 
             // 7. Determine category
-            const categoryId = options.categoryId || parsed.category || categories[0]?._id?.toString();
+            const categoryId =
+                options.categoryId || parsed.category || categories[0]?._id?.toString();
 
             // 8. Create the draft
             const slug = await this.slugService.ensureUnique(
@@ -206,7 +256,9 @@ export class BlogWriterService {
                 durationMs: Date.now() - startTime,
             });
 
-            this.logger.log(`Blog post created: "${saved.title}" (${wordCount} words, ${tokensUsed} tokens)`);
+            this.logger.log(
+                `Blog post created: "${saved.title}" (${wordCount} words, ${tokensUsed} tokens)`,
+            );
 
             return {
                 postId: saved._id.toString(),
@@ -229,19 +281,24 @@ export class BlogWriterService {
         }
     }
 
-
-
     private buildSystemPrompt(
         toneContent: string,
         categories: Array<{ name: string; slug: string; _id: unknown }>,
         techLogos: Array<{ name: string; slug: string; _id: unknown }>,
-        authors: Array<{ name: string; _id: unknown }>,
+        _authors: Array<{ name: string; _id: unknown }>,
         existingPosts: Array<{ title: string; slug: string; tags?: string[] }>,
-        mediaOptions?: { includeDiagrams?: boolean; includePlaygrounds?: boolean; includeComparisonTables?: boolean },
+        mediaOptions?: {
+            includeDiagrams?: boolean;
+            includeCharts?: boolean;
+            includePlaygrounds?: boolean;
+            includeComparisonTables?: boolean;
+        },
     ): string {
         const categoryList = categories.map((c) => `- ${c.name} (ID: ${c._id})`).join("\n");
         const logoList = techLogos.map((l) => `- ${l.name} / ${l.slug} (ID: ${l._id})`).join("\n");
-        const existingList = existingPosts.map((p) => `- "${p.title}" [${p.slug}] tags: ${(p.tags || []).join(", ")}`).join("\n");
+        const existingList = existingPosts
+            .map((p) => `- "${p.title}" [${p.slug}] tags: ${(p.tags || []).join(", ")}`)
+            .join("\n");
 
         return `You are a professional blog writer. You write high-quality tech blog posts. Use the create_blog_post tool to submit your post.
 
@@ -266,17 +323,74 @@ Do NOT write about any topic that overlaps with the existing posts above. If the
 - Status is always "draft" — do not include status in your output
 - Pick the most relevant category from the list
 - Pick a tech logo if the post is about a specific technology
-${mediaOptions?.includeDiagrams ? `
+${
+    mediaOptions?.includeDiagrams
+        ? `
 ## DIAGRAMS
-Include 1-2 Mermaid diagrams where they add clarity (architecture, data flow, comparisons). Use \`\`\`mermaid code blocks. Keep diagrams simple and readable.` : ""}
-${mediaOptions?.includePlaygrounds ? `
+Include 1-2 diagrams where they add clarity (architecture, data flow, comparisons). Use \`\`\`chart code blocks containing a valid Chart.js JSON config object. Keep diagrams simple and readable.
+
+Example:
+\`\`\`chart
+{
+  "type": "bar",
+  "data": {
+    "labels": ["Option A", "Option B", "Option C"],
+    "datasets": [{ "label": "Performance (ms)", "data": [120, 85, 200] }]
+  },
+  "options": {
+    "plugins": { "title": { "display": true, "text": "Comparison Title" } },
+    "scales": { "y": { "beginAtZero": true } }
+  }
+}
+\`\`\`
+
+Supported chart types: bar, line, pie, doughnut, radar, polarArea. Colors and theming are applied automatically — do NOT specify backgroundColor or borderColor.`
+        : ""
+}
+${
+    mediaOptions?.includeCharts
+        ? `
+## DATA CHARTS
+When presenting numerical data, benchmarks, or performance comparisons, use Chart.js charts instead of plain text. Use \`\`\`chart code blocks with a valid Chart.js JSON config. Pick the chart type that best fits the data:
+- **bar** — comparing discrete categories (benchmarks, feature counts, install times)
+- **line** — showing trends over time (adoption, performance over versions)
+- **pie/doughnut** — showing proportions (market share, distribution)
+- **radar** — comparing multiple dimensions (feature comparison across tools)
+
+Example:
+\`\`\`chart
+{
+  "type": "bar",
+  "data": {
+    "labels": ["Tool A", "Tool B", "Tool C"],
+    "datasets": [{ "label": "Requests/sec", "data": [45000, 72000, 160000] }]
+  },
+  "options": {
+    "plugins": { "title": { "display": true, "text": "HTTP Throughput (Higher is Better)" } },
+    "scales": { "y": { "beginAtZero": true } }
+  }
+}
+\`\`\`
+
+Colors and theming are applied automatically — do NOT specify backgroundColor or borderColor. Keep the JSON valid and minimal.`
+        : ""
+}
+${
+    mediaOptions?.includePlaygrounds
+        ? `
 ## CODE PLAYGROUNDS
 For key code examples, include embedded code playgrounds using this syntax in the markdown:
 <!-- stackblitz:project-id --> or <!-- codesandbox:sandbox-id -->
-Only include these for examples that benefit from being interactive. Use real project IDs from StackBlitz or CodeSandbox.` : ""}
-${mediaOptions?.includeComparisonTables ? `
+Only include these for examples that benefit from being interactive. Use real project IDs from StackBlitz or CodeSandbox.`
+        : ""
+}
+${
+    mediaOptions?.includeComparisonTables
+        ? `
 ## COMPARISON TABLES
-Include at least one well-structured markdown comparison table. Use tables for feature comparisons, pros/cons, tool comparisons, or performance metrics. Format clearly with aligned columns.` : ""}`;
+Include at least one well-structured markdown comparison table. Use tables for feature comparisons, pros/cons, tool comparisons, or performance metrics. Format clearly with aligned columns.`
+        : ""
+}`;
     }
 
     private buildUserPrompt(
@@ -293,12 +407,13 @@ Include at least one well-structured markdown comparison table. Use tables for f
         if (options.type) {
             prompt += `\n\nPost type: ${options.type}`;
             if (options.type === "oss") prompt += " — Focus on an open source project/tool.";
-            if (options.type === "ai") prompt += " — Focus on AI tools, LLMs, or AI in development.";
-            if (options.type === "aff") prompt += " — Naturally recommend relevant paid tools/services.";
+            if (options.type === "ai")
+                prompt += " — Focus on AI tools, LLMs, or AI in development.";
+            if (options.type === "aff")
+                prompt += " — Naturally recommend relevant paid tools/services.";
         }
 
         prompt += "\n\nUse the create_blog_post tool to submit the complete blog post.";
         return prompt;
     }
-
 }

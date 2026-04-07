@@ -4,9 +4,14 @@ import { marked } from "marked";
 // Configure marked with syntax highlighting + mermaid support
 const renderer = new marked.Renderer();
 renderer.code = ({ text, lang }: { text: string; lang?: string }) => {
-    // Mermaid diagrams — render as a container, initialized client-side
-    if (lang === "mermaid") {
-        return `<div class="mermaid-wrapper"><pre class="mermaid">${text}</pre></div>`;
+    // Chart.js — render as canvas with JSON config, initialized client-side
+    if (lang === "chart") {
+        const escaped = text
+            .replace(/&/g, "&amp;")
+            .replace(/'/g, "&#39;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+        return `<div class="chartjs-wrapper"><canvas data-chart='${escaped}'></canvas></div>`;
     }
 
     const language = lang && hljs.getLanguage(lang) ? lang : undefined;
@@ -15,6 +20,30 @@ renderer.code = ({ text, lang }: { text: string; lang?: string }) => {
         : hljs.highlightAuto(text).value;
     const langClass = language ? `hljs language-${language}` : "hljs";
     return `<pre><code class="${langClass}">${highlighted}</code></pre>`;
+};
+const parser = new marked.Parser();
+renderer.table = (token: {
+    header: { tokens: marked.Token[]; align: string | null }[];
+    rows: { tokens: marked.Token[]; align: string | null }[][];
+}) => {
+    const hdr = token.header
+        .map((cell) => {
+            const align = cell.align ? ` style="text-align:${cell.align}"` : "";
+            return `<th${align}>${parser.parseInline(cell.tokens)}</th>`;
+        })
+        .join("");
+    const body = token.rows
+        .map((row) => {
+            const cells = row
+                .map((cell) => {
+                    const align = cell.align ? ` style="text-align:${cell.align}"` : "";
+                    return `<td${align}>${parser.parseInline(cell.tokens)}</td>`;
+                })
+                .join("");
+            return `<tr>${cells}</tr>`;
+        })
+        .join("");
+    return `<div class="table-wrapper"><table class="m-0"><thead><tr>${hdr}</tr></thead><tbody>${body}</tbody></table></div>`;
 };
 renderer.link = ({ href, text }: { href: string; text: string }) => {
     const isExternal = href.startsWith("http://") || href.startsWith("https://");

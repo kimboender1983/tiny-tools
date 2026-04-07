@@ -44,6 +44,7 @@ export interface ISchedulerConfig {
     defaultTone?: string;
     aiModel?: string;
     includeDiagrams?: boolean;
+    includeCharts?: boolean;
     includePlaygrounds?: boolean;
     includeComparisonTables?: boolean;
     categoryRotation: string[];

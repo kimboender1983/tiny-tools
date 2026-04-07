@@ -20,7 +20,8 @@ export class BlogSchedulerService {
     private running = false;
 
     constructor(
-        @InjectModel(SchedulerConfig.name) private readonly configModel: Model<SchedulerConfigDocument>,
+        @InjectModel(SchedulerConfig.name)
+        private readonly configModel: Model<SchedulerConfigDocument>,
         @InjectModel(TopicQueue.name) private readonly topicModel: Model<TopicQueueDocument>,
         private readonly blogWriterService: BlogWriterService,
     ) {}
@@ -69,8 +70,12 @@ export class BlogSchedulerService {
             // Determine category from rotation
             let categoryId = topic.category;
             if (!categoryId && config.categoryRotation.length > 0) {
-                categoryId = config.categoryRotation[config.lastCategoryIndex % config.categoryRotation.length];
-                config.lastCategoryIndex = (config.lastCategoryIndex + 1) % config.categoryRotation.length;
+                categoryId =
+                    config.categoryRotation[
+                        config.lastCategoryIndex % config.categoryRotation.length
+                    ];
+                config.lastCategoryIndex =
+                    (config.lastCategoryIndex + 1) % config.categoryRotation.length;
             }
 
             // Generate
@@ -81,6 +86,7 @@ export class BlogSchedulerService {
                 type: topic.type || "general",
                 model: config.aiModel,
                 includeDiagrams: config.includeDiagrams,
+                includeCharts: config.includeCharts,
                 includePlaygrounds: config.includePlaygrounds,
                 includeComparisonTables: config.includeComparisonTables,
             });
@@ -94,7 +100,9 @@ export class BlogSchedulerService {
             config.lastRunAt = new Date();
             await config.save();
 
-            this.logger.log(`Scheduled generation completed: "${topic.title}" → post ${result.postId}`);
+            this.logger.log(
+                `Scheduled generation completed: "${topic.title}" → post ${result.postId}`,
+            );
         } catch (error) {
             topic.status = "failed";
             topic.error = error instanceof Error ? error.message : String(error);

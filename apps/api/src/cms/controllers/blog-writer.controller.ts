@@ -15,10 +15,10 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { AdminGuard } from "../../auth/guards/admin.guard";
 import { JwtAuthGuard } from "../../auth/guards/jwt-auth.guard";
-import { WritingTone, WritingToneDocument } from "../schemas/writing-tone.schema";
-import { TopicQueue, TopicQueueDocument } from "../schemas/topic-queue.schema";
 import { BlogGeneration, BlogGenerationDocument } from "../schemas/blog-generation.schema";
 import { SchedulerConfig, SchedulerConfigDocument } from "../schemas/scheduler-config.schema";
+import { TopicQueue, TopicQueueDocument } from "../schemas/topic-queue.schema";
+import { WritingTone, WritingToneDocument } from "../schemas/writing-tone.schema";
 import { BlogWriterService } from "../services/blog-writer.service";
 
 // --- Writing Tones ---
@@ -49,7 +49,10 @@ export class WritingTonesController {
     }
 
     @Put(":id")
-    async update(@Param("id") id: string, @Body() dto: { name?: string; content?: string; isDefault?: boolean }) {
+    async update(
+        @Param("id") id: string,
+        @Body() dto: { name?: string; content?: string; isDefault?: boolean },
+    ) {
         if (dto.isDefault) {
             await this.toneModel.updateMany({ _id: { $ne: id } }, { isDefault: false }).exec();
         }
@@ -73,7 +76,15 @@ export class TopicQueueController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    create(@Body() dto: { title: string; notes?: string; category?: string; type?: string; priority?: number }) {
+    create(
+        @Body() dto: {
+            title: string;
+            notes?: string;
+            category?: string;
+            type?: string;
+            priority?: number;
+        },
+    ) {
         return new this.topicModel({ ...dto, status: "pending" }).save();
     }
 
@@ -89,7 +100,13 @@ export class TopicQueueController {
 
     @Patch(":id/reset")
     async reset(@Param("id") id: string) {
-        return this.topicModel.findByIdAndUpdate(id, { $set: { status: "pending", error: undefined, generatedPost: undefined } }, { new: true }).exec();
+        return this.topicModel
+            .findByIdAndUpdate(
+                id,
+                { $set: { status: "pending", error: undefined, generatedPost: undefined } },
+                { new: true },
+            )
+            .exec();
     }
 
     @Delete(":id")
@@ -104,7 +121,8 @@ export class TopicQueueController {
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class SchedulerConfigController {
     constructor(
-        @InjectModel(SchedulerConfig.name) private readonly configModel: Model<SchedulerConfigDocument>,
+        @InjectModel(SchedulerConfig.name)
+        private readonly configModel: Model<SchedulerConfigDocument>,
     ) {}
 
     @Get()
@@ -122,16 +140,19 @@ export class SchedulerConfigController {
     }
 
     @Put()
-    async updateConfig(@Body() dto: {
-        enabled?: boolean;
-        interval?: string;
-        defaultTone?: string;
-        model?: string;
-        includeDiagrams?: boolean;
-        includePlaygrounds?: boolean;
-        includeComparisonTables?: boolean;
-        categoryRotation?: string[];
-    }) {
+    async updateConfig(
+        @Body() dto: {
+            enabled?: boolean;
+            interval?: string;
+            defaultTone?: string;
+            model?: string;
+            includeDiagrams?: boolean;
+            includeCharts?: boolean;
+            includePlaygrounds?: boolean;
+            includeComparisonTables?: boolean;
+            categoryRotation?: string[];
+        },
+    ) {
         let config = await this.configModel.findOne().exec();
         if (!config) {
             config = new this.configModel({
@@ -146,8 +167,11 @@ export class SchedulerConfigController {
         if (dto.defaultTone !== undefined) config.defaultTone = dto.defaultTone;
         if (dto.model !== undefined) config.aiModel = dto.model;
         if (dto.includeDiagrams !== undefined) config.includeDiagrams = dto.includeDiagrams;
-        if (dto.includePlaygrounds !== undefined) config.includePlaygrounds = dto.includePlaygrounds;
-        if (dto.includeComparisonTables !== undefined) config.includeComparisonTables = dto.includeComparisonTables;
+        if (dto.includeCharts !== undefined) config.includeCharts = dto.includeCharts;
+        if (dto.includePlaygrounds !== undefined)
+            config.includePlaygrounds = dto.includePlaygrounds;
+        if (dto.includeComparisonTables !== undefined)
+            config.includeComparisonTables = dto.includeComparisonTables;
         if (dto.categoryRotation) config.categoryRotation = dto.categoryRotation;
         return config.save();
     }
@@ -158,13 +182,26 @@ export class SchedulerConfigController {
 @UseGuards(JwtAuthGuard, AdminGuard)
 export class BlogWriterController {
     constructor(
-        @InjectModel(BlogGeneration.name) private readonly generationModel: Model<BlogGenerationDocument>,
+        @InjectModel(BlogGeneration.name)
+        private readonly generationModel: Model<BlogGenerationDocument>,
         private readonly blogWriterService: BlogWriterService,
     ) {}
 
     @Post("generate")
     @HttpCode(HttpStatus.CREATED)
-    async generate(@Body() dto: { topic: string; toneId?: string; categoryId?: string; type?: string; model?: string; includeDiagrams?: boolean; includePlaygrounds?: boolean; includeComparisonTables?: boolean }) {
+    async generate(
+        @Body() dto: {
+            topic: string;
+            toneId?: string;
+            categoryId?: string;
+            type?: string;
+            model?: string;
+            includeDiagrams?: boolean;
+            includeCharts?: boolean;
+            includePlaygrounds?: boolean;
+            includeComparisonTables?: boolean;
+        },
+    ) {
         return this.blogWriterService.generate(dto);
     }
 

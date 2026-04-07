@@ -8,7 +8,11 @@ export class SchedulerConfig {
     @Prop({ default: false })
     enabled!: boolean;
 
-    @Prop({ required: true, enum: ["15min", "30min", "hourly", "daily", "weekly"], default: "daily" })
+    @Prop({
+        required: true,
+        enum: ["15min", "30min", "hourly", "daily", "weekly"],
+        default: "daily",
+    })
     interval!: string;
 
     @Prop()
@@ -22,6 +26,9 @@ export class SchedulerConfig {
 
     @Prop({ default: false })
     includeDiagrams!: boolean;
+
+    @Prop({ default: false })
+    includeCharts!: boolean;
 
     @Prop({ default: false })
     includePlaygrounds!: boolean;

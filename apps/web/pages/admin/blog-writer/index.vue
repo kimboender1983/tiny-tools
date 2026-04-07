@@ -1,6 +1,23 @@
 <script setup lang="ts">
-    import type { IBlogGeneration, ICategory, ISchedulerConfig, ITopicQueue, IWritingTone } from "@tiny-tools/shared";
-    import { Bot, Check, Clock, Loader2, Play, Plus, RefreshCw, RotateCcw, Trash2, X } from "lucide-vue-next";
+    import type {
+        IBlogGeneration,
+        ICategory,
+        ISchedulerConfig,
+        ITopicQueue,
+        IWritingTone,
+    } from "@tiny-tools/shared";
+    import {
+        Bot,
+        Check,
+        Clock,
+        Loader2,
+        Play,
+        Plus,
+        RefreshCw,
+        RotateCcw,
+        Trash2,
+        X,
+    } from "lucide-vue-next";
 
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
@@ -33,13 +50,20 @@
         { id: "claude-opus-4-6", label: "Opus 4.6 (best, expensive)" },
     ];
     const genDiagrams = ref(false);
+    const genCharts = ref(false);
     const genPlaygrounds = ref(false);
     const genTables = ref(false);
     const genResult = ref<{ postId: string } | null>(null);
 
     // Topic form
     const showTopicForm = ref(false);
-    const newTopic = reactive({ title: "", notes: "", category: "", type: "general" as string, priority: 0 });
+    const newTopic = reactive({
+        title: "",
+        notes: "",
+        category: "",
+        type: "general" as string,
+        priority: 0,
+    });
 
     async function loadAll() {
         loading.value = true;
@@ -76,6 +100,7 @@
                 type: genType.value || undefined,
                 model: genModel.value || undefined,
                 includeDiagrams: genDiagrams.value || undefined,
+                includeCharts: genCharts.value || undefined,
                 includePlaygrounds: genPlaygrounds.value || undefined,
                 includeComparisonTables: genTables.value || undefined,
             });
@@ -143,7 +168,12 @@
 
     function formatDate(d: string | Date | undefined): string {
         if (!d) return "—";
-        return new Date(d).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+        return new Date(d).toLocaleString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
     }
 
     onMounted(loadAll);
@@ -229,6 +259,10 @@
         <label class="flex items-center gap-2 text-content-secondary">
           <input v-model="genDiagrams" type="checkbox" class="rounded border-gray-300" />
           Include diagrams
+        </label>
+        <label class="flex items-center gap-2 text-content-secondary">
+          <input v-model="genCharts" type="checkbox" class="rounded border-gray-300" />
+          Include data charts
         </label>
         <label class="flex items-center gap-2 text-content-secondary">
           <input v-model="genPlaygrounds" type="checkbox" class="rounded border-gray-300" />
@@ -403,7 +437,16 @@
                 class="rounded border-gray-300"
                 @change="updateScheduler({ includeDiagrams: !scheduler.includeDiagrams })"
               />
-              Mermaid diagrams (flowcharts, architecture)
+              Chart.js diagrams (flowcharts, architecture)
+            </label>
+            <label class="flex items-center gap-2 text-sm text-content">
+              <input
+                type="checkbox"
+                :checked="scheduler.includeCharts"
+                class="rounded border-gray-300"
+                @change="updateScheduler({ includeCharts: !scheduler.includeCharts })"
+              />
+              Data charts (bar, line, pie — Chart.js)
             </label>
             <label class="flex items-center gap-2 text-sm text-content">
               <input

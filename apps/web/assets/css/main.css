@@ -376,13 +376,70 @@
     @apply text-purple-400;
 }
 
-/* Mermaid diagrams */
-.prose .mermaid-wrapper {
-    @apply my-8 flex justify-center;
+/* Chart.js charts */
+.prose .chartjs-wrapper {
+    @apply my-8 rounded-xl border border-surface-border p-4 sm:p-6;
+    background: rgb(var(--color-surface));
 }
 
-.prose .mermaid-wrapper svg {
-    @apply max-w-full;
+.prose .chartjs-wrapper canvas {
+    @apply w-full;
+    max-height: 400px;
+}
+
+/* Responsive tables */
+.prose .table-wrapper {
+    @apply w-full overflow-x-auto rounded-xl border border-surface-border;
+    background: rgb(var(--color-surface));
+    -webkit-overflow-scrolling: touch;
+}
+
+.prose table {
+    @apply w-full border-collapse text-sm;
+    min-width: 100%;
+}
+
+.prose thead {
+    border-bottom: 2px solid rgb(var(--color-brand-500) / 0.25);
+}
+
+.prose th {
+    @apply px-5 py-3.5 text-left text-xs font-semibold uppercase tracking-wider whitespace-nowrap;
+    color: rgb(var(--color-brand-accent));
+    background: rgb(var(--color-brand-50));
+}
+
+.prose th:first-child {
+    @apply rounded-tl-xl;
+}
+
+.prose th:last-child {
+    @apply rounded-tr-xl;
+}
+
+.prose td {
+    @apply px-5 py-3.5 text-content-secondary;
+}
+
+.prose tbody tr {
+    border-bottom: 1px solid rgb(var(--color-surface-border) / 0.6);
+    transition: background 0.15s ease;
+}
+
+.prose tbody tr:last-child {
+    border-bottom: none;
+}
+
+.prose tbody tr:nth-child(even) {
+    background: rgb(var(--color-surface-secondary) / 0.35);
+}
+
+.prose tbody tr:hover {
+    background: rgb(var(--color-brand-50) / 0.4);
+}
+
+.prose td strong {
+    @apply text-content;
 }
 
 /* Embedded code playgrounds */

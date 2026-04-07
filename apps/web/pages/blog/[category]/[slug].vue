@@ -32,7 +32,8 @@
     }
 
     function getCardImageUrl(post: IBlogPost): string {
-        const logoSlug = post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
+        const logoSlug =
+            post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
         const params = new URLSearchParams();
         if (logoSlug) params.set("logo", logoSlug);
         if (post.techLogoColor) params.set("color", post.techLogoColor);
@@ -73,7 +74,11 @@
     );
 
     // --- Markdown rendering with syntax highlighting + affiliate links ---
-    import { processAffiliateLinks, processPlaygroundEmbeds, renderMarkdown } from "~/utils/markdown";
+    import {
+        processAffiliateLinks,
+        processPlaygroundEmbeds,
+        renderMarkdown,
+    } from "~/utils/markdown";
 
     // Fetch active affiliates for shortcode resolution
     const { data: affiliatesData } = await useAsyncData("affiliates-map", () =>
@@ -157,7 +162,7 @@
     // Add copy buttons to code blocks after render
     onMounted(() => {
         nextTick(() => {
-            document.querySelectorAll(".prose pre:not(.mermaid)").forEach((pre) => {
+            document.querySelectorAll(".prose pre").forEach((pre) => {
                 if (pre.querySelector(".code-copy-btn")) return;
                 const btn = document.createElement("button");
                 btn.className = "code-copy-btn";
@@ -184,19 +189,194 @@
             // Image lightbox — click to zoom
             initImageLightbox();
 
-            // Initialize Mermaid diagrams if any exist
-            const mermaidEls = document.querySelectorAll(".mermaid");
-            if (mermaidEls.length > 0) {
-                import("mermaid").then(({ default: mermaid }) => {
-                    mermaid.initialize({
-                        startOnLoad: false,
-                        theme: document.documentElement.classList.contains("dark") ? "dark" : "default",
-                        securityLevel: "loose",
-                    });
-                    mermaid.run({ nodes: mermaidEls as unknown as ArrayLike<HTMLElement> });
-                });
-            }
+            // Initialize Chart.js charts
+            initCharts();
         });
+    });
+
+    // Chart.js — theme-reactive rendering
+    type ChartInstance = { destroy(): void };
+    let chartInstances: ChartInstance[] = [];
+    let ChartCtor: typeof import("chart.js/auto")["default"] | null = null;
+
+    function initCharts() {
+        const chartEls = document.querySelectorAll<HTMLCanvasElement>("canvas[data-chart]");
+        if (chartEls.length === 0) return;
+
+        const render = (Chart: typeof ChartCtor) => {
+            if (!Chart) return;
+            // Destroy previous instances
+            for (const c of chartInstances) c.destroy();
+            chartInstances = [];
+
+            // Read theme colors from CSS custom properties
+            const st = getComputedStyle(document.documentElement);
+            const cssRgb = (v: string) => {
+                const r = st.getPropertyValue(v).trim();
+                return r ? `rgb(${r})` : "";
+            };
+            const cssRgba = (v: string, a: number) => {
+                const r = st.getPropertyValue(v).trim();
+                return r ? `rgba(${r}, ${a})` : "";
+            };
+
+            const textColor = cssRgb("--color-text") || "#334155";
+            const textMuted = cssRgb("--color-text-muted") || "#6b7280";
+            const gridColor = cssRgba("--color-surface-border", 0.5) || "rgba(148,163,184,0.2)";
+            const surfaceColor = cssRgb("--color-surface") || "#ffffff";
+
+            const themePalette = [
+                cssRgb("--color-brand-500") || "#3b82f6",
+                cssRgb("--color-brand-300") || "#8b5cf6",
+                cssRgb("--color-brand-400") || "#06b6d4",
+                cssRgb("--color-brand-600") || "#10b981",
+                cssRgb("--color-brand-700") || "#f59e0b",
+            ];
+            const accentColors = [
+                "#8b5cf6",
+                "#06b6d4",
+                "#10b981",
+                "#f59e0b",
+                "#ef4444",
+                "#ec4899",
+                "#14b8a6",
+                "#f97316",
+            ];
+            const brandColors = [
+                ...themePalette,
+                ...accentColors.filter((c) => !themePalette.includes(c)),
+            ].slice(0, 10);
+
+            Chart.defaults.font.family = "Inter, system-ui, sans-serif";
+            Chart.defaults.color = textMuted;
+
+            chartEls.forEach((canvas) => {
+                try {
+                    const raw = canvas.dataset.chart || "{}";
+                    const decoded = raw
+                        .replace(/&amp;/g, "&")
+                        .replace(/&#39;/g, "'")
+                        .replace(/&lt;/g, "<")
+                        .replace(/&gt;/g, ">");
+                    const config = JSON.parse(decoded);
+
+                    if (!config.options) config.options = {};
+                    config.options.responsive = true;
+                    config.options.maintainAspectRatio = true;
+                    if (!config.options.plugins) config.options.plugins = {};
+                    config.options.animation = { duration: 400 };
+
+                    if (!config.options.plugins.legend) {
+                        config.options.plugins.legend = {
+                            display: (config.data?.datasets?.length ?? 0) > 1,
+                            labels: {
+                                color: textMuted,
+                                usePointStyle: true,
+                                padding: 16,
+                                font: { size: 13 },
+                            },
+                        };
+                    }
+                    if (config.options.plugins.title) {
+                        config.options.plugins.title.color =
+                            config.options.plugins.title.color || textColor;
+                        config.options.plugins.title.font = config.options.plugins.title.font || {
+                            size: 15,
+                            weight: "600",
+                        };
+                        config.options.plugins.title.padding = config.options.plugins.title
+                            .padding || {
+                            bottom: 16,
+                        };
+                    }
+
+                    const nonCartesian = ["pie", "doughnut", "radar", "polarArea"];
+                    if (!nonCartesian.includes(config.type)) {
+                        if (!config.options.scales) config.options.scales = {};
+                        for (const axis of ["x", "y"]) {
+                            if (!config.options.scales[axis]) config.options.scales[axis] = {};
+                            const ax = config.options.scales[axis];
+                            if (!ax.ticks) ax.ticks = {};
+                            if (!ax.grid) ax.grid = {};
+                            if (!ax.border) ax.border = {};
+                            ax.ticks.color = ax.ticks.color || textMuted;
+                            ax.ticks.font = ax.ticks.font || { size: 12 };
+                            ax.grid.color = ax.grid.color || gridColor;
+                            ax.border.color = ax.border.color || gridColor;
+                        }
+                    }
+
+                    if (config.data?.datasets) {
+                        config.data.datasets.forEach((ds: Record<string, unknown>, i: number) => {
+                            const color = brandColors[i % brandColors.length];
+                            const labelCount = (config.data?.labels?.length || 1) as number;
+
+                            if (config.type === "bar") {
+                                ds.backgroundColor =
+                                    labelCount > 1 && config.data.datasets.length === 1
+                                        ? brandColors
+                                              .slice(0, labelCount)
+                                              .map((c: string) => `${c}cc`)
+                                        : `${color}cc`;
+                                ds.borderColor =
+                                    labelCount > 1 && config.data.datasets.length === 1
+                                        ? brandColors.slice(0, labelCount)
+                                        : color;
+                                if (ds.borderRadius === undefined) ds.borderRadius = 6;
+                                if (ds.borderWidth === undefined) ds.borderWidth = 2;
+                                if (ds.borderSkipped === undefined) ds.borderSkipped = false;
+                            } else if (config.type === "line" || config.type === "radar") {
+                                ds.backgroundColor = `${color}18`;
+                                ds.borderColor = color;
+                                if (ds.borderWidth === undefined) ds.borderWidth = 2.5;
+                                if (ds.tension === undefined) ds.tension = 0.35;
+                                if (ds.fill === undefined) ds.fill = true;
+                                if (ds.pointRadius === undefined) ds.pointRadius = 4;
+                                ds.pointBackgroundColor = surfaceColor;
+                                ds.pointBorderColor = color;
+                                if (ds.pointBorderWidth === undefined) ds.pointBorderWidth = 2;
+                            } else if (config.type === "pie" || config.type === "doughnut") {
+                                ds.backgroundColor = brandColors
+                                    .slice(0, labelCount)
+                                    .map((c: string) => `${c}cc`);
+                                ds.borderColor = surfaceColor;
+                                if (ds.borderWidth === undefined) ds.borderWidth = 2;
+                            }
+                        });
+                    }
+
+                    chartInstances.push(new Chart(canvas, config));
+                } catch {
+                    if (canvas.parentElement) {
+                        canvas.parentElement.innerHTML =
+                            '<p style="text-align:center;padding:2rem;opacity:0.6;">Failed to render chart — check the JSON config.</p>';
+                    }
+                }
+            });
+        };
+
+        if (ChartCtor) {
+            render(ChartCtor);
+        } else {
+            import("chart.js/auto").then(({ default: Chart }) => {
+                ChartCtor = Chart;
+                render(Chart);
+            });
+        }
+    }
+
+    // Re-render charts when theme changes
+    const colorMode = useColorMode();
+    watch(
+        () => colorMode.value,
+        () => {
+            nextTick(() => initCharts());
+        },
+    );
+
+    onUnmounted(() => {
+        for (const c of chartInstances) c.destroy();
+        chartInstances = [];
     });
 
     function initImageLightbox() {
@@ -351,8 +531,12 @@
     const colorParam = p.techLogoColor ? `&color=${encodeURIComponent(p.techLogoColor)}` : "";
     const bgParam = p.techLogoBgColor ? `&bg=${encodeURIComponent(p.techLogoBgColor)}` : "";
     const bgToParam = p.techLogoBgColorTo ? `&bgTo=${encodeURIComponent(p.techLogoBgColorTo)}` : "";
-    const pickboxParam = p.techLogoPickboxColor ? `&pickboxColor=${encodeURIComponent(p.techLogoPickboxColor)}` : "";
-    const titleColorParam = p.techLogoTitleColor ? `&titleColor=${encodeURIComponent(p.techLogoTitleColor)}` : "";
+    const pickboxParam = p.techLogoPickboxColor
+        ? `&pickboxColor=${encodeURIComponent(p.techLogoPickboxColor)}`
+        : "";
+    const titleColorParam = p.techLogoTitleColor
+        ? `&titleColor=${encodeURIComponent(p.techLogoTitleColor)}`
+        : "";
     const ogImageFallback = `${siteUrl}/og-image.png?title=${encodeURIComponent(p.title)}&category=${encodeURIComponent(getCategoryName(p.category))}${logoParam}${colorParam}${bgParam}${bgToParam}${pickboxParam}${titleColorParam}`;
     const ogImage = p.seo?.ogImage || p.coverImage || ogImageFallback;
     const coverImage = p.coverImage || ogImageFallback;
