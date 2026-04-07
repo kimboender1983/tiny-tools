@@ -18,6 +18,7 @@
     const error = ref("");
     const categories = ref<ICategory[]>([]);
     const authors = ref<IAuthor[]>([]);
+    const allTags = ref<string[]>([]);
     const seoOpen = ref(false);
 
     const form = reactive({
@@ -27,7 +28,7 @@
         excerpt: "",
         status: "draft" as BlogPostStatus,
         category: "",
-        tags: "",
+        tags: [] as string[],
         coverImage: "",
         author: "",
         publishedAt: "",
@@ -96,11 +97,6 @@
         error.value = "";
 
         try {
-            const tags = form.tags
-                .split(",")
-                .map((t) => t.trim())
-                .filter(Boolean);
-
             const data: Partial<IBlogPost> = {
                 title: form.title,
                 slug: form.slug || undefined,
@@ -108,7 +104,7 @@
                 excerpt: form.excerpt,
                 status: publish ? "published" : form.status,
                 category: form.category || undefined,
-                tags: tags.length > 0 ? tags : undefined,
+                tags: form.tags.length > 0 ? form.tags : undefined,
                 coverImage: form.coverImage || undefined,
                 author: form.author || undefined,
                 readingTime: readingTime.value,
@@ -141,12 +137,14 @@
 
     async function loadFormData() {
         try {
-            const [catsRes, authorsRes] = await Promise.all([
+            const [catsRes, authorsRes, tagsRes] = await Promise.all([
                 cms.categories.list({ pageSize: 100 }),
                 cms.authors.list(),
+                cms.blogPosts.allTags(),
             ]);
             categories.value = catsRes.items;
             authors.value = authorsRes;
+            allTags.value = tagsRes;
         } catch {
             // Non-critical
         }
@@ -351,13 +349,8 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-content-secondary mb-1">Tags (comma separated)</label>
-            <input
-              v-model="form.tags"
-              type="text"
-              class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
-              placeholder="javascript, tutorial, tips"
-            />
+            <label class="block text-sm font-medium text-content-secondary mb-1">Tags</label>
+            <AdminTagInput v-model="form.tags" :suggestions="allTags" />
           </div>
 
           <div>

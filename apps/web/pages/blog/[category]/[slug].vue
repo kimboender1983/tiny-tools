@@ -2,7 +2,7 @@
     import type { IBlogPost, ICategory } from "@tiny-tools/shared";
     import { TOOLS } from "@tiny-tools/shared";
     import * as lucideIcons from "lucide-vue-next";
-    import { ArrowLeft, BookOpen, Calendar, ChevronRight, Clock, List } from "lucide-vue-next";
+    import { ArrowLeft, BookOpen, Calendar, ChevronRight, Clock, List, Tag } from "lucide-vue-next";
     import { generateJsonLd } from "~/utils/seo";
 
     interface PaginatedBlogResponse {
@@ -676,6 +676,19 @@
               <Clock :size="14" />
               {{ post!.readingTime }} min read
             </span>
+          </div>
+
+          <!-- Tags -->
+          <div v-if="post!.tags && post!.tags.length > 0" class="mt-4 flex flex-wrap items-center gap-2">
+            <Tag :size="14" class="text-content-muted shrink-0" />
+            <NuxtLink
+              v-for="tag in post!.tags"
+              :key="tag"
+              :to="`/blog?tag=${encodeURIComponent(tag)}`"
+              class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-surface-secondary text-content-tertiary hover:bg-brand-50 hover:text-brand-accent transition-colors"
+            >
+              {{ tag }}
+            </NuxtLink>
           </div>
         </header>
 

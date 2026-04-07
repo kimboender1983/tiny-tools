@@ -22,6 +22,7 @@
     const categories = ref<ICategory[]>([]);
     const authors = ref<IAuthor[]>([]);
     const affiliates = ref<IAffiliate[]>([]);
+    const allTags = ref<string[]>([]);
     const seoOpen = ref(false);
     const ctaOpen = ref(false);
 
@@ -32,7 +33,7 @@
         excerpt: "",
         status: "draft" as BlogPostStatus,
         category: "",
-        tags: "",
+        tags: [] as string[],
         coverImage: "",
         author: "",
         techLogo: "",
@@ -59,8 +60,8 @@
         faq: [] as IFaqItem[],
     });
 
-    const selectedCategoryName = computed(() =>
-        categories.value.find((c) => c._id === form.category)?.name || "",
+    const selectedCategoryName = computed(
+        () => categories.value.find((c) => c._id === form.category)?.name || "",
     );
 
     const readingTime = computed(() => {
@@ -87,16 +88,18 @@
         error.value = "";
 
         try {
-            const [post, catsRes, authorsRes, affiliatesRes] = await Promise.all([
+            const [post, catsRes, authorsRes, affiliatesRes, tagsRes] = await Promise.all([
                 cms.blogPosts.get(id),
                 cms.categories.list({ pageSize: 100 }),
                 cms.authors.list(),
                 cms.affiliates.list({ pageSize: 100 }),
+                cms.blogPosts.allTags(),
             ]);
 
             categories.value = catsRes.items;
             authors.value = authorsRes;
             affiliates.value = affiliatesRes.items;
+            allTags.value = tagsRes;
 
             form.title = post.title;
             form.slug = post.slug;
@@ -104,7 +107,7 @@
             form.excerpt = post.excerpt;
             form.status = post.status;
             form.category = post.category || "";
-            form.tags = post.tags?.join(", ") || "";
+            form.tags = post.tags || [];
             form.coverImage = post.coverImage || "";
             form.author = (post.author as string) || "";
             form.techLogo = (post.techLogo as string) || "";
@@ -158,11 +161,6 @@
         error.value = "";
 
         try {
-            const tags = form.tags
-                .split(",")
-                .map((t) => t.trim())
-                .filter(Boolean);
-
             const data: Partial<IBlogPost> = {
                 title: form.title,
                 slug: form.slug || undefined,
@@ -170,7 +168,7 @@
                 excerpt: form.excerpt,
                 status: publish ? "published" : form.status,
                 category: form.category || undefined,
-                tags: tags.length > 0 ? tags : undefined,
+                tags: form.tags.length > 0 ? form.tags : undefined,
                 coverImage: form.coverImage || "",
                 author: form.author || undefined,
                 techLogo: form.techLogo || undefined,
@@ -179,15 +177,18 @@
                 techLogoBgColorTo: form.techLogoBgColorTo || undefined,
                 techLogoPickboxColor: form.techLogoPickboxColor || undefined,
                 techLogoTitleColor: form.techLogoTitleColor || undefined,
-                affiliateCta: form.affiliateCta.affiliate && form.affiliateCta.headline && form.affiliateCta.buttonText
-                    ? {
-                          affiliate: form.affiliateCta.affiliate,
-                          headline: form.affiliateCta.headline,
-                          body: form.affiliateCta.body || undefined,
-                          buttonText: form.affiliateCta.buttonText,
-                          disclaimer: form.affiliateCta.disclaimer || undefined,
-                      }
-                    : undefined,
+                affiliateCta:
+                    form.affiliateCta.affiliate &&
+                    form.affiliateCta.headline &&
+                    form.affiliateCta.buttonText
+                        ? {
+                              affiliate: form.affiliateCta.affiliate,
+                              headline: form.affiliateCta.headline,
+                              body: form.affiliateCta.body || undefined,
+                              buttonText: form.affiliateCta.buttonText,
+                              disclaimer: form.affiliateCta.disclaimer || undefined,
+                          }
+                        : undefined,
                 readingTime: readingTime.value,
                 publishedAt: form.publishedAt ? new Date(form.publishedAt) : undefined,
                 seo:
@@ -475,13 +476,8 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-content-secondary mb-1">Tags (comma separated)</label>
-              <input
-                v-model="form.tags"
-                type="text"
-                class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
-                placeholder="javascript, tutorial, tips"
-              />
+              <label class="block text-sm font-medium text-content-secondary mb-1">Tags</label>
+              <AdminTagInput v-model="form.tags" :suggestions="allTags" />
             </div>
 
             <div>

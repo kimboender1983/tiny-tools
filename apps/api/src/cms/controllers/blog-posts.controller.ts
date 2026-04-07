@@ -45,6 +45,11 @@ export class BlogPostsController {
         return this.blogPostsService.update(id, dto);
     }
 
+    @Get("meta/tags")
+    async allTags() {
+        return this.blogPostsService.getAllTags();
+    }
+
     @Patch(":id/featured")
     toggleFeatured(@Param("id") id: string) {
         return this.blogPostsService.toggleFeatured(id);

@@ -208,4 +208,9 @@ export class BlogPostsService {
             throw new NotFoundException(`Blog post with id "${id}" not found`);
         }
     }
+
+    async getAllTags(): Promise<string[]> {
+        const tags: string[] = await this.blogPostModel.distinct("tags").exec();
+        return tags.filter(Boolean).sort((a, b) => a.localeCompare(b));
+    }
 }

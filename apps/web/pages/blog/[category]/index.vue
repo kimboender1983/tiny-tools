@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import type { IBlogPost, ICategory } from "@tiny-tools/shared";
     import * as lucideIcons from "lucide-vue-next";
-    import { ArrowLeft, BookOpen, Calendar, Clock } from "lucide-vue-next";
+    import { ArrowLeft, BookOpen, Calendar, Clock, Tag, X } from "lucide-vue-next";
 
     interface PaginatedBlogResponse {
         items: IBlogPost[];
@@ -30,7 +30,8 @@
     }
 
     function getCardImageUrl(post: IBlogPost): string {
-        const logoSlug = post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
+        const logoSlug =
+            post.techLogo && typeof post.techLogo === "object" ? post.techLogo.slug : "";
         const params = new URLSearchParams();
         if (logoSlug) params.set("logo", logoSlug);
         if (post.techLogoColor) params.set("color", post.techLogoColor);
@@ -47,8 +48,10 @@
     const siteUrl = config.public.siteUrl as string;
     const categorySlug = route.params.category as string;
 
+    const activeTag = computed(() => (route.query.tag as string) || "");
+
     // Fetch category info
-    const { data: categories } = await useAsyncData(`categories`, () =>
+    const { data: categories } = await useAsyncData("categories", () =>
         api.get<ICategory[]>("/content/categories"),
     );
 
@@ -68,12 +71,17 @@
     const pageSize = 12;
 
     const { data, error } = await useAsyncData(
-        `blog-category-${categorySlug}-${currentPage.value}`,
+        () => `blog-category-${categorySlug}-${currentPage.value}-${activeTag.value}`,
         () =>
             api.get<PaginatedBlogResponse>("/content/blog", {
-                params: { page: currentPage.value, limit: pageSize, category: category.value?._id },
+                params: {
+                    page: currentPage.value,
+                    limit: pageSize,
+                    category: category.value?._id,
+                    ...(activeTag.value ? { tag: activeTag.value } : {}),
+                },
             }),
-        { watch: [currentPage] },
+        { watch: [currentPage, activeTag] },
     );
 
     const posts = computed(() => data.value?.items ?? []);
@@ -133,6 +141,18 @@
           </p>
         </div>
       </div>
+    </div>
+
+    <!-- Active tag filter -->
+    <div v-if="activeTag" class="mb-8 flex items-center gap-2">
+      <Tag :size="14" class="text-brand-accent" />
+      <span class="text-sm text-content-secondary">Filtered by</span>
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-brand-50 text-brand-accent">
+        {{ activeTag }}
+        <NuxtLink :to="{ path: `/blog/${categorySlug}`, query: {} }" class="hover:text-red-500 transition-colors">
+          <X :size="12" />
+        </NuxtLink>
+      </span>
     </div>
 
     <!-- Error state -->
