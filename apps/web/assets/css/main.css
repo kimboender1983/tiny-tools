@@ -491,9 +491,8 @@
 }
 
 .prose pre code {
-    white-space: pre;
-    word-break: normal;
-    overflow-wrap: normal;
+    white-space: pre-wrap;
+    word-break: break-all;
 }
 
 .prose pre code.hljs {
