@@ -1,6 +1,8 @@
 <script setup lang="ts">
     import {
+        BarChart2,
         BookOpen,
+        MessageSquare,
         FileText,
         FolderOpen,
         Image,
@@ -26,6 +28,8 @@
         { label: "Pages", to: "/admin/pages", icon: FileText },
         { label: "Tools", to: "/admin/tools", icon: Wrench },
         { label: "Blog Posts", to: "/admin/blog", icon: BookOpen },
+        { label: "Blog Analytics", to: "/admin/blog/analytics", icon: BarChart2 },
+        { label: "Blog Feedback", to: "/admin/blog/feedback", icon: MessageSquare },
         { label: "Categories", to: "/admin/categories", icon: FolderOpen },
         { label: "Authors", to: "/admin/authors", icon: Users },
         { label: "Affiliates", to: "/admin/affiliates", icon: Link },

@@ -717,6 +717,17 @@
           v-html="processedContent"
         />
 
+        <!-- Likes + feedback -->
+        <BlogPostLikes
+          :slug="post!.slug"
+          :initial-likes="post!.likes ?? 0"
+          :initial-dislikes="post!.dislikes ?? 0"
+        />
+        <BlogPostFeedback
+          :slug="post!.slug"
+          :post-title="post!.title"
+        />
+
         <!-- FAQ Section -->
         <div v-if="post.faq && post.faq.length > 0" class="mt-12">
           <h2 class="text-2xl font-bold text-content mb-6">Frequently Asked Questions</h2>

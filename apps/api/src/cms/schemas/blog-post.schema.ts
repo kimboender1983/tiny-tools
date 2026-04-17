@@ -81,6 +81,12 @@ export class BlogPost {
     @Prop({ type: [String] })
     relatedPosts?: string[];
 
+    @Prop({ default: 0 })
+    likes!: number;
+
+    @Prop({ default: 0 })
+    dislikes!: number;
+
     @Prop()
     publishedAt?: Date;
 

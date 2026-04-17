@@ -38,6 +38,8 @@ export interface IBlogPost {
     featuredHomepage?: boolean;
     homepageHero?: boolean;
     readingTime?: number;
+    likes?: number;
+    dislikes?: number;
     relatedPosts?: string[];
     publishedAt?: Date;
     createdAt: Date;

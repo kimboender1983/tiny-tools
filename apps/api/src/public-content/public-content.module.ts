@@ -8,6 +8,7 @@ import { Category, CategorySchema } from "../cms/schemas/category.schema";
 import { Page, PageSchema } from "../cms/schemas/page.schema";
 import { TechLogo, TechLogoSchema } from "../cms/schemas/tech-logo.schema";
 import { ApiKey, ApiKeySchema } from "../cms/schemas/api-key.schema";
+import { BlogFeedback, BlogFeedbackSchema } from "../cms/schemas/blog-feedback.schema";
 import { SlugService } from "../cms/services/slug.service";
 import { AffiliateRedirectController, PublicContentController } from "./public-content.controller";
 import { ApiBlogController } from "./api-blog.controller";
@@ -23,6 +24,7 @@ import { ApiBlogController } from "./api-blog.controller";
             { name: AffiliateClick.name, schema: AffiliateClickSchema },
             { name: TechLogo.name, schema: TechLogoSchema },
             { name: ApiKey.name, schema: ApiKeySchema },
+            { name: BlogFeedback.name, schema: BlogFeedbackSchema },
         ]),
     ],
     controllers: [PublicContentController, AffiliateRedirectController, ApiBlogController],

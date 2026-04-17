@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AuthModule } from "../auth/auth.module";
 import { AffiliatesController } from "./controllers/affiliates.controller";
+import { BlogAnalyticsController } from "./controllers/blog-analytics.controller";
 import { AuthorsController } from "./controllers/authors.controller";
 import { BlogPostsController } from "./controllers/blog-posts.controller";
 import {
@@ -19,6 +20,7 @@ import { Affiliate, AffiliateSchema } from "./schemas/affiliate.schema";
 import { AffiliateClick, AffiliateClickSchema } from "./schemas/affiliate-click.schema";
 import { ApiKey, ApiKeySchema } from "./schemas/api-key.schema";
 import { Author, AuthorSchema } from "./schemas/author.schema";
+import { BlogFeedback, BlogFeedbackSchema } from "./schemas/blog-feedback.schema";
 import { BlogGeneration, BlogGenerationSchema } from "./schemas/blog-generation.schema";
 import { BlogPost, BlogPostSchema } from "./schemas/blog-post.schema";
 import { Category, CategorySchema } from "./schemas/category.schema";
@@ -57,12 +59,14 @@ import { TechLogosSeedService } from "./services/tech-logos-seed.service";
             { name: TopicQueue.name, schema: TopicQueueSchema },
             { name: BlogGeneration.name, schema: BlogGenerationSchema },
             { name: SchedulerConfig.name, schema: SchedulerConfigSchema },
+            { name: BlogFeedback.name, schema: BlogFeedbackSchema },
         ]),
         AuthModule,
     ],
     controllers: [
         PagesController,
         BlogPostsController,
+        BlogAnalyticsController,
         CategoriesController,
         MediaController,
         AuthorsController,

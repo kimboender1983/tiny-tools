@@ -1,9 +1,21 @@
 import * as crypto from "node:crypto";
-import { Controller, Get, NotFoundException, Param, Query, Req, Res } from "@nestjs/common";
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    Query,
+    Req,
+    Res,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import type { Request, Response } from "express";
 import { Model, SortOrder } from "mongoose";
 import { Affiliate, AffiliateDocument } from "../cms/schemas/affiliate.schema";
+import { BlogFeedback, BlogFeedbackDocument } from "../cms/schemas/blog-feedback.schema";
 import { AffiliateClick, AffiliateClickDocument } from "../cms/schemas/affiliate-click.schema";
 import { Author, AuthorDocument } from "../cms/schemas/author.schema";
 import { BlogPost, BlogPostDocument } from "../cms/schemas/blog-post.schema";
@@ -27,6 +39,8 @@ export class PublicContentController {
         readonly _affiliateClickModel: Model<AffiliateClickDocument>,
         @InjectModel(TechLogo.name)
         private readonly techLogoModel: Model<TechLogoDocument>,
+        @InjectModel(BlogFeedback.name)
+        private readonly blogFeedbackModel: Model<BlogFeedbackDocument>,
     ) {}
 
     private async resolvePostRefs(post: BlogPostDocument) {
@@ -181,6 +195,57 @@ export class PublicContentController {
             throw new NotFoundException(`Blog post "${slug}" not found`);
         }
         return this.resolvePostRefs(post);
+    }
+
+    @Post("blog/:slug/react")
+    async reactToBlogPost(
+        @Param("slug") slug: string,
+        @Body() body: { vote: "up" | "down"; action: "add" | "remove" },
+    ) {
+        if (!["up", "down"].includes(body.vote) || !["add", "remove"].includes(body.action)) {
+            throw new BadRequestException("Invalid vote or action");
+        }
+
+        const delta = body.action === "remove" ? -1 : 1;
+        const field = body.vote === "up" ? "likes" : "dislikes";
+
+        const post = await this.blogPostModel
+            .findOneAndUpdate(
+                { slug, status: "published" },
+                [{ $set: { [field]: { $max: [0, { $add: [`$${field}`, delta] }] } } }],
+                { new: true },
+            )
+            .exec();
+
+        if (!post) throw new NotFoundException(`Blog post "${slug}" not found`);
+
+        return { likes: post.likes ?? 0, dislikes: post.dislikes ?? 0 };
+    }
+
+    @Post("blog/:slug/feedback")
+    async submitBlogFeedback(
+        @Param("slug") slug: string,
+        @Body() body: { message: string; email?: string },
+    ) {
+        if (!body.message?.trim()) {
+            throw new BadRequestException("Message is required");
+        }
+
+        const post = await this.blogPostModel
+            .findOne({ slug, status: "published" })
+            .select("_id")
+            .lean()
+            .exec();
+
+        if (!post) throw new NotFoundException(`Blog post "${slug}" not found`);
+
+        await this.blogFeedbackModel.create({
+            postSlug: slug,
+            message: body.message.trim().substring(0, 2000),
+            email: body.email?.trim() || undefined,
+        });
+
+        return { ok: true };
     }
 
     @Get("categories")

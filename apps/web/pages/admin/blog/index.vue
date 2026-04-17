@@ -1,6 +1,6 @@
 <script setup lang="ts">
     import type { IBlogPost, ICategory } from "@tiny-tools/shared";
-    import { Crown, Home, Plus, Search, Star, Trash2 } from "lucide-vue-next";
+    import { Crown, Home, Plus, Search, Star, ThumbsDown, ThumbsUp, Trash2 } from "lucide-vue-next";
 
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
@@ -277,6 +277,7 @@
             <th class="px-4 py-3 font-medium text-content-muted">Slug</th>
             <th class="px-4 py-3 font-medium text-content-muted">Category</th>
             <th class="px-4 py-3 font-medium text-content-muted">Status</th>
+            <th class="px-4 py-3 font-medium text-content-muted">Votes</th>
             <th class="px-4 py-3 font-medium text-content-muted">Updated</th>
             <th class="px-4 py-3 font-medium text-content-muted w-12"></th>
           </tr>
@@ -305,6 +306,18 @@
               <span class="inline-flex px-2 py-0.5 rounded text-xs font-medium" :class="statusClasses[post.status]">
                 {{ post.status }}
               </span>
+            </td>
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-2.5 text-xs">
+                <span class="inline-flex items-center gap-1" :class="(post.likes ?? 0) > 0 ? 'text-green-600 dark:text-green-400' : 'text-content-faint'">
+                  <ThumbsUp :size="12" />
+                  {{ post.likes ?? 0 }}
+                </span>
+                <span class="inline-flex items-center gap-1" :class="(post.dislikes ?? 0) > 0 ? 'text-red-500 dark:text-red-400' : 'text-content-faint'">
+                  <ThumbsDown :size="12" />
+                  {{ post.dislikes ?? 0 }}
+                </span>
+              </div>
             </td>
             <td class="px-4 py-3 text-content-muted">{{ formatDate(post.updatedAt) }}</td>
             <td class="px-4 py-3" @click.stop>

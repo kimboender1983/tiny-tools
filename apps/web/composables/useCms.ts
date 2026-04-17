@@ -202,6 +202,50 @@ export function useCms() {
         },
     };
 
+    interface BlogAnalyticsData {
+        totalLikes: number;
+        totalDislikes: number;
+        totalFeedback: number;
+        approvalRate: number | null;
+        topPosts: {
+            id: string;
+            title: string;
+            slug: string;
+            likes: number;
+            dislikes: number;
+            feedback: number;
+        }[];
+        dailyFeedback: { date: string; count: number }[];
+    }
+
+    const blogAnalytics = {
+        get: (days = 30) =>
+            api.get<BlogAnalyticsData>("/cms/blog-analytics", { ...AUTH, params: { days } }),
+    };
+
+    interface BlogFeedbackItem {
+        _id: string;
+        postSlug: string;
+        message: string;
+        email?: string;
+        createdAt: string;
+    }
+
+    interface BlogFeedbackResponse {
+        items: BlogFeedbackItem[];
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    }
+
+    const blogFeedback = {
+        list: (params?: { page?: number; limit?: number; postSlug?: string }) =>
+            api.get<BlogFeedbackResponse>("/cms/blog-analytics/feedback", { ...AUTH, params }),
+        delete: (id: string) =>
+            api.delete<{ ok: boolean }>(`/cms/blog-analytics/feedback/${id}`, AUTH),
+    };
+
     return {
         pages,
         blogPosts,
@@ -213,5 +257,7 @@ export function useCms() {
         techLogos,
         apiKeys,
         blogWriter,
+        blogAnalytics,
+        blogFeedback,
     };
 }
