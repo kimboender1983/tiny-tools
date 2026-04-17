@@ -261,7 +261,8 @@
     <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
       <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
       <div v-else-if="posts.length === 0" class="p-8 text-center text-sm text-content-muted">No blog posts found.</div>
-      <table v-else class="w-full text-sm">
+      <div v-else class="overflow-x-auto">
+      <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-surface-border text-left">
             <th class="px-2 py-3 w-10" @click.stop>
@@ -274,11 +275,11 @@
               />
             </th>
             <th class="px-4 py-3 font-medium text-content-muted">Title</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Slug</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Category</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden sm:table-cell">Slug</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden md:table-cell">Category</th>
             <th class="px-4 py-3 font-medium text-content-muted">Status</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Votes</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Updated</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden lg:table-cell">Votes</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden lg:table-cell">Updated</th>
             <th class="px-4 py-3 font-medium text-content-muted w-12"></th>
           </tr>
         </thead>
@@ -298,8 +299,8 @@
               />
             </td>
             <td class="px-4 py-3 font-medium text-content">{{ post.title }}</td>
-            <td class="px-4 py-3 text-content-muted font-mono text-xs">{{ post.slug }}</td>
-            <td class="px-4 py-3 text-content-muted text-xs">
+            <td class="px-4 py-3 text-content-muted font-mono text-xs hidden sm:table-cell">{{ post.slug }}</td>
+            <td class="px-4 py-3 text-content-muted text-xs hidden md:table-cell">
               {{ getCategoryName(post) || '—' }}
             </td>
             <td class="px-4 py-3">
@@ -307,7 +308,7 @@
                 {{ post.status }}
               </span>
             </td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 hidden lg:table-cell">
               <div class="flex items-center gap-2.5 text-xs">
                 <span class="inline-flex items-center gap-1" :class="(post.likes ?? 0) > 0 ? 'text-green-600 dark:text-green-400' : 'text-content-faint'">
                   <ThumbsUp :size="12" />
@@ -319,7 +320,7 @@
                 </span>
               </div>
             </td>
-            <td class="px-4 py-3 text-content-muted">{{ formatDate(post.updatedAt) }}</td>
+            <td class="px-4 py-3 text-content-muted hidden lg:table-cell">{{ formatDate(post.updatedAt) }}</td>
             <td class="px-4 py-3" @click.stop>
               <div v-if="deleteConfirmId !== post._id" class="flex items-center gap-1">
                 <button
@@ -372,6 +373,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <div v-if="total > 20" class="mt-4 text-sm text-content-muted">

@@ -191,8 +191,8 @@
     <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
       <!-- Add new form -->
       <div v-if="showAddForm" class="px-4 py-3 bg-surface-secondary border-b border-surface-border">
-        <form class="flex items-end gap-3 flex-wrap" @submit.prevent="createUser">
-          <div class="flex-1 min-w-[180px]">
+        <form class="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-end gap-3" @submit.prevent="createUser">
+          <div class="lg:flex-1">
             <label class="block text-xs font-medium text-content-muted mb-1">Email</label>
             <input
               v-model="newForm.email"
@@ -202,7 +202,7 @@
               placeholder="user@example.com"
             />
           </div>
-          <div class="flex-1 min-w-[180px]">
+          <div class="lg:flex-1">
             <label class="block text-xs font-medium text-content-muted mb-1">Password</label>
             <input
               v-model="newForm.password"
@@ -213,7 +213,7 @@
               placeholder="Min. 8 characters"
             />
           </div>
-          <div class="w-40">
+          <div>
             <label class="block text-xs font-medium text-content-muted mb-1">Name</label>
             <input
               v-model="newForm.name"
@@ -222,7 +222,7 @@
               placeholder="Optional"
             />
           </div>
-          <div class="w-28">
+          <div>
             <label class="block text-xs font-medium text-content-muted mb-1">Role</label>
             <select
               v-model="newForm.role"
@@ -250,13 +250,14 @@
       <!-- Table -->
       <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
       <div v-else-if="users.length === 0 && !showAddForm" class="p-8 text-center text-sm text-content-muted">No users yet.</div>
-      <table v-else-if="users.length > 0" class="w-full text-sm">
+      <div v-else-if="users.length > 0" class="overflow-x-auto">
+      <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-surface-border text-left">
             <th class="px-4 py-3 font-medium text-content-muted">Email</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Name</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden sm:table-cell">Name</th>
             <th class="px-4 py-3 font-medium text-content-muted w-24">Role</th>
-            <th class="px-4 py-3 font-medium text-content-muted w-28">Created</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-28 hidden sm:table-cell">Created</th>
             <th class="px-4 py-3 font-medium text-content-muted w-32">Actions</th>
           </tr>
         </thead>
@@ -266,7 +267,7 @@
               <!-- Display mode -->
               <template v-if="editingId !== user._id">
                 <td class="px-4 py-3 font-medium text-content">{{ user.email }}</td>
-                <td class="px-4 py-3 text-content-muted">{{ user.name || '—' }}</td>
+                <td class="px-4 py-3 text-content-muted hidden sm:table-cell">{{ user.name || '—' }}</td>
                 <td class="px-4 py-3">
                   <span
                     class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
@@ -278,7 +279,7 @@
                     {{ user.role }}
                   </span>
                 </td>
-                <td class="px-4 py-3 text-content-muted text-xs">{{ formatDate(user.createdAt) }}</td>
+                <td class="px-4 py-3 text-content-muted text-xs hidden sm:table-cell">{{ formatDate(user.createdAt) }}</td>
                 <td class="px-4 py-3">
                   <div v-if="deleteConfirmId !== user._id" class="flex items-center gap-1">
                     <button
@@ -329,7 +330,7 @@
                     class="w-full px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
                   />
                 </td>
-                <td class="px-4 py-2">
+                <td class="px-4 py-2 hidden sm:table-cell">
                   <input
                     v-model="editForm.name"
                     type="text"
@@ -345,7 +346,7 @@
                     <option value="editor">editor</option>
                   </select>
                 </td>
-                <td class="px-4 py-2 text-xs text-gray-400">—</td>
+                <td class="px-4 py-2 text-xs text-gray-400 hidden sm:table-cell">—</td>
                 <td class="px-4 py-2">
                   <div class="flex items-center gap-1">
                     <button class="p-1 text-green-600 hover:text-green-700 transition-colors" title="Save" @click="saveEdit(user._id)">
@@ -407,6 +408,7 @@
           </template>
         </tbody>
       </table>
+      </div>
     </div>
   </div>
 </template>

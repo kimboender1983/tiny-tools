@@ -211,15 +211,15 @@
 
 <template>
   <div>
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-content">Tech Logos</h1>
-      <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-start gap-3 mb-6">
+      <h1 class="text-2xl font-bold text-content flex-1">Tech Logos</h1>
+      <div class="flex flex-wrap items-center gap-2">
         <!-- Import from Simple Icons -->
         <form class="flex items-center gap-1.5" @submit.prevent="importFromSimpleIcons">
           <input
             v-model="importSlug"
             type="text"
-            class="w-40 px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
+            class="w-36 sm:w-40 px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none"
             placeholder="e.g. vuedotjs"
           />
           <button
@@ -250,7 +250,7 @@
       <!-- Add form -->
       <div v-if="showAddForm" class="px-4 py-4 bg-surface-secondary border-b border-surface-border">
         <form class="space-y-3" @submit.prevent="createLogo">
-          <div class="grid grid-cols-3 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label class="block text-xs font-medium text-content-muted mb-1">Name</label>
               <input
@@ -279,7 +279,7 @@
               />
             </div>
           </div>
-          <div class="grid grid-cols-4 gap-3">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div>
               <label class="block text-xs font-medium text-content-muted mb-1">Color</label>
               <div class="flex items-center gap-2">
@@ -329,14 +329,15 @@
       <!-- List -->
       <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
       <div v-else-if="logos.length === 0 && !showAddForm" class="p-8 text-center text-sm text-content-muted">No logos yet. Add one or import from Simple Icons.</div>
-      <table v-else-if="logos.length > 0" class="w-full text-sm">
+      <div v-else-if="logos.length > 0" class="overflow-x-auto">
+      <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-surface-border text-left">
             <th class="px-4 py-3 font-medium text-content-muted w-16">Preview</th>
             <th class="px-4 py-3 font-medium text-content-muted">Name</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Slug</th>
-            <th class="px-4 py-3 font-medium text-content-muted w-20">Color</th>
-            <th class="px-4 py-3 font-medium text-content-muted w-16">Source</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden sm:table-cell">Slug</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-20 hidden sm:table-cell">Color</th>
+            <th class="px-4 py-3 font-medium text-content-muted w-16 hidden md:table-cell">Source</th>
             <th class="px-4 py-3 font-medium text-content-muted w-24">Actions</th>
           </tr>
         </thead>
@@ -347,14 +348,14 @@
                 <div class="w-8 h-8 rounded bg-gray-800 flex items-center justify-center" v-html="logoSvgCache.get(logo._id)" />
               </td>
               <td class="px-4 py-3 font-medium text-content">{{ logo.name }}</td>
-              <td class="px-4 py-3 text-content-muted font-mono text-xs">{{ logo.slug }}</td>
-              <td class="px-4 py-3">
+              <td class="px-4 py-3 text-content-muted font-mono text-xs hidden sm:table-cell">{{ logo.slug }}</td>
+              <td class="px-4 py-3 hidden sm:table-cell">
                 <div class="flex items-center gap-1.5">
                   <span class="w-4 h-4 rounded-full border border-gray-300" :style="{ background: logo.color }" />
                   <span class="text-xs text-content-muted">{{ logo.color }}</span>
                 </div>
               </td>
-              <td class="px-4 py-3 text-xs text-content-muted">{{ logo.source || '—' }}</td>
+              <td class="px-4 py-3 text-xs text-content-muted hidden md:table-cell">{{ logo.source || '—' }}</td>
               <td class="px-4 py-3">
                 <div v-if="deleteConfirmId !== logo._id" class="flex items-center gap-1">
                   <button class="p-1 text-gray-500 hover:text-blue-500 transition-colors" title="Preview" @click="previewLogo = logo; previewBg = logo.bgColor || '#1e3a5f'">
@@ -381,7 +382,7 @@
               </td>
               <td class="px-4 py-2" colspan="4">
                 <div class="space-y-2">
-                  <div class="grid grid-cols-3 gap-2">
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <input v-model="editForm.name" type="text" class="px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm outline-none" placeholder="Name" />
                     <input v-model="editForm.slug" type="text" class="px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm font-mono outline-none" placeholder="Slug" />
                     <input v-model="editForm.viewBox" type="text" class="px-2 py-1 rounded border border-gray-300 bg-white text-gray-900 text-sm outline-none" placeholder="ViewBox" />
@@ -417,6 +418,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <!-- Preview Modal -->

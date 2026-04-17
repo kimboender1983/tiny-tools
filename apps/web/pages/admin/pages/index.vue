@@ -184,17 +184,18 @@
     <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
       <div v-if="loading" class="p-8 text-center text-sm text-content-muted">Loading...</div>
       <div v-else-if="pages.length === 0" class="p-8 text-center text-sm text-content-muted">No pages found.</div>
-      <table v-else class="w-full text-sm">
+      <div v-else class="overflow-x-auto">
+      <table class="w-full text-sm">
         <thead>
           <tr class="border-b border-surface-border text-left">
             <th class="px-2 py-3 w-10" @click.stop>
               <input type="checkbox" :checked="allSelected" :indeterminate="someSelected" class="rounded border-gray-300 cursor-pointer" @change="toggleAll" />
             </th>
             <th class="px-4 py-3 font-medium text-content-muted">Title</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Slug</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden sm:table-cell">Slug</th>
             <th class="px-4 py-3 font-medium text-content-muted">Status</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Category</th>
-            <th class="px-4 py-3 font-medium text-content-muted">Updated</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden md:table-cell">Category</th>
+            <th class="px-4 py-3 font-medium text-content-muted hidden md:table-cell">Updated</th>
             <th class="px-4 py-3 font-medium text-content-muted w-12"></th>
           </tr>
         </thead>
@@ -209,14 +210,14 @@
               <input type="checkbox" :checked="selected.has(page._id)" class="rounded border-gray-300 cursor-pointer" @change="toggleOne(page._id)" />
             </td>
             <td class="px-4 py-3 font-medium text-content">{{ page.title }}</td>
-            <td class="px-4 py-3 text-content-muted font-mono text-xs">{{ page.slug }}</td>
+            <td class="px-4 py-3 text-content-muted font-mono text-xs hidden sm:table-cell">{{ page.slug }}</td>
             <td class="px-4 py-3">
               <span class="inline-flex px-2 py-0.5 rounded text-xs font-medium" :class="statusClasses[page.status]">
                 {{ page.status }}
               </span>
             </td>
-            <td class="px-4 py-3 text-content-muted">{{ page.category ? (categoryMap.get(page.category) || page.category) : '—' }}</td>
-            <td class="px-4 py-3 text-content-muted">{{ formatDate(page.updatedAt) }}</td>
+            <td class="px-4 py-3 text-content-muted hidden md:table-cell">{{ page.category ? (categoryMap.get(page.category) || page.category) : '—' }}</td>
+            <td class="px-4 py-3 text-content-muted hidden md:table-cell">{{ formatDate(page.updatedAt) }}</td>
             <td class="px-4 py-3" @click.stop>
               <button
                 v-if="deleteConfirmId !== page._id"
@@ -244,6 +245,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
 
     <div v-if="total > 20" class="mt-4 text-sm text-content-muted">

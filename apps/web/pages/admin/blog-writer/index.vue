@@ -223,7 +223,7 @@
           placeholder="e.g. Vite 8 + Rolldown performance improvements"
         />
       </div>
-      <div class="grid grid-cols-2 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label class="block text-sm font-medium text-content-secondary mb-1">Tone</label>
           <select v-model="genToneId" class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm outline-none">
@@ -300,12 +300,12 @@
 
       <!-- Add form -->
       <div v-if="showTopicForm" class="mb-4 p-4 rounded-xl border border-surface-border bg-surface-secondary space-y-3">
-        <div class="grid grid-cols-2 gap-3">
-          <div class="col-span-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="sm:col-span-2">
             <label class="block text-xs font-medium text-content-muted mb-1">Topic</label>
             <input v-model="newTopic.title" type="text" class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm outline-none" placeholder="e.g. Bun vs Deno vs Node in 2026" />
           </div>
-          <div class="col-span-2">
+          <div class="sm:col-span-2">
             <label class="block text-xs font-medium text-content-muted mb-1">Notes (optional context for Claude)</label>
             <input v-model="newTopic.notes" type="text" class="w-full px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm outline-none" placeholder="Focus on DX comparison..." />
           </div>
