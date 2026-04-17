@@ -6,6 +6,13 @@ export default defineNuxtConfig({
     app: {
         head: {
             htmlAttrs: { lang: "en" },
+            script: [
+                {
+                    defer: true,
+                    src: "https://cloud.umami.is/script.js",
+                    "data-website-id": "2cf56603-9061-42b6-982f-a3683778149e",
+                },
+            ],
             link: [
                 { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
                 { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
