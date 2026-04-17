@@ -168,6 +168,15 @@ export function useCms() {
         delete: (id: string) => api.delete<void>(`/cms/api-keys/${id}`, AUTH),
     };
 
+    interface RefinedBlogPost {
+        title: string;
+        content: string;
+        excerpt: string;
+        tags: string[];
+        seo: { metaTitle: string; metaDescription: string; focusKeyword?: string };
+        faq: Array<{ question: string; answer: string }>;
+    }
+
     const blogWriter = {
         generate: (data: { topic: string; toneId?: string; categoryId?: string; type?: string }) =>
             api.post<{ postId: string; generationId: string }>(
@@ -175,6 +184,8 @@ export function useCms() {
                 data,
                 AUTH,
             ),
+        refine: (postId: string, prompt: string, model?: string) =>
+            api.post<RefinedBlogPost>("/cms/blog-writer/refine", { postId, prompt, model }, AUTH),
         history: () => api.get<IBlogGeneration[]>("/cms/blog-writer/history", AUTH),
         tones: {
             list: () => api.get<IWritingTone[]>("/cms/blog-writer/tones", AUTH),

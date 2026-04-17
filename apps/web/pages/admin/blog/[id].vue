@@ -7,7 +7,7 @@
         ICategory,
         IFaqItem,
     } from "@tiny-tools/shared";
-    import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-vue-next";
+    import { ChevronDown, ChevronUp, Plus, Sparkles, Trash2 } from "lucide-vue-next";
 
     definePageMeta({ layout: "admin", middleware: ["admin"] });
 
@@ -25,6 +25,20 @@
     const allTags = ref<string[]>([]);
     const seoOpen = ref(false);
     const ctaOpen = ref(false);
+    const refineOpen = ref(false);
+    const refinePrompt = ref("");
+    const refining = ref(false);
+    const showContentPreview = ref(false);
+
+    type PendingRefinement = {
+        title: string;
+        content: string;
+        excerpt: string;
+        tags: string[];
+        seo: { metaTitle: string; metaDescription: string; focusKeyword?: string };
+        faq: Array<{ question: string; answer: string }>;
+    };
+    const pendingRefinement = ref<PendingRefinement | null>(null);
 
     const form = reactive({
         title: "",
@@ -68,6 +82,37 @@
         const words = form.content.trim().split(/\s+/).filter(Boolean).length;
         return Math.max(1, Math.ceil(words / 200));
     });
+
+    const refinementChanges = computed(() => {
+        const r = pendingRefinement.value;
+        if (!r) return null;
+        const wc = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
+        return {
+            title: r.title !== form.title
+                ? { before: form.title, after: r.title } : null,
+            excerpt: r.excerpt !== form.excerpt
+                ? { before: form.excerpt, after: r.excerpt } : null,
+            content: r.content !== form.content
+                ? { before: `${wc(form.content)} words`, after: `${wc(r.content)} words`, full: r.content }
+                : null,
+            tags: JSON.stringify(r.tags) !== JSON.stringify(form.tags)
+                ? { before: form.tags.join(", ") || "—", after: r.tags.join(", ") || "—" } : null,
+            metaTitle: r.seo.metaTitle !== form.seo.metaTitle
+                ? { before: form.seo.metaTitle || "—", after: r.seo.metaTitle } : null,
+            metaDescription: r.seo.metaDescription !== form.seo.metaDescription
+                ? { before: form.seo.metaDescription || "—", after: r.seo.metaDescription } : null,
+            focusKeyword: (r.seo.focusKeyword || "") !== (form.seo.focusKeyword || "")
+                ? { before: form.seo.focusKeyword || "—", after: r.seo.focusKeyword || "—" } : null,
+            faq: JSON.stringify(r.faq) !== JSON.stringify(form.faq)
+                ? { before: `${form.faq.length} item${form.faq.length !== 1 ? "s" : ""}`, after: `${r.faq.length} item${r.faq.length !== 1 ? "s" : ""}` }
+                : null,
+        };
+    });
+
+    const hasAnyChanges = computed(() =>
+        refinementChanges.value !== null &&
+        Object.values(refinementChanges.value).some((v) => v !== null),
+    );
 
     function addFaq() {
         form.faq.push({ question: "", answer: "" });
@@ -215,6 +260,43 @@
         } finally {
             saving.value = false;
         }
+    }
+
+    async function refineWithAi() {
+        if (!refinePrompt.value.trim() || refining.value) return;
+        refining.value = true;
+        showContentPreview.value = false;
+        try {
+            const result = await cms.blogWriter.refine(id, refinePrompt.value.trim());
+            pendingRefinement.value = result;
+            refinePrompt.value = "";
+        } catch (e: unknown) {
+            toast.error(e instanceof Error ? e.message : "Refinement failed");
+        } finally {
+            refining.value = false;
+        }
+    }
+
+    function acceptRefinement() {
+        const r = pendingRefinement.value;
+        if (!r) return;
+        form.title = r.title;
+        form.content = r.content;
+        form.excerpt = r.excerpt;
+        form.tags = r.tags;
+        if (r.seo.metaTitle) form.seo.metaTitle = r.seo.metaTitle;
+        if (r.seo.metaDescription) form.seo.metaDescription = r.seo.metaDescription;
+        if (r.seo.focusKeyword) form.seo.focusKeyword = r.seo.focusKeyword;
+        if (r.faq.length > 0) form.faq = r.faq;
+        pendingRefinement.value = null;
+        showContentPreview.value = false;
+        refineOpen.value = false;
+        toast.success("Changes applied — save when ready");
+    }
+
+    function discardRefinement() {
+        pendingRefinement.value = null;
+        showContentPreview.value = false;
     }
 
     onMounted(loadPost);
@@ -520,6 +602,169 @@
                 <option value="">None</option>
                 <option v-for="a in authors" :key="a._id" :value="a._id">{{ a.name }}</option>
               </select>
+            </div>
+          </div>
+
+          <!-- Refine with AI -->
+          <div class="bg-surface border border-surface-border rounded-xl overflow-hidden">
+            <button
+              class="w-full flex items-center justify-between px-5 py-4 text-sm font-semibold text-content hover:bg-surface-secondary transition-colors"
+              @click="refineOpen = !refineOpen"
+            >
+              <span class="flex items-center gap-2">
+                <Sparkles :size="15" class="text-brand-500" />
+                Refine with AI
+                <span
+                  v-if="pendingRefinement"
+                  class="inline-block w-2 h-2 rounded-full bg-amber-400"
+                  title="Changes pending review"
+                />
+              </span>
+              <component :is="refineOpen ? ChevronUp : ChevronDown" :size="16" class="text-content-muted" />
+            </button>
+
+            <div v-if="refineOpen" class="border-t border-surface-border">
+              <!-- Input mode -->
+              <div v-if="!pendingRefinement" class="px-5 pb-5 pt-4 space-y-3">
+                <p class="text-xs text-content-muted leading-relaxed">
+                  Describe what you want to change. Tone and style will be preserved.
+                </p>
+                <textarea
+                  v-model="refinePrompt"
+                  rows="4"
+                  :disabled="refining"
+                  class="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-900 text-sm focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-y disabled:opacity-50"
+                  placeholder="e.g. The library v2 is not out yet, update references to say v2 is coming soon..."
+                />
+                <button
+                  :disabled="!refinePrompt.trim() || refining"
+                  class="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  @click="refineWithAi"
+                >
+                  <Sparkles v-if="!refining" :size="14" />
+                  <span v-if="refining" class="inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  {{ refining ? 'Refining...' : 'Refine post' }}
+                </button>
+              </div>
+
+              <!-- Review mode -->
+              <div v-else class="px-5 pb-5 pt-4 space-y-3">
+                <!-- No changes detected -->
+                <div v-if="!hasAnyChanges" class="py-3 text-center space-y-3">
+                  <p class="text-xs text-content-muted">No changes were detected. Try a more specific prompt.</p>
+                  <button class="text-xs text-brand-500 underline underline-offset-2" @click="discardRefinement">
+                    Try again
+                  </button>
+                </div>
+
+                <template v-else-if="refinementChanges">
+                  <p class="text-xs font-semibold text-content-secondary">Review proposed changes:</p>
+
+                  <div class="space-y-2 max-h-96 overflow-y-auto pr-0.5">
+                    <!-- Title -->
+                    <div v-if="refinementChanges.title" class="rounded-lg border border-divider overflow-hidden text-xs">
+                      <div class="px-3 py-1 bg-surface-secondary text-[10px] font-semibold text-content-muted uppercase tracking-wide">Title</div>
+                      <div class="px-3 py-2 space-y-1">
+                        <p class="text-content-muted line-through leading-snug">{{ refinementChanges.title.before }}</p>
+                        <p class="text-green-700 dark:text-green-400 font-medium leading-snug">{{ refinementChanges.title.after }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Excerpt -->
+                    <div v-if="refinementChanges.excerpt" class="rounded-lg border border-divider overflow-hidden text-xs">
+                      <div class="px-3 py-1 bg-surface-secondary text-[10px] font-semibold text-content-muted uppercase tracking-wide">Excerpt</div>
+                      <div class="px-3 py-2 space-y-1">
+                        <p class="text-content-muted line-through leading-snug">{{ refinementChanges.excerpt.before }}</p>
+                        <p class="text-green-700 dark:text-green-400 font-medium leading-snug">{{ refinementChanges.excerpt.after }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Content -->
+                    <div v-if="refinementChanges.content" class="rounded-lg border border-divider overflow-hidden text-xs">
+                      <div class="px-3 py-1 bg-surface-secondary text-[10px] font-semibold text-content-muted uppercase tracking-wide">Content</div>
+                      <div class="px-3 py-2 space-y-2">
+                        <div class="flex items-center gap-1.5">
+                          <span class="text-content-muted line-through">{{ refinementChanges.content.before }}</span>
+                          <span class="text-content-muted">→</span>
+                          <span class="text-green-700 dark:text-green-400 font-medium">{{ refinementChanges.content.after }}</span>
+                        </div>
+                        <button
+                          class="text-brand-500 hover:text-brand-600 underline underline-offset-2"
+                          @click="showContentPreview = !showContentPreview"
+                        >
+                          {{ showContentPreview ? 'Hide preview' : 'Show preview' }}
+                        </button>
+                        <div
+                          v-if="showContentPreview"
+                          class="mt-1 p-2 rounded bg-surface-secondary text-content text-[11px] max-h-48 overflow-y-auto whitespace-pre-wrap font-mono leading-relaxed"
+                        >{{ refinementChanges.content.full }}</div>
+                      </div>
+                    </div>
+
+                    <!-- Tags -->
+                    <div v-if="refinementChanges.tags" class="rounded-lg border border-divider overflow-hidden text-xs">
+                      <div class="px-3 py-1 bg-surface-secondary text-[10px] font-semibold text-content-muted uppercase tracking-wide">Tags</div>
+                      <div class="px-3 py-2 space-y-1">
+                        <p class="text-content-muted line-through leading-snug">{{ refinementChanges.tags.before }}</p>
+                        <p class="text-green-700 dark:text-green-400 font-medium leading-snug">{{ refinementChanges.tags.after }}</p>
+                      </div>
+                    </div>
+
+                    <!-- SEO Title -->
+                    <div v-if="refinementChanges.metaTitle" class="rounded-lg border border-divider overflow-hidden text-xs">
+                      <div class="px-3 py-1 bg-surface-secondary text-[10px] font-semibold text-content-muted uppercase tracking-wide">SEO Title</div>
+                      <div class="px-3 py-2 space-y-1">
+                        <p class="text-content-muted line-through leading-snug">{{ refinementChanges.metaTitle.before }}</p>
+                        <p class="text-green-700 dark:text-green-400 font-medium leading-snug">{{ refinementChanges.metaTitle.after }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Meta Description -->
+                    <div v-if="refinementChanges.metaDescription" class="rounded-lg border border-divider overflow-hidden text-xs">
+                      <div class="px-3 py-1 bg-surface-secondary text-[10px] font-semibold text-content-muted uppercase tracking-wide">Meta Description</div>
+                      <div class="px-3 py-2 space-y-1">
+                        <p class="text-content-muted line-through leading-snug">{{ refinementChanges.metaDescription.before }}</p>
+                        <p class="text-green-700 dark:text-green-400 font-medium leading-snug">{{ refinementChanges.metaDescription.after }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Focus Keyword -->
+                    <div v-if="refinementChanges.focusKeyword" class="rounded-lg border border-divider overflow-hidden text-xs">
+                      <div class="px-3 py-1 bg-surface-secondary text-[10px] font-semibold text-content-muted uppercase tracking-wide">Focus Keyword</div>
+                      <div class="px-3 py-2 space-y-1">
+                        <p class="text-content-muted line-through leading-snug">{{ refinementChanges.focusKeyword.before }}</p>
+                        <p class="text-green-700 dark:text-green-400 font-medium leading-snug">{{ refinementChanges.focusKeyword.after }}</p>
+                      </div>
+                    </div>
+
+                    <!-- FAQ -->
+                    <div v-if="refinementChanges.faq" class="rounded-lg border border-divider overflow-hidden text-xs">
+                      <div class="px-3 py-1 bg-surface-secondary text-[10px] font-semibold text-content-muted uppercase tracking-wide">FAQ</div>
+                      <div class="px-3 py-2 flex items-center gap-1.5">
+                        <span class="text-content-muted line-through">{{ refinementChanges.faq.before }}</span>
+                        <span class="text-content-muted">→</span>
+                        <span class="text-green-700 dark:text-green-400 font-medium">{{ refinementChanges.faq.after }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Accept / Discard -->
+                  <div class="flex gap-2 pt-1">
+                    <button
+                      class="flex-1 px-3 py-2 text-xs font-medium rounded-lg bg-brand-500 text-white hover:bg-brand-600 transition-colors"
+                      @click="acceptRefinement"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      class="flex-1 px-3 py-2 text-xs font-medium rounded-lg border border-divider text-content-secondary hover:bg-surface-secondary transition-colors"
+                      @click="discardRefinement"
+                    >
+                      Discard
+                    </button>
+                  </div>
+                </template>
+              </div>
             </div>
           </div>
         </div>

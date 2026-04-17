@@ -13,6 +13,34 @@ import { SlugService } from "./slug.service";
 
 const DEFAULT_MODEL = "claude-sonnet-4-6";
 
+interface RefineOptions {
+    postId: string;
+    prompt: string;
+    model?: string;
+}
+
+export interface RefinedBlogPost {
+    title: string;
+    content: string;
+    excerpt: string;
+    tags: string[];
+    seo: {
+        metaTitle: string;
+        metaDescription: string;
+        focusKeyword?: string;
+    };
+    faq: Array<{ question: string; answer: string }>;
+}
+
+interface ExistingPostSnapshot {
+    title: string;
+    content: string;
+    excerpt: string;
+    tags?: string[];
+    seo?: { metaTitle?: string; metaDescription?: string; focusKeyword?: string };
+    faq?: Array<{ question: string; answer: string }>;
+}
+
 interface GenerateOptions {
     topic: string;
     toneId?: string;
@@ -392,6 +420,141 @@ ${
 Include at least one well-structured markdown comparison table. Use tables for feature comparisons, pros/cons, tool comparisons, or performance metrics. Format clearly with aligned columns.`
         : ""
 }`;
+    }
+
+    async refine(options: RefineOptions): Promise<RefinedBlogPost> {
+        const post = await this.blogPostModel
+            .findById(options.postId)
+            .select("title content excerpt tags seo faq")
+            .lean()
+            .exec();
+
+        if (!post) throw new Error(`Post not found: ${options.postId}`);
+
+        const tone = await this.toneModel.findOne({ isDefault: true }).exec();
+
+        const snapshot: ExistingPostSnapshot = {
+            title: post.title,
+            content: post.content,
+            excerpt: post.excerpt,
+            tags: post.tags as string[] | undefined,
+            seo: post.seo as ExistingPostSnapshot["seo"],
+            faq: post.faq as Array<{ question: string; answer: string }> | undefined,
+        };
+
+        const systemPrompt = this.buildRefineSystemPrompt(tone?.content || "", snapshot);
+
+        this.logger.log(`Refining blog post "${post.title}" — prompt: "${options.prompt}"`);
+        const client = this.getClient();
+
+        const response = await client.messages.create({
+            model: options.model || DEFAULT_MODEL,
+            max_tokens: 16384,
+            system: systemPrompt,
+            messages: [
+                {
+                    role: "user",
+                    content: `Apply this change to the blog post: ${options.prompt}\n\nUse the create_blog_post tool to submit the refined version.`,
+                },
+            ],
+            tool_choice: { type: "tool", name: "create_blog_post" },
+            tools: [
+                {
+                    name: "create_blog_post",
+                    description: "Submit the refined blog post with all required fields",
+                    input_schema: {
+                        type: "object" as const,
+                        required: ["title", "slug", "content", "excerpt", "tags", "category", "seo", "faq"],
+                        properties: {
+                            title: { type: "string" },
+                            slug: { type: "string" },
+                            content: { type: "string", description: "Full blog content in Markdown" },
+                            excerpt: { type: "string" },
+                            tags: { type: "array", items: { type: "string" } },
+                            category: { type: "string" },
+                            techLogo: { type: "string" },
+                            techLogoColor: { type: "string" },
+                            techLogoBgColor: { type: "string" },
+                            techLogoBgColorTo: { type: "string" },
+                            seo: {
+                                type: "object",
+                                properties: {
+                                    metaTitle: { type: "string" },
+                                    metaDescription: { type: "string" },
+                                    focusKeyword: { type: "string" },
+                                },
+                            },
+                            faq: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        question: { type: "string" },
+                                        answer: { type: "string" },
+                                    },
+                                    required: ["question", "answer"],
+                                },
+                            },
+                        },
+                    },
+                },
+            ],
+        });
+
+        const toolUse = response.content.find((c) => c.type === "tool_use");
+        if (!toolUse || toolUse.type !== "tool_use") {
+            throw new Error("Claude did not return a tool use response");
+        }
+
+        const parsed = toolUse.input as ParsedBlogPost;
+        return {
+            title: parsed.title,
+            content: parsed.content,
+            excerpt: parsed.excerpt,
+            tags: parsed.tags,
+            seo: parsed.seo || { metaTitle: "", metaDescription: "" },
+            faq: parsed.faq || [],
+        };
+    }
+
+    private buildRefineSystemPrompt(toneContent: string, post: ExistingPostSnapshot): string {
+        const faqText =
+            (post.faq || [])
+                .map((f, i) => `${i + 1}. Q: ${f.question}\n   A: ${f.answer}`)
+                .join("\n\n") || "None";
+
+        return `You are editing an existing blog post. Apply only the requested changes while preserving the original writing style, voice, and tone exactly as they are.
+
+${toneContent ? `## WRITING TONE & STYLE\n${toneContent}\n` : ""}
+
+## RULES
+- Preserve the existing voice and tone
+- Only modify what is explicitly requested - keep everything else as-is
+- Always include 3-5 FAQ items (keep existing ones unless asked to change them)
+- NEVER use em dashes (—) or en dashes (–). Use hyphens (-), commas, or rewrite instead
+- The slug and category fields must be returned but should remain the same as the original
+
+## EXISTING POST
+
+### Title
+${post.title}
+
+### Excerpt
+${post.excerpt}
+
+### Tags
+${(post.tags || []).join(", ") || "None"}
+
+### SEO
+Meta Title: ${post.seo?.metaTitle || ""}
+Meta Description: ${post.seo?.metaDescription || ""}
+Focus Keyword: ${post.seo?.focusKeyword || ""}
+
+### FAQ
+${faqText}
+
+### Content
+${post.content}`;
     }
 
     private buildUserPrompt(

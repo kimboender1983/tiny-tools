@@ -205,6 +205,12 @@ export class BlogWriterController {
         return this.blogWriterService.generate(dto);
     }
 
+    @Post("refine")
+    @HttpCode(HttpStatus.OK)
+    async refine(@Body() dto: { postId: string; prompt: string; model?: string }) {
+        return this.blogWriterService.refine(dto);
+    }
+
     @Get("history")
     findHistory() {
         return this.generationModel.find().sort({ createdAt: -1 }).limit(50).exec();
