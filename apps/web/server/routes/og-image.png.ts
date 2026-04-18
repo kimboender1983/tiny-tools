@@ -45,8 +45,8 @@ async function loadFont(filename: string): Promise<ArrayBuffer> {
 }
 
 async function getFonts() {
-    if (!fontDataCache) fontDataCache = await loadFont("inter-500.woff2");
-    if (!fontBoldDataCache) fontBoldDataCache = await loadFont("inter-700.woff2");
+    if (!fontDataCache) fontDataCache = await loadFont("inter-500.ttf");
+    if (!fontBoldDataCache) fontBoldDataCache = await loadFont("inter-700.ttf");
     return [
         { name: "Inter", data: fontDataCache, weight: 500 as const, style: "normal" as const },
         { name: "Inter", data: fontBoldDataCache, weight: 700 as const, style: "normal" as const },
