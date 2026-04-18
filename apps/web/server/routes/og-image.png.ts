@@ -34,21 +34,19 @@ async function fetchLogo(slug: string): Promise<LogoData | null> {
 let fontDataCache: ArrayBuffer | null = null;
 let fontBoldDataCache: ArrayBuffer | null = null;
 
-async function loadFont(weight: number): Promise<ArrayBuffer> {
-    const url = `https://fonts.googleapis.com/css2?family=Inter:wght@${weight}&display=swap`;
-    const cssRes = await fetch(url, {
-        headers: { "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36" },
-    });
-    const css = await cssRes.text();
-    const match = css.match(/src:\s*url\(([^)]+)\)/);
-    if (!match) throw new Error(`Could not extract font URL for weight ${weight}`);
-    const fontRes = await fetch(match[1]);
-    return fontRes.arrayBuffer();
+async function loadFont(filename: string): Promise<ArrayBuffer> {
+    const storage = useStorage("assets:server");
+    const buf = await storage.getItemRaw(`fonts/${filename}`);
+    if (!buf) throw new Error(`Font not found in server assets: ${filename}`);
+    return buf instanceof ArrayBuffer ? buf : (buf as Buffer).buffer.slice(
+        (buf as Buffer).byteOffset,
+        (buf as Buffer).byteOffset + (buf as Buffer).byteLength,
+    );
 }
 
 async function getFonts() {
-    if (!fontDataCache) fontDataCache = await loadFont(500);
-    if (!fontBoldDataCache) fontBoldDataCache = await loadFont(700);
+    if (!fontDataCache) fontDataCache = await loadFont("inter-500.woff2");
+    if (!fontBoldDataCache) fontBoldDataCache = await loadFont("inter-700.woff2");
     return [
         { name: "Inter", data: fontDataCache, weight: 500 as const, style: "normal" as const },
         { name: "Inter", data: fontBoldDataCache, weight: 700 as const, style: "normal" as const },
