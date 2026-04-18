@@ -306,7 +306,7 @@
     const postUrl = computed(() => {
         const config = useRuntimeConfig();
         const base = (config.public.siteUrl as string).replace(/\/$/, "");
-        if (!form.slug || !selectedCategory.value?.slug) return "";
+        if (!form.slug || !selectedCategory.value?.slug || form.status !== "published") return "";
         return `${base}/blog/${selectedCategory.value.slug}/${form.slug}`;
     });
 
@@ -649,7 +649,7 @@
 
             <div v-if="shareOpen" class="border-t border-surface-border px-5 pb-5 pt-4 space-y-3">
               <div v-if="!postUrl" class="text-xs text-content-muted">
-                Post needs a category, slug, and published status to share.
+                Post must be <strong>published</strong> with a category and slug to share.
               </div>
               <template v-else>
                 <!-- Facebook -->
