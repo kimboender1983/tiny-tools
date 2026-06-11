@@ -19,6 +19,10 @@ import { PublicContentModule } from "./public-content/public-content.module";
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => ({
                 uri: configService.get<string>("mongoUrl"),
+                serverSelectionTimeoutMS: 5000,
+                heartbeatFrequencyMS: 2000,
+                socketTimeoutMS: 45000,
+                connectTimeoutMS: 10000,
             }),
         }),
         ScheduleModule.forRoot(),
